@@ -9,10 +9,13 @@ import Mission from './pages/Mission/Mission';
 import Postit from './pages/Postit/Postit';
 import Mypage from './pages/Mypage/Mypage';
 import { Routes, Route } from 'react-router-dom'
+import './App.css'
+import { Button } from '@nextui-org/react';
 
 function App() {
   return (
     <div className="App">
+      <Button>테스트버튼</Button>
       <Routes>
         <Route path='/' Component={Start}/>
         <Route path='/main' Component={Main}/>
