@@ -1,0 +1,82 @@
+import { useState } from "react"
+import { Button } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
+
+type propsType = {
+  goNext: React.MouseEventHandler<HTMLButtonElement>
+}
+
+function Tree() {
+  const [order, setOrder] = useState<number>(0)
+  const goNext: () => void = () => {
+    setOrder(order + 1);
+  };
+
+
+  return (
+    <div>
+      {order === 0 && <Tree0 goNext={goNext} />}
+      {order === 1 && <Tree1 goNext={goNext} />}
+      {order === 2 && <Tree2 />}
+    </div>
+  )
+}
+
+export default Tree
+
+function Tree0({ goNext }: propsType) {
+  return (
+    <div className="flex h-svh w-svh justify-center items-center flex-col">
+      <p className="text-center mb-8 font-bold text-3xl">나무을 그려주세요.</p>
+      <div className="relative border-2 rounded h-2/3 w-5/6">
+        <p>나무그리는 div</p>
+        <Button className="absolute bottom-0 right-0 m-3" onClick={goNext}>다 그렸어요</Button>
+      </div>
+      <div className="flex items-center text-slate-500 mt-2">
+        <p className="mr-3">그리기 힘들다면?</p>
+        {/* 업로드 아이콘 */}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+        </svg>
+        <p className="underline ml-1 hover:text-violet-500 hover:cursor-pointer">업로드하기</p>
+      </div>
+    </div>
+  )
+}
+
+
+function Tree1({ goNext }: propsType) {
+  const answers :string[] = ['나무 답 1', '나무 답 2', '나무 답 3']
+   return (
+    <div className="flex h-svh w-svh justify-center items-center flex-col">
+      <p className="text-center mb-10 font-bold text-3xl">나무 질문1</p>
+      {
+        answers.map((item, idx) => {
+          return(
+            <Button className='w-4/5 m-3 h-16 text-xl' onClick={goNext} key={idx} variant="flat">{item}</Button>
+          )
+        })
+      }
+    </div>
+  )
+}
+
+function Tree2() {
+  // 마지막 질문은 다음 컨텐츠로 넘겨주기 위해 navigate를 사용
+  const navigate = useNavigate()
+
+  const answers :string[] = ['나무 답 1', '나무 답 2', '나무 답 3']
+
+   return (
+    <div className="flex h-svh w-svh justify-center items-center flex-col">
+      <p className="text-center mb-10 font-bold text-3xl">나무 질문 2</p>
+      {
+        answers.map((item, idx) => {
+          return(
+            <Button className='w-4/5 m-3 h-16 text-xl' onClick={() => {navigate('/htp/person')}} key={idx} variant="flat">{item}</Button>
+          )
+        })
+      }
+    </div>
+  )
+}
