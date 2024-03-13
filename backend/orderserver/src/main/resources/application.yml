@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: userserver
+  datasource:
+    username: root
+    password: ssafya810
+    url: jdbc:mariadb://i10a810.p.ssafy.io:3306/classhub?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      show_sql: true
+      dialect: org.hibernate.dialect.MariaDBDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        logging.level:
+        org.hibernate.SQL: debug
+        #        org.hibernate.type: trace
+  data:
+    mongodb:
+      uri: mongodb://root:ssafya810@i10a810.p.ssafy.io:27017/classhub?authSource=admin&authMechanism=SCRAM-SHA-1
+  # OAuth
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ffff43456dc6c817e9c170c889116ea1
+            client-secret: 9sUohDxFqvuLBt4za5EviV9p1pk12NWn
+            #            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: https://i10a810.p.ssafy.io/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - profile_image
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+
+logging.level:
+  org.hibernate.SQL: info
+  org.hibernate.type: info
+#  org.springframework.security: info
+
+classhub:
+  react:
+    #    domain: "http://localhost:5173"
+    domain: "https://i10a810.p.ssafy.io"
+
+key:
+  jwt:
+    secret: CuBcynyOndQHCzQPatvFLkdyndtYIrysJKUPCHRMETNKSPxbhQ
+
+server:
+  port: 8080
