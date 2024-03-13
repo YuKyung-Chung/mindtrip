@@ -44,7 +44,7 @@ function Person0({ goNext }: propsType) {
       Swal.fire({
         title: '업로드완료',
         icon: "success"
-      }).then((r) => {goNext()})
+      }).then(() => {goNext()})
     }
   }, [file])
 
