@@ -1,0 +1,14 @@
+server:
+  port: 8761 #포트번호 지정
+
+spring:
+  application:
+    name: eurekaserver # 서비스 ID
+
+eureka:
+  client:
+    register-with-eureka: false # default : true
+    fetch-registry: false # default : true
+
+# Eureka Libray가 포함된채로 서버가 기동이되면 Eureka Client로써 어딘가에 등록하는 작업을 수행하게됩니다.
+# 여기서 true로 지정하게 되면 자신의 정보를 자신한테 등록하는 것이므로 의미가 없는 작업이므로 false로 지정 하였습니다.
