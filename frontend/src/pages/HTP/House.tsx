@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Draw from "../../components/HTP/Draw";
 
 
 // props의 타입을 지정해주자
@@ -57,7 +56,6 @@ function House0({ goNext }: propsType) {
     <div className="flex h-svh w-svh justify-center items-center flex-col">
       <p className="text-center mb-8 font-bold text-3xl">집을 그려주세요.</p>
       <div className="relative border-2 rounded h-2/3 w-5/6">
-        <Draw />
         <Button className="absolute bottom-0 right-0 m-3" onClick={goNext}>다 그렸어요</Button>
       </div>
       <div className="flex items-center text-slate-500 mt-2">

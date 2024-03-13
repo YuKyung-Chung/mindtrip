@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import {useRef, useEffect, useState} from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { useNavigate } from 'react-router-dom';
-import {Tooltip} from "@nextui-org/react";
+import {Button, Tooltip} from "@nextui-org/react";
 
 function Main () {
   const navigate = useNavigate()
@@ -73,6 +73,10 @@ function Main () {
           <canvas ref={canvasRef} onClick={() => {navigate('/postit')}}></canvas>
         </div>
       </Tooltip>
+      {/* 임시 */}
+      <Button onClick={() => navigate('/consult')}>고민상담소</Button>
+      <Button onClick={() => navigate('/mission')}>데일리 미션</Button>
+      <Button onClick={() => navigate('/mypage')}>마이페이지</Button>
     </div>
   )
 }
