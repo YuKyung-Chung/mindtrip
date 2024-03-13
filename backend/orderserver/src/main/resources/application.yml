@@ -15,21 +15,21 @@ spring:
     name: orderserver
   datasource:
     username: root
-    password: ssafya810
+    password: 1234
     url: jdbc:mysql://localhost:3306/order_schema?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: validate
       show_sql: true
-      dialect: org.hibernate.dialect.MariaDBDialect
+      dialect: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
-        logging.level:
-        org.hibernate.SQL: debug
+#        show_sql: true
+#        format_sql: true
+#        use_sql_comments: true
+#        logging.level:
+#        org.hibernate.SQL: debug
         #        org.hibernate.type: trace
 #  data:
 #    mongodb:
