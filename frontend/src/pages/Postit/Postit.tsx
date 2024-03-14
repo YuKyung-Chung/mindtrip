@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import BackButton from '../../atoms/buttons/backbtn';
 import AlarmButton from '../../atoms/buttons/alambtn';
 import PostIt from '../../atoms/postit/postititem';
@@ -35,7 +34,7 @@ const Postit: React.FC = () => {
         <div className="flex justify-center items-center flex-wrap ">
           {postits.map((postit) => (
             <div className="m-2" key={postit.id}>
-              <PostIt color={postit.color}>{postit.content}</PostIt>
+              <PostIt />
             </div>
           ))}
         </div>
