@@ -2,6 +2,8 @@ server:
   port: 8000
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -26,3 +28,8 @@ spring:
           predicates:
             - Path=/product/**
           filters:
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com.example: DEBUG

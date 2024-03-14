@@ -6,6 +6,9 @@ spring:
     name: eurekaserver # 서비스 ID
 
 eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
   client:
     register-with-eureka: false # default : true
     fetch-registry: false # default : true
