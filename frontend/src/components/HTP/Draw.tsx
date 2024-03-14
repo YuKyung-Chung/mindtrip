@@ -6,28 +6,52 @@ function Draw() {
   const [isDrawing, setIsDrawing] = useState(false)
 
 
+// 좌표 정보를 얻는 함수
+const getCoordinates = (canvas :HTMLCanvasElement, event :MouseEvent|TouchEvent) => {
+  if ('touches' in event) {
+    // 터치 이벤트의 경우
+    const rect = canvas.getBoundingClientRect();
+    return {
+      offsetX: event.touches[0].clientX - rect.left,
+      offsetY: event.touches[0].clientY - rect.top,
+    };
+  } else {
+    // 마우스 이벤트의 경우
+    const mouseEvent = event as MouseEvent;
+    return {
+      offsetX: mouseEvent.offsetX,
+      offsetY: mouseEvent.offsetY,
+    };
+  }
+};
+
   // 그림 그리기 시작
-  const startDrawing = useCallback((e: MouseEvent): void => {
+  const startDrawing = useCallback((e: MouseEvent | TouchEvent): void => {
+    // 터치할 때 화면스크롤 안되도록
+    e.preventDefault();
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.beginPath();
-    // MouseEvent의 offsetX, offsetY를 사용하기 위해 타입 단언
-    ctx.moveTo((e as MouseEvent).offsetX, (e as MouseEvent).offsetY);
+    const { offsetX, offsetY } = getCoordinates(canvas, e);
+    ctx.moveTo(offsetX, offsetY);
     setIsDrawing(true);
   }, []);
 
 
   // 그려줌
-  const draw = useCallback((e: MouseEvent) => {
+  const draw = useCallback((e: MouseEvent | TouchEvent) => {
+    // 터치할 때 화면 스크롤 방지
+    e.preventDefault()
+
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    // MouseEvent의 offsetX, offsetY를 사용하기 위해 타입 단언
-    ctx.lineTo((e as MouseEvent).offsetX, (e as MouseEvent).offsetY);
+    const { offsetX, offsetY } = getCoordinates(canvas, e);
+    ctx.lineTo(offsetX, offsetY);
     ctx.stroke();
   }, [isDrawing]);
 
@@ -64,11 +88,17 @@ function Draw() {
       canvas[`${method}EventListener`](event, listener as EventListener);
     };
 
-    // 이벤트 리스너 추가
+    // 마우스로 그릴 때, 이벤트 리스너 추가
     handleEvent('mousedown', startDrawing, 'add');
     handleEvent('mousemove', draw, 'add');
     handleEvent('mouseup', stopDrawing, 'add');
     handleEvent('mouseout', stopDrawing, 'add');
+
+    // 터치 이벤트 리스너 추가
+    handleEvent('touchstart', startDrawing, 'add');
+    handleEvent('touchmove', draw, 'add');
+    handleEvent('touchend', stopDrawing, 'add');
+    handleEvent('touchcancel', stopDrawing, 'add');
 
     return () => {
       // 이벤트 리스너 제거
@@ -76,6 +106,12 @@ function Draw() {
       handleEvent('mousemove', draw, 'remove');
       handleEvent('mouseup', stopDrawing, 'remove');
       handleEvent('mouseout', stopDrawing, 'remove');
+      
+      // 마우스 이벤트 리스너 제거
+      handleEvent('touchstart', startDrawing, 'remove');
+      handleEvent('touchmove', draw, 'remove');
+      handleEvent('touchend', stopDrawing, 'remove');
+      handleEvent('touchcancel', stopDrawing, 'remove');
     };
   }, [startDrawing, draw, stopDrawing]);
 

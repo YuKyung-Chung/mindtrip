@@ -15,9 +15,9 @@ function Login() {
 
   return (
     <Card
-      className="m-auto mt-16 mx-auto xs:w-full md:w-3/5 xl:w-1/3"
+      className="mt-8 mx-auto xs:w-full md:w-3/5 xl:w-1/3"
     >
-      <CardBody className="flex-col content-center pt-24 pb-12">
+      <CardBody className="flex-col content-center pt-12 pb-12">
         <p className="text-center text-4xl mb-12">Login</p>
         {/* 아이디 입력 창 */}
         <Input 

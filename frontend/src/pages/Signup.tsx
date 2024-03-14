@@ -44,10 +44,10 @@ function Signup () {
 
   return(
     <Card
-      className="m-auto mt-10 mx-auto xs:w-full md:w-3/5 xl:w-1/3"
+      className="m-auto mt-5 mx-auto xs:w-full md:w-3/5 xl:w-1/3"
     >
-      <CardBody className="flex-col content-center pt-16 pb-12">
-        <p className="text-center text-4xl mb-8">Sign Up</p>
+      <CardBody className="flex-col content-center pt-12 pb-10">
+        <p className="text-center text-4xl mb-5">Sign Up</p>
         {/* 아이디 입력 창 */}
         <div className="w-96 mx-auto mt-5 flex items-center">
           <Input 
