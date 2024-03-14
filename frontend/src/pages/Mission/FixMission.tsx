@@ -1,7 +1,6 @@
 
 import BackButton from '../../atoms/buttons/backbtn';
 import AlarmButton from '../../atoms/buttons/alambtn';
-import Successbtn from '../../atoms/buttons/successbtn';
 import Missionbox from '../../components/missionbox';
 
 export default function Fixmission() {
