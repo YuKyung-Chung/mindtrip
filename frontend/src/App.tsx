@@ -7,6 +7,7 @@ import HTP from './pages/HTP/HTP';
 import House from './pages/HTP/House';
 import Tree from './pages/HTP/Tree';
 import Person from './pages/HTP/Person';
+import Result from './pages/HTP/Result';
 import Mission from './pages/Mission/Mission';
 import Fixmission from './pages/Mission/FixMission'
 import Postit from './pages/Postit/Postit';
@@ -25,6 +26,7 @@ function App() {
           <Route path='house' Component={House}/>
           <Route path='tree' Component={Tree}/>
           <Route path='person' Component={Person}/>
+          <Route path='result' Component={Result}/>
         </Route>
         <Route path='/consult' Component={Consult}/>
         <Route path='/mission' Component={Mission}/>

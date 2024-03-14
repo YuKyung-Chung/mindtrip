@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import Draw from "../../components/HTP/Draw";
 
 // props의 타입을 지정해주자
 type propsType = {
@@ -55,7 +55,8 @@ function House0({ goNext }: propsType) {
   return (
     <div className="flex h-svh w-svh justify-center items-center flex-col">
       <p className="text-center mb-8 font-bold text-3xl">집을 그려주세요.</p>
-      <div className="relative border-2 rounded h-2/3 w-5/6">
+      <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full">
+        <Draw/>
         <Button className="absolute bottom-0 right-0 m-3" onClick={goNext}>다 그렸어요</Button>
       </div>
       <div className="flex items-center text-slate-500 mt-2">
@@ -83,7 +84,7 @@ function House1({ goNext }: propsType) {
       {
         answers.map((item, idx) => {
           return(
-            <Button className='w-4/5 m-3 h-16 text-xl' onClick={goNext} key={idx} variant="flat">{item}</Button>
+            <Button className='w-4/5 lg:w-3/5 m-3 h-16 text-xl' onClick={goNext} key={idx} variant="flat">{item}</Button>
           )
         })
       }
@@ -103,7 +104,7 @@ function House2() {
       {
         answers.map((item, idx) => {
           return(
-            <Button className='w-4/5 m-3 h-16 text-xl' onClick={() => {navigate('/htp/tree')}} key={idx} variant="flat">{item}</Button>
+            <Button className='w-4/5 lg:w-3/5 m-3 h-16 text-xl' onClick={() => {navigate('/htp/tree')}} key={idx} variant="flat">{item}</Button>
           )
         })
       }

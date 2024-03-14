@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom"
 
 function HTP() {
   return(
-    <div className="md:container md:mx-auto min-h-screen w-full">
+    <div className="lg:py-9 sm:py-4 md:container md:mx-auto w-full h-screen">
       <Outlet/>
     </div>
   )
