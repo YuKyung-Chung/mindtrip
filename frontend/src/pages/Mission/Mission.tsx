@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import BackButton from '../../atoms/backbtn';
-import AlarmButton from '../../atoms/alambtn';
-import Successbtn from '../../atoms/successbtn';
+import BackButton from '../../atoms/buttons/backbtn';
+import AlarmButton from '../../atoms/buttons/alambtn';
+import Successbtn from '../../atoms/buttons/successbtn';
 
 export default function Mission() {
   return (
