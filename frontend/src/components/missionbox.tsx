@@ -1,11 +1,6 @@
-import React from "react";
 import SuccessButton from "../atoms/buttons/successbtn";
 
-interface MissionboxProps {
-  
-}
-
-const Missionbox: React.FC<MissionboxProps> = () => {
+function Missionbox() {
   return (
     <div className="bg-[#FFF7ED] p-4 rounded-lg mb-4">
       <h2 className="text-xl font-semibold mb-4">초보 미션</h2>

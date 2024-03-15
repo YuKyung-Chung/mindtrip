@@ -3,7 +3,7 @@ import BackButton from '../../atoms/buttons/backbtn';
 import AlarmButton from '../../atoms/buttons/alambtn';
 import Missionbox from '../../components/missionbox';
 
-export default function Fixmission() {
+function Fixmission() {
   return (
     <div className="bg-white p-8">
       <div className="flex flex-col justify-center items-center mb-6">
@@ -45,3 +45,4 @@ export default function Fixmission() {
   )
 }
 
+export default Fixmission

@@ -3,7 +3,7 @@ import BackButton from '../../atoms/buttons/backbtn';
 import AlarmButton from '../../atoms/buttons/alambtn';
 import Successbtn from '../../atoms/buttons/successbtn';
 
-export default function Mission() {
+function Mission() {
   return (
     <div className="bg-[#fff7e0] px-2 py-8">
       <div className="flex flex-col justify-center items-center mb-6">
@@ -38,3 +38,4 @@ export default function Mission() {
     </div>
   );
 }
+export default Mission

@@ -15,6 +15,7 @@ import Mypage from './pages/Mypage/Mypage';
 import MypageHTP from './pages/Mypage/MypageDetail/MypageHTP';
 import MypageProgress from './pages/Mypage/MypageDetail/MypageProgress';
 import MypageHistory from './pages/Mypage/MypageDetail/MypageHistory';
+import MypageFix from './pages/Mypage/MypageDetail/MypageFix';
 import { Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route index path='htp' Component={MypageHTP}/>
           <Route path='history' Component={MypageHistory}/>
           <Route path='progress' Component={MypageProgress}/>
+          <Route path='fix' Component={MypageFix}/>
         </Route>
         <Route path='*' element={<div>없는 페이지에요</div>}/>
       </Routes>
