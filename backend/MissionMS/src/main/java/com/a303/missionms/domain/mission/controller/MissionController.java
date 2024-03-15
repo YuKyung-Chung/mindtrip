@@ -1,5 +1,7 @@
 package com.a303.missionms.domain.mission.controller;
 
+import com.a303.missionms.domain.mission.dto.response.MissionListRes;
+import com.a303.missionms.domain.mission.service.MissionService;
 import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.exception.code.SuccessCode;
 import java.io.IOException;
@@ -12,17 +14,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/mission/")
+@RequestMapping("/api/missions")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class MissionController {
 
-//    @Operation(summary = "health check")
-    @GetMapping("/welcome")
-    public ResponseEntity<BaseResponse<String>> welcome() throws IOException {
+	private final MissionService missionService;
 
-        return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its missionms");
-    }
+	//    @Operation(summary = "health check")
+	@GetMapping("/welcome")
+	public ResponseEntity<BaseResponse<String>> welcome() throws IOException {
+
+		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its missionms");
+	}
+
+	@GetMapping("/v1")
+	public ResponseEntity<BaseResponse<MissionListRes>> getMissionList() throws IOException {
+
+		MissionListRes missionListRes = missionService.getMissionList();
+
+		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, missionListRes);
+	}
 
 //    @Operation(summary = "상품구매")
 //    @GetMapping("/buy")
