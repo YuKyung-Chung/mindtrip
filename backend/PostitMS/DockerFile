@@ -1,0 +1,4 @@
+FROM openjdk:17
+LABEL authors="SSAFYA303"
+COPY build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
