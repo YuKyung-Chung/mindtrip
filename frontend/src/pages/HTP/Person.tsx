@@ -1,33 +1,54 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Draw from "../../components/HTP/Draw";
 
+// props의 타입을 지정해주자
 type propsType = {
-  // goNext: React.MouseEventHandler<HTMLButtonElement>
   goNext: () => void
+  qna :{q:string, ans:string[]}
+  isLast :boolean
+}
+type propsType1 = {
+  goSurvey: () => void
 }
 
+// 사람 그림 그리고, 설문조사가 나오는 페이지
 function Person() {
   const [order, setOrder] = useState<number>(0)
   const goNext: () => void = () => {
     setOrder(order + 1);
   };
 
+  const [isSurvey, setIsSurvey] = useState<boolean>(false)
+  const goSurvey = function() :void {
+    setIsSurvey(true)
+  }
+
+  // 질문과 선택지
+  const survey :{q :string, ans :string[]}[] = [
+    {q: '이 사람은 뭘 하고 있나요?' , ans: ['그냥 서 있어요', '누웠어요', '춤춰요']},
+    {q: '이 사람은 몇 살인가요?', ans: ['저보다 어려요', '저랑 비슷해요', '저보다 나이가 많아요']},
+    {q: '이 사람의 기분은 어떤가요?', ans: ['좋아요', '그냥 그래요', '별로에요']},
+    {q: '이 사람은 앞으로 어떻게 될 것 같나요?', ans: ['더 좋아져요', '지금과 비슷해요', '나빠져요']},
+  ]
+
 
   return (
     <div>
-      {order === 0 && <Person0 goNext={goNext} />}
-      {order === 1 && <Person1 goNext={goNext} />}
-      {order === 2 && <Person2 />}
+      {isSurvey === false && <PersonDraw goSurvey={goSurvey}/>}
+      {(isSurvey === true && order === 0) && <PersonSurvey goNext={goNext} qna={survey[0]} isLast={false}/>}
+      {(isSurvey === true && order === 1) && <PersonSurvey goNext={goNext} qna={survey[1]} isLast={false}/>}
+      {(isSurvey === true && order === 2) && <PersonSurvey goNext={goNext} qna={survey[2]} isLast={false}/>}
+      {(isSurvey === true && order === 3) && <PersonSurvey goNext={goNext} qna={survey[3]} isLast={true}/>}
     </div>
   )
 }
-
 export default Person
 
-function Person0({ goNext }: propsType) {
+function PersonDraw({goSurvey} :propsType1){
+  // 파일 제어용
   const [file, setFile] = useState<File|null>(null)
   const fileInput = useRef<HTMLInputElement>(null);
   const handleChange = (event :React.ChangeEvent<HTMLInputElement>) => {
@@ -37,71 +58,49 @@ function Person0({ goNext }: propsType) {
       setFile(files[0])
     }
   };
-
-  // 써먹을려면
+  // 파일 써먹을려면
   useEffect(()=> {
     if (file != null) {
       console.log(file)
       Swal.fire({
         title: '업로드완료',
         icon: "success"
-      }).then(() => {goNext()})
+      }).then(() => {goSurvey()})
     }
   }, [file])
-
-  return (
-    <div className="flex h-svh w-svh justify-center items-center flex-col">
-      <p className="text-center mb-8 font-bold text-3xl">사람을 그려주세요.</p>
-      <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full">
-        <Draw/>
-        <Button className="absolute bottom-0 right-0 m-3" onClick={goNext}>다 그렸어요</Button>
+  return(
+<div className="flex h-svh w-svh justify-center items-center flex-col">
+        <p className="text-center mb-8 font-bold text-3xl">사람을 한 명 그려주세요.</p>
+        <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full">
+          <Draw/>
+          <Button className="absolute bottom-0 right-0 m-3" onClick={goSurvey}>다 그렸어요</Button>
+        </div>
+        <div className="flex items-center text-slate-500 mt-2">
+          <p className="mr-3">그리기 힘들다면?</p>
+          {/* 업로드 아이콘 */}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+          </svg>
+          <button onClick={() => {fileInput.current?.click()}}>
+            <p className="underline ml-1 hover:text-violet-500 hover:cursor-pointer">업로드하기</p>
+          </button>
+        </div>
+        {/* png형식의 파일만 올릴 수 있도록 함 */}
+        <input type="file" accept=".png" ref={fileInput} onChange={handleChange} style={{display:'none'}}/>
       </div>
-      <div className="flex items-center text-slate-500 mt-2">
-        <p className="mr-3">그리기 힘들다면?</p>
-        {/* 업로드 아이콘 */}
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-        </svg>
-        <button onClick={() => {fileInput.current?.click()}}>
-          <p className="underline ml-1 hover:text-violet-500 hover:cursor-pointer">업로드하기</p>
-        </button>
-      </div>
-      {/* png형식의 파일만 올릴 수 있도록 함 */}
-      <input type="file" accept=".png" ref={fileInput} onChange={handleChange} style={{display:'none'}}/>
-    </div>
   )
 }
 
-
-function Person1({ goNext }: propsType) {
-  const answers :string[] = ['사람 답 1', '사람 답 2', '사람 답 3']
-   return (
-    <div className="flex h-svh w-svh justify-center items-center flex-col">
-      <p className="text-center mb-10 font-bold text-3xl">사람 질문1</p>
-      {
-        answers.map((item, idx) => {
-          return(
-            <Button className='w-4/5 lg:w-3/5 m-3 h-16 text-xl' onClick={goNext} key={idx} variant="flat">{item}</Button>
-          )
-        })
-      }
-    </div>
-  )
-}
-
-function Person2() {
-  // 마지막 질문은 다음 컨텐츠로 넘겨주기 위해 navigate를 사용
+function PersonSurvey({ goNext, qna, isLast }: propsType) {
   const navigate = useNavigate()
 
-  const answers :string[] = ['사람 답 1', '사람 답 2', '사람 답 3']
-
    return (
     <div className="flex h-svh w-svh justify-center items-center flex-col">
-      <p className="text-center mb-10 font-bold text-3xl">사람 질문 2</p>
+      <p className="text-center mb-10 font-bold text-3xl">{qna.q}</p>
       {
-        answers.map((item, idx) => {
+        qna.ans.map((item, idx) => {
           return(
-            <Button className='w-4/5 lg:w-3/5 m-3 h-16 text-xl' onClick={() => {navigate('/htp/result')}} key={idx} variant="flat">{item}</Button>
+            <Button className='w-4/5 lg:w-3/5 m-3 h-16 text-xl' onClick={() => {isLast ? navigate('/htp/result') : goNext()}} key={idx} variant="flat">{item}</Button>
           )
         })
       }
