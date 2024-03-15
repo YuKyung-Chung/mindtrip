@@ -52,9 +52,9 @@ dependencies {
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
     // MariaDB
-//    implementation 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.mariadb.jdbc:mariadb-java-client'
     // mongodb
-//    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     // redis
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -69,12 +69,13 @@ dependencies {
 //    implementation 'com.google.code.gson:gson:2.9.0'
 
     // websocket
-//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // springfox
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 
-
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
 }
 
 dependencyManagement {
