@@ -3,6 +3,8 @@ import Main from './pages/Main';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Consult from './pages/Consult/Consult';
+import ConsultOther from './pages/Consult/ConsultOther';
+import ConsultShared from './pages/Consult/ConsultShared';
 import HTP from './pages/HTP/HTP';
 import House from './pages/HTP/House';
 import Tree from './pages/HTP/Tree';
@@ -33,6 +35,8 @@ function App() {
           <Route path='result' Component={Result}/>
         </Route>
         <Route path='/consult' Component={Consult}/>
+        <Route path='/consult/other' Component={ConsultOther} />
+        <Route path='/consult/shared' Component={ConsultShared} />
         <Route path='/mission' Component={Mission}/>
         <Route path='/fixmission' Component={Fixmission}/>
         <Route path='/postit' Component={Postit}/>

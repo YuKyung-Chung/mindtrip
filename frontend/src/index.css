@@ -17,16 +17,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #6593ff;
+  background-color: #d4d4d8;
   border-radius: 1.5rem;
   min-width: 50px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #3370ff;
+  background-color: #d4d4d8;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #c7c7c7;
+  background-color: #ffffff;
   border-radius: 1.5rem;
 }
