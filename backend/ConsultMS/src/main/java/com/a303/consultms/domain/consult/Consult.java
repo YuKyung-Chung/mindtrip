@@ -37,9 +37,11 @@ public class Consult extends BaseEntity {
     private List<Channel> channelList = new ArrayList<>();
 
     //생성 메서드
-    public static Consult createConsult(String content, int categoryId) {
+    public static Consult createConsult(int memberId, String title, String content, int categoryId) {
         Consult consult = new Consult();
 
+        consult.setMemberId(memberId);
+        consult.setTitle(title);
         consult.setContent(content);
         consult.setCategoryId(categoryId);
 

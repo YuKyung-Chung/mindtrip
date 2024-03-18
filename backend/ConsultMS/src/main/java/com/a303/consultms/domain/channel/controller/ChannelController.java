@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ChannelController {
 
     private final ChannelService channelService;
+
 }
