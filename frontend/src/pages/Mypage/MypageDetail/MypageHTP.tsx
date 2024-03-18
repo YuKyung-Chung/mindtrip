@@ -5,9 +5,8 @@ function MypageHTP() {
     <div className="bg-[#f4c2c2] p-4 flex justify-center items-center min-h-screen relative">
       <div className="bg-white p-4 max-w-L absolute top-32">
         <h1 className="text-lg font-bold mb-4">여기에 검사결과</h1>
-        <Button className="w-full">
-          새 검사 하러가기
-        </Button>
+        <div>검사결과 박스</div>
+        <Button className="w-full">새 검사 하러가기</Button>
       </div>
       <div className="gap-4 ml-4 absolute top-1/2">
         <div>
