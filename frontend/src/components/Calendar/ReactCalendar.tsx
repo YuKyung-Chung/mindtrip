@@ -1,39 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
-import { useQuery } from 'react-query';
-import axios from 'axios';
 
 function MyCalendar() {
-  const [value, onChange] = useState(new Date());
-  const [mark, setMark] = useState([]);
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [value, setValue] = useState(new Date());
+  const [mark, setMark] = useState([
+    "2024-03-15", 
+    "2024-03-20", // 임시데이터 넣은것
+  ]);
 
-  const { data } = useQuery(
-    ["logDate", month],
-    async () => {
-      const result = await axios.get(
-        `/api/healthLogs?health_log_type=DIET`
-      );
-      return result.data;
-    },
-    {
-      onSuccess: (data: any) => {
-        setMark(data);
-        setLoading(false); // 데이터를 가져왔을 때 로딩 상태 업데이트
-      },
-    }
-  );
-
-  if (loading) {
-    return <div>Loading...</div>; // 데이터를 가져오는 동안 로딩 상태 표시
-  }
+  const handleCalendarChange = (date) => {
+    setValue(date); // 선택된 날짜로 상태를 업데이트
+  };
 
   return (
     <div>
       <Calendar
-        onChange={onChange}
+        onChange={handleCalendarChange}
         formatDay={(locale, date) => moment(date).format("DD")}
         value={value}
         className="mx-auto w-full text-sm border-b"
