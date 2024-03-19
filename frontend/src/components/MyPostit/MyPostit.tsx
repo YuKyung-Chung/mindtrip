@@ -7,15 +7,9 @@ import './MyPostit.css';
 function MyPostit() {
   const [selectedDate, setSelectedDate] = useState(moment()); // 선택된 날짜 상태
   const [memos, setMemos] = useState<{ [date: string]: string }>({
-<<<<<<< HEAD
     '2024-03-15': '오늘은 술을 마셔야겠다.',
     '2024-03-16': '오늘도 술을 마셔야겠다.',
     '2024-03-17': '싸피를 때려 쳐야겠다.',
-=======
-    '2024-03-15': '오늘은 쇼핑을 가야겠다.',
-    '2024-03-16': '운동을 꾸준히 해야겠다.',
-    '2024-03-17': '친구와 약속이 있으니 준비해야겠다.',
->>>>>>> develop
     // 임시 메모 데이터
   });
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 여부 상태
