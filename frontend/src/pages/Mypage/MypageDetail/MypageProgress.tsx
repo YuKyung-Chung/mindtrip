@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import MyProgress from "../../../components/Progress/Progress"
-import Calendar from "../../../components/Calendar/Calendar"
+// import Calendar from "../../../components/Calendar/Calendar"
 import MyCalendar from '../../../components/Calendar/ReactCalendar';
 
 function MypageProgress() {
