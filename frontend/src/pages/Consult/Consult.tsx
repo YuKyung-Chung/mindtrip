@@ -1,26 +1,69 @@
-import { useState } from 'react'
-import { Button, ButtonGroup, Input} from "@nextui-org/react";
+import { useState, useEffect } from 'react'
+import { Button, ButtonGroup, Input, Tooltip, Card } from "@nextui-org/react";
 import OtherConsult from '../../components/Consult/OtherConsult';
 import SharedConsult from '../../components/Consult/SharedConsult';
 import BackButton from '../../atoms/buttons/backbtn';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '../../atoms/Icons/SearchIcon';
-import ChatModalBtn from '../../components/Consult/ChatModalBtn';
+import ChatIcon from './../../atoms/Icons/ChatIcon'
+import XIcon from '../../atoms/Icons/XIcon';
+import { toggleOpen } from '../../store/store';
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from './../../store/store'
+import Chat from '../../components/Consult/Chat/Chat';
+
 // 고민상담소 첫 페이지
 
 function Consult() {
+  const dispatch = useDispatch()
+
+  // 채팅창 관련 가져오기
+  let chat = useSelector((state:RootState)=> state.chat)
+
+  // 처음 들어오면 채팅창 닫혀있게
+  useEffect(() => {
+    if (chat.isOpen) {
+      dispatch(toggleOpen())
+    }
+  }, [])
+
   return (
-    <div className='relative'>
+    <div>
+      {/* 전체페이지 */}
       <div className="w-full md:w-4/5 mx-auto h-screen pt-5">
+        {/* 다른 사람의 고민 */}
         <Others />
+        {/* 공유된 고민들 */}
         <Shared />
+        {/* 뒤로가기 버튼 */}
         <div className='hidden sm:block'>
           <BackButton />
         </div>
       </div>
-      <ChatModalBtn />
+      {/* 채팅 창 여는 버튼 */}
+      <Tooltip content={chat.isOpen ? '닫기' : '대화 확인하기'} placement={chat.isOpen ? 'right' : 'top'}>
+        <Button
+          isIconOnly
+          size='lg'
+          radius='full'
+          variant={chat.isOpen ? 'solid' : 'faded'}
+          onClick={() => dispatch(toggleOpen())}
+          className='fixed bottom-10 right-[4%] shadow-xl'
+        >
+          {chat.isOpen ? <XIcon/> : <ChatIcon />}
+        </Button>
+      </Tooltip>
+      {/* 채팅창 */}
+      <Card 
+        style={{
+          display: chat.isOpen ? 'block' : 'none',
+        }}
+        className='fixed top-[23%] right-[5%] w-[80%] h-[70%]
+          sm:top-[20%] w-96 h-[65%] p-5'
+      >
+        <Chat />
+      </Card>
     </div>
-
   )
 }
 
@@ -98,7 +141,7 @@ function Shared() {
   const categories: string[] = ['전체', '연애/결혼', '진로/취업', '기타']
 
   return (
-    <div className="px-3 min-h-[40%] mt-10">
+    <div className="px-3 min-h-[40%] mt-3">
       <p className="text-2xl hover:cursor-pointer" onClick={() => navigate('/consult/shared')}>공유된 고민 상담들 둘러보기</p>
       <div className="sm:flex sm:justify-between sm:items-center">
         <div className="md:flex md:items-center w-5/6 mt-4 mb-2">

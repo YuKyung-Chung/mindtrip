@@ -6,5 +6,5 @@ import java.sql.Date;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface PostitTopicRepository extends MongoRepository<PostitTopic, String>, PostitTopicCustomRepository {
-
+    PostitTopic getPostitTopicById(String postitTopicId);
 }

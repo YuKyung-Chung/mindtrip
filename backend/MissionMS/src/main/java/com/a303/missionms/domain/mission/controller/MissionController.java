@@ -67,7 +67,7 @@ public class MissionController {
 
 	//    @Operation(summary = "마이테이블조회")
 	@GetMapping("/v1/mytable")
-	public ResponseEntity<BaseResponse<List<MyTableMissionDTO>>> putMyTableMissions(
+	public ResponseEntity<BaseResponse<List<MyTableMissionDTO>>> getMyTableMissions(
 		@RequestHeader("x-member-id") int memberId) throws IOException {
 
 		List<MyTableMissionDTO> myTableMissionDTOList = dailyMissionService.getMyTableMissions(

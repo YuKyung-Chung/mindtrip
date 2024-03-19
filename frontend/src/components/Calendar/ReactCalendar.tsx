@@ -3,7 +3,10 @@ import Calendar from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';
 import "./ReactCalendar.css"
 import moment from 'moment';
+<<<<<<< HEAD
 import Missionbox from '../missionbox';
+=======
+>>>>>>> develop
 
 function MyCalendar() {
   const [value, onChange] = useState(new Date());
@@ -50,6 +53,7 @@ function MyCalendar() {
         }}
       />
       <div className="text-gray-500 mt-4">
+<<<<<<< HEAD
         {moment(value).format("YYYY년 MM월 DD일")}의 미션
       </div>
       <div className='mt-4'>
@@ -59,6 +63,15 @@ function MyCalendar() {
             <Missionbox key={index} dailymission={mission} />
             
             
+=======
+        {moment(value).format("YYYY년 MM월 DD일")}
+      </div>
+      <div>
+        <h2>Missions for {moment(value).format("YYYY년 MM월 DD일")}</h2>
+        <ul>
+          {missions.map((mission, index) => (
+            <li key={index}>{mission}</li>
+>>>>>>> develop
           ))}
         </ul>
       </div>
