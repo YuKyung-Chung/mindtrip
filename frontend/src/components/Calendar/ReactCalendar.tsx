@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
+import "./ReactCalendar.css"
 import moment from 'moment';
+import Missionbox from '../missionbox';
 
 function MyCalendar() {
   const [value, onChange] = useState(new Date());
@@ -34,7 +36,7 @@ function MyCalendar() {
         onChange={handleCalendarChange}
         formatDay={(locale, date) => moment(date).format("DD")}
         value={value}
-        className="mx-auto w-full text-sm border-b"
+        className="mx-auto text-sm border-b"
         tileContent={({ date, view }) => {
           if (mark.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
             return (
@@ -48,13 +50,15 @@ function MyCalendar() {
         }}
       />
       <div className="text-gray-500 mt-4">
-        {moment(value).format("YYYY년 MM월 DD일")}
+        {moment(value).format("YYYY년 MM월 DD일")}의 미션
       </div>
-      <div>
-        <h2>Missions for {moment(value).format("YYYY년 MM월 DD일")}</h2>
+      <div className='mt-4'>
         <ul>
           {missions.map((mission, index) => (
-            <li key={index}>{mission}</li>
+            
+            <Missionbox key={index} dailymission={mission} />
+            
+            
           ))}
         </ul>
       </div>

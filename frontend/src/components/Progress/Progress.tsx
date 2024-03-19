@@ -14,7 +14,7 @@ function MyProgress() {
         
       }}
       label="달성한 미션"
-      value={5}
+      value={80}
       showValueLabel={true}
     />
   );
