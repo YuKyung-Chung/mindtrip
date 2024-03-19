@@ -1,0 +1,28 @@
+.my-postit-container {
+  text-align: center;
+}
+
+.postit-date {
+  cursor: pointer;
+}
+
+.calendar-wrapper {
+  position: absolute;
+  z-index: 1;
+}
+
+.postit-content {
+  display: inline-block;
+  background-color: #FFFFE0;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+}
+
+.postit-text {
+  width: 300px;
+  height: 200px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
