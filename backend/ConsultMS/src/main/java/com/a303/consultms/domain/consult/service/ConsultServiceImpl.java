@@ -37,28 +37,24 @@ public class ConsultServiceImpl implements ConsultService {
     //고민상담소 전체 조회
     @Override
     public ConsultListRes getConsultingRooms() throws BaseExceptionHandler {
+        // createtime 기준으로 내림차순 정렬
+        List<Consult> consultList = consultRepository.findAllByOrderByCreateTimeDesc();
 
-        List<Consult> consultList = consultRepository.findAll();
+//        List<Consult> consultList = consultRepository.findAll();
 
         // Consult 객체의 리스트를 ConsultDetailRes 객체의 리스트로 변환
-        List<ConsultDetailRes> consultDetailResList = consultList.stream()
-            .map(consult -> ConsultDetailRes.builder()
-                .consultId(consult.getConsultId())
+        List<ConsultDetailRes> consultDetailResList = consultList.stream().map(
+            consult -> ConsultDetailRes.builder().consultId(consult.getConsultId())
                 .memberId(consult.getMemberId())
                 .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
-                .title(consult.getTitle())
-                .content(consult.getContent())
-                .categoryId(consult.getCategoryId())
-                .isClosed(consult.isClosed())
-                .channelId(consult.getChannelId())
-                .build())
-            .collect(Collectors.toList());
+                .title(consult.getTitle()).content(consult.getContent())
+                .categoryId(consult.getCategoryId()).isClosed(consult.isClosed())
+                .channelId(consult.getChannelId()).build()).collect(Collectors.toList());
 
-        // 전체 페이지 수를 계산하는 로직 추가 필요
+        // TODO: 전체 페이지 수를 계산하는 로직 추가 필요
 //        int totalPages = 1;
 
-        return ConsultListRes.builder()
-            .consultList(consultDetailResList)
+        return ConsultListRes.builder().consultList(consultDetailResList)
 //            .totalPages(totalPages)
             .build();
     }
@@ -75,8 +71,8 @@ public class ConsultServiceImpl implements ConsultService {
 
         MemberBaseRes member = memberRes.getResult();
 
-        System.out.println(memberRes.getMessage());
-        System.out.println(memberRes.getResult());
+//        System.out.println(memberRes.getMessage());
+//        System.out.println(memberRes.getResult());
 
         String nickname = member.nickname();
         String title = consultRegisterReq.title();
@@ -96,22 +92,15 @@ public class ConsultServiceImpl implements ConsultService {
 
         ConsultDetailRes consultDetailRes = consultRepository.findConsultByConsultId(consultId);
 
-        return ConsultDetailRes.builder()
-            .consultId(consultId)
-            .memberId(consultDetailRes.memberId())
-            .nickname(consultDetailRes.nickname())
-            .title(consultDetailRes.title())
-            .content(consultDetailRes.content())
-            .categoryId(consultDetailRes.categoryId())
-            .isClosed(consultDetailRes.isClosed())
-            .channelId(consultDetailRes.channelId())
-            .build();
+        return ConsultDetailRes.builder().consultId(consultId).memberId(consultDetailRes.memberId())
+            .nickname(consultDetailRes.nickname()).title(consultDetailRes.title())
+            .content(consultDetailRes.content()).categoryId(consultDetailRes.categoryId())
+            .isClosed(consultDetailRes.isClosed()).channelId(consultDetailRes.channelId()).build();
     }
 
     //고민상담소 종료
     @Override
-    public int closeConsultingRoom(int consultId)
-        throws BaseExceptionHandler {
+    public int closeConsultingRoom(int consultId) throws BaseExceptionHandler {
 
         Consult consult = consultRepository.findById(consultId).get();
 
@@ -134,16 +123,11 @@ public class ConsultServiceImpl implements ConsultService {
         List<ConsultCategory> consultCategoryList = consultCategoryRepository.findAll();
 
         // ConsultCategory 객체의 리스트를 ConsultCategoryRes 객체의 리스트로 변환
-        List<ConsultCategoryRes> consultCategoryRes = consultCategoryList.stream()
-            .map(category -> ConsultCategoryRes.builder()
-                .categoryId(category.getCategoryId())
-                .categoryName(category.getCategoryName())
-                .build())
-            .collect(Collectors.toList());
+        List<ConsultCategoryRes> consultCategoryRes = consultCategoryList.stream().map(
+            category -> ConsultCategoryRes.builder().categoryId(category.getCategoryId())
+                .categoryName(category.getCategoryName()).build()).collect(Collectors.toList());
 
-        return ConsultCategoryListRes.builder()
-            .consultCategoryList(consultCategoryRes)
-            .build();
+        return ConsultCategoryListRes.builder().consultCategoryList(consultCategoryRes).build();
     }
 
     @Override
@@ -158,7 +142,7 @@ public class ConsultServiceImpl implements ConsultService {
         }
 
         //닫힌 고민상담소일 경우
-        if(consult.isClosed()){
+        if (consult.isClosed()) {
             throw new BaseExceptionHandler(ErrorCode.ALREADY_CLOSED_EXCEPTION);
         }
 
