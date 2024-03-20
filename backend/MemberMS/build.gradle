@@ -50,7 +50,7 @@ dependencies {
 
 // DB
     // MySQL
-//    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     // MariaDB
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     // mongodb
