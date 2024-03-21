@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public abstract class MongoBaseEntity {
     @CreatedDate
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;
+    protected LocalDateTime createTime;
 
     @LastModifiedDate
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

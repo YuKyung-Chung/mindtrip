@@ -38,7 +38,7 @@ function CreateNewConsult({ onClose, category }: propsType) {
       setContentErrorMessage('')
       
       //여기에 axios 통신
-      let temp = selectedCategory ? selectedCategory : 0
+      let temp :number|string|categoryType = selectedCategory ? selectedCategory : 0
       
       uploadConsult(title, content, temp)
       onClose()

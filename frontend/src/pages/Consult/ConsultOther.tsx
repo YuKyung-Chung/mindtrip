@@ -9,10 +9,8 @@ import XIcon from '../../atoms/Icons/XIcon';
 import PencilIcon from '../../atoms/Icons/PencilIcon';
 import Chat from '../../components/Consult/Chat/Chat';
 import { consultType, categoryType } from '../../types/DataTypes';
-import { getConsults, getCategory } from '../../api/consults';
+import { getConsults } from '../../api/consults';
 import CreateNewConsult from '../../components/Consult/CreateNewConsult';
-
-
 
 // 모달 제어용 타입 지정
 type useDisclosureType = {
@@ -25,7 +23,7 @@ function ConsultOther() {
   const dispatch = useDispatch()
 
   // 카테고리 받기
-  const [category, setCategory] = useState<categoryType[] | null>(null)
+  let category = useSelector((state: RootState) => state.consultSlice.category)
 
   // 선택된 카테고리
   const [selectedCategory, setSelectedCategory] = useState<categoryType | null>(null)
@@ -49,19 +47,6 @@ function ConsultOther() {
       }
     }
     fetchConsult()
-
-    // 처음 들어올 때 카테고리 목록 가져오기
-    const fetchCategory = async () => {
-      try {
-        let tempCategory: categoryType[] = await getCategory()
-        setCategory(tempCategory)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    if (category === null) {
-      fetchCategory()
-    }
   }, [])
 
   // 채팅 관련 가져오기
@@ -76,26 +61,21 @@ function ConsultOther() {
         <p className="text-2xl hover:cursor-pointer">다른 사람들의 고민 보기<span className='text-sm'>(오늘 남은 횟수: 5)</span></p>
         <div className="flex justify-between items-center mt-4 mb-2">
           {/* 카테고리들 */}
-          {
-            category != null ? (
-              <Select
-                label='카테고리 선택'
-                size='sm'
-                onChange={handleCategory}
-                className='w-[150px]'
-              >
-                {
-                  category.map((oneCategory: categoryType) => {
-                    return (
-                      <SelectItem key={oneCategory.categoryId}>
-                        {oneCategory.categoryName}
-                      </SelectItem>
-                    )
-                  })
-                }
-              </Select>
-            ) : null
-          }
+          <Select
+            label='카테고리 선택'
+            size='sm'
+            onChange={handleCategory}
+            className='w-[150px]'
+          >
+            {category.map((oneCategory: categoryType) => {
+              return (
+                <SelectItem key={oneCategory.categoryId}>
+                  {oneCategory.categoryName}
+                </SelectItem>
+              )
+            })
+            }
+          </Select>
 
           {/* 내 고민 작성하기 */}
           <Tooltip content='내 고민 작성하기'>
@@ -141,7 +121,7 @@ function ConsultOther() {
             <>
               <ModalHeader>내 고민 공유하기</ModalHeader>
               <ModalBody>
-                <CreateNewConsult onClose={onClose} category={category}/>
+                <CreateNewConsult onClose={onClose} category={category} />
               </ModalBody>
             </>
           )}

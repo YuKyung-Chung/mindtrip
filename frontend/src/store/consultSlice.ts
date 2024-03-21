@@ -1,29 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { categoryType } from '../types/DataTypes'
+// 상담용 변수들
 
-// 상담용 변수들인데 안써도 될듯?
-
-
-// 카테고리들
-// 1. 타입 정의
-type ConsultCategoryType = {
-  categoryId :number,
-  categoryName :string
+type ConsultType = {
+  category :categoryType[]
 }
 
 // 2. 초기 상태 정의
-const initialConsultCategoryState :ConsultCategoryType[] | null = null
+const initialConsultState :ConsultType|null = {category : []}
 
 // 3. 슬라이스 정의
-let consultCategory = createSlice({
-  name: 'consultCategory',
-  initialState: initialConsultCategoryState,
+let consultSlice = createSlice({
+  name: 'consult',
+  initialState: initialConsultState,
   reducers: {
-    
+    // 처음에 카테고리 채워넣기
+    getConsultCategory(state, action: PayloadAction<categoryType[]>) {
+      state.category = action.payload
+    }
   }
 })
 
 // 4. 함수들 내보내기
-export const {  } = consultCategory.actions;
+export const { getConsultCategory } = consultSlice.actions;
 
 
-export {consultCategory}
+export {consultSlice}

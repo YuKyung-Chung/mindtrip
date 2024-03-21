@@ -1,4 +1,4 @@
-package com.a303.memberms.global.feign;
+package com.a303.memberms.global.client;
 
 import com.a303.memberms.domain.member.dto.request.AuthTokenReq;
 import com.a303.memberms.global.api.response.BaseResponse;

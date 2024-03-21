@@ -6,6 +6,7 @@ import com.a303.consultms.domain.consult.Consult;
 import com.a303.consultms.domain.message.Message;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -23,14 +24,18 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Channel extends MongoBaseEntity {
 
     @Id
-    private String id;
+    @Field(name = "channel_id")
+    private String channelId;
 
     //고민상담소 방 ID
     @Field(name = "consult_id")
     private int counsultId;
 
-    @Field(name = "member_id")
-    private int memberId;
+    @Field(name = "receiver")
+    private Map<String, String> receiver;
+
+    @Field(name ="sender")
+    private Map<String, String> sender;
 
     @Field(name = "is_closed")
     private boolean isClosed = false; //기본값으로 false 설정
@@ -41,15 +46,13 @@ public class Channel extends MongoBaseEntity {
     @DBRef
     private List<Message> messageList;
 
-    public static Channel createChannel(int consultId, int memberId, boolean isClosed,
-        boolean isShared, List<Message> message) {
+    public static Channel createChannel(Map<String, String> receiver, Map<String, String> sender, List<Message> message) {
         Channel channel = new Channel();
 
-        channel.setCounsultId(consultId);
-        channel.setMemberId(memberId);
+//        channel.setCounsultId(consultId);
+        channel.setReceiver(receiver);
+        channel.setSender(sender);
         channel.setMessageList(message);
-        channel.setClosed(isClosed);
-        channel.setShared(isShared);
 
         return channel;
     }

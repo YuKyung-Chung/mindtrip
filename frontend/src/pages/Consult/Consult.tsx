@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Button, ButtonGroup, Input, Tooltip, Card, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Tooltip, Card, Select, SelectItem } from "@nextui-org/react";
 import OtherConsult from '../../components/Consult/OtherConsult';
 import SharedConsult from '../../components/Consult/SharedConsult';
+import Chat from '../../components/Consult/Chat/Chat';
 import Homebtn from '../../atoms/buttons/homebtn'
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '../../atoms/Icons/SearchIcon';
 import ChatIcon from './../../atoms/Icons/ChatIcon'
 import XIcon from '../../atoms/Icons/XIcon';
+
 import { toggleOpen } from '../../store/chatSlice';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from './../../store/store'
-import Chat from '../../components/Consult/Chat/Chat';
+import { getConsultCategory } from '../../store/consultSlice';
 import { getConsults, getCategory } from './../../api/consults'
 import { consultType, categoryType } from '../../types/DataTypes';
 
@@ -20,10 +22,10 @@ function Consult() {
   const dispatch = useDispatch()
 
   // 채팅창 관련 가져오기
-  let chat = useSelector((state:RootState)=> state.chat)
-  
+  let chat = useSelector((state: RootState) => state.chat)
+
   // 카테고리 받기
-  const [category, setCategory] = useState<categoryType[]|null>(null)
+  let category = useSelector((state: RootState) => state.consultSlice.category)
 
   useEffect(() => {
     // 처음 들어오면 채팅창 닫혀있게
@@ -34,13 +36,13 @@ function Consult() {
     // 처음 들어올 때 카테고리 목록 가져오기
     const fetchCategory = async () => {
       try {
-        let tempCategory :categoryType[] = await getCategory()
-        setCategory(tempCategory)
-      } catch(err) {
+        let tempCategory: categoryType[] = await getCategory()
+        dispatch(getConsultCategory(tempCategory))
+      } catch (err) {
         console.log(err)
       }
     }
-    if (category === null) {
+    if (category.length === 0) {
       fetchCategory()
     }
   }, [])
@@ -53,9 +55,9 @@ function Consult() {
           category != null ? (
             <div>
               {/* 다른 사람의 고민 */}
-              <Others category={category}/>
+              <Others />
               {/* 공유된 고민들 */}
-              <Shared category={category}/>
+              <Shared />
               {/* 뒤로가기 버튼 */}
               <div className='hidden md:block'>
                 <Homebtn />
@@ -74,11 +76,11 @@ function Consult() {
           onClick={() => dispatch(toggleOpen())}
           className='fixed bottom-10 right-[4%] shadow-xl'
         >
-          {chat.isOpen ? <XIcon/> : <ChatIcon />}
+          {chat.isOpen ? <XIcon /> : <ChatIcon />}
         </Button>
       </Tooltip>
       {/* 채팅창 */}
-      <Card 
+      <Card
         style={{
           display: chat.isOpen ? 'block' : 'none',
         }}
@@ -93,56 +95,54 @@ function Consult() {
 
 export default Consult
 
-type propsType = {
-  category :categoryType[]
-}
 // 다른 사람들의 고민
-function Others({category} :propsType) {
+function Others() {
   const navigate = useNavigate()
-  
-   // 다른사람들의 고민List
-   const [otherConsults, setOtherConsult] = useState<consultType[]>([])
 
-   // 선택된 카테고리
-   const [selectedCategory, setSelectedCategory] = useState<categoryType|null>(null)
-   const handleCategory = (e :any) => {
+  // 카테고리 받기
+  let category = useSelector((state: RootState) => state.consultSlice.category)
+
+  // 다른사람들의 고민List
+  const [otherConsults, setOtherConsult] = useState<consultType[]>([])
+
+  // 선택된 카테고리
+  const [selectedCategory, setSelectedCategory] = useState<categoryType | null>(null)
+  const handleCategory = (e: any) => {
     setSelectedCategory(e.target.value)
     console.log(selectedCategory)
-   }
-   
-   useEffect(() => {
+  }
+
+  useEffect(() => {
     // 전체 고민 가져오기
     const fetchConsult = async () => {
       try {
-        let tempOtherConsult :consultType[] = await getConsults()
+        let tempOtherConsult: consultType[] = await getConsults()
         setOtherConsult(tempOtherConsult)
-      } catch(err) {
+      } catch (err) {
         console.log(err)
       }
     }
     fetchConsult()
-   }, [])
-   
+  }, [])
+
 
   return (
     <div className="py-5 px-3 min-h-[40%]">
       <p className="text-2xl hover:cursor-pointer" onClick={() => navigate('/consult/other')}>다른 사람들의 고민 보기<span className='text-sm'>(오늘 남은 횟수: 5)</span></p>
       <div className="sm:flex sm:justify-between mt-4 mb-2">
         {/* 카테고리들 */}
-        <Select 
+        <Select
           label='카테고리 선택'
           size='sm'
           onChange={handleCategory}
           className='w-[150px]'
         >
-          {
-            category.map((oneCategory :categoryType) => {
-              return(
-                <SelectItem key={oneCategory.categoryId}>
-                  {oneCategory.categoryName}
-                </SelectItem>
-              )
-            })
+          {category.map((oneCategory: categoryType) => {
+            return (
+              <SelectItem key={oneCategory.categoryId}>
+                {oneCategory.categoryName}
+              </SelectItem>
+            )})
           }
         </Select>
         <p
@@ -165,14 +165,16 @@ function Others({category} :propsType) {
 
 
 // 공유된 고민
-function Shared({category} :propsType) {
+function Shared() {
   const navigate = useNavigate()
 
+  // 카테고리 받기
+  let category = useSelector((state: RootState) => state.consultSlice.category)
   // 선택된 카테고리
-  const [selectedCategory, setSelectedCategory] = useState<categoryType|null>(null)
-  const handleCategory = (e :any) => {
-   setSelectedCategory(e.target.value)
-   console.log(selectedCategory)
+  const [selectedCategory, setSelectedCategory] = useState<categoryType | null>(null)
+  const handleCategory = (e: any) => {
+    setSelectedCategory(e.target.value)
+    console.log(selectedCategory)
   }
 
   return (
@@ -181,15 +183,15 @@ function Shared({category} :propsType) {
       <div className="sm:flex sm:justify-between sm:items-center">
         <div className="md:flex md:items-center w-5/6 mt-4 mb-2">
           {/* 카테고리들 */}
-          <Select 
+          <Select
             label='카테고리 선택'
             size='sm'
             onChange={handleCategory}
             className='md:mr-5 max-w-[150px]'
           >
             {
-              category.map((oneCategory :categoryType) => {
-                return(
+              category.map((oneCategory: categoryType) => {
+                return (
                   <SelectItem key={oneCategory.categoryId}>
                     {oneCategory.categoryName}
                   </SelectItem>

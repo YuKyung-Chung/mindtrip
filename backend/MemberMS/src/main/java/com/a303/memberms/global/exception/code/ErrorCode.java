@@ -74,6 +74,10 @@ public enum ErrorCode {
 
     NOT_FOUND_ARCHIVE_EXCEPTION(404, "B203", "존재하지 않는 아카이브입니다."),
 
+    // 유저 중복
+    DUPLICATED_ID_EXCEPTION(400, "B300", "이미 존재하는 ID입니다."),
+    DUPLICATED_NICKNAME_EXCEPTION(400, "B301", "이미 존재하는 닉네임입니다."),
+
     // 스터디룸 관련 에러코드
     FORBIDDEN_ERROR_STUDY(403, "B304", "스터디 가입자만 접근 가능합니다"),
     // 스터디장 권한이 없음

@@ -9,6 +9,7 @@ import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
 import com.a303.missionms.domain.mission.dto.response.CategoryMissionRes;
 import com.a303.missionms.domain.mission.dto.response.MissionBaseRes;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
+import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
 import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.client.MemberClient;
@@ -39,7 +40,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 	// TODO missionId가 바뀌지는 않지만 만약 없는 미션아이디일 경우의 예외처리도 필요하다.
 	@Override
-	public List<MyTableMissionDTO> putMyTableMissions(int memberId,
+	public List<MyTableMissionRes> putMyTableMissions(int memberId,
 		HashMap<Integer, MyTableMissionDTO> myTableMissionDTOMap)
 		throws BaseExceptionHandler, IOException {
 
@@ -87,11 +88,12 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		dailyMissions = dailyMissionRepository.findByMemberId(
 			memberId);
 
-		List<MyTableMissionDTO> myTableMissionDTOList = new ArrayList<>();
+		List<MyTableMissionRes> myTableMissionDTOList = new ArrayList<>();
 		for (DailyMission dailyMission : dailyMissions) {
 			myTableMissionDTOList.add(
-				MyTableMissionDTO.builder()
+					MyTableMissionRes.builder()
 					.missionId(dailyMission.getMission().getMissionId())
+					.name(dailyMission.getMission().getName())
 					.isFinish(dailyMission.isFinish())
 					.build()
 			);
@@ -101,7 +103,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	}
 
 	@Override
-	public List<MyTableMissionDTO> getMyTableMissions(int memberId)
+	public List<MyTableMissionRes> getMyTableMissions(int memberId)
 		throws BaseExceptionHandler, IOException {
 
 		BaseResponse<MemberBaseRes> memberBaseRes = memberClient.getMemberDtoByMemberId(memberId);
@@ -109,11 +111,12 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 		List<DailyMission> myTableList = dailyMissionRepository.findByMemberId(memberId);
 
-		List<MyTableMissionDTO> myTableMissionDTOList = new ArrayList<>();
+		List<MyTableMissionRes> myTableMissionDTOList = new ArrayList<>();
 		for (DailyMission dailyMission : myTableList) {
 			myTableMissionDTOList.add(
-				MyTableMissionDTO.builder()
+					MyTableMissionRes.builder()
 					.missionId(dailyMission.getMission().getMissionId())
+					.name(dailyMission.getMission().getName())
 					.isFinish(dailyMission.isFinish())
 					.build()
 			);

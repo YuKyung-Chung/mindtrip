@@ -3,7 +3,10 @@ package com.a303.consultms.domain.message;
 import com.a303.consultms.domain.MongoBaseEntity;
 
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.Map;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,24 +24,19 @@ public class Message extends MongoBaseEntity {
     @Id
     private String id;
 
-    @Field(name = "channel_id")
-    private String channelId;
-
     @Field(name = "sender")
-    private String sender;
+    private Map<String, String> sender;
 
-    @Field(name = "member_id")
-    private int memberId;
+    @Field(name = "text")
+    private String text;
 
-    @Field(name = "content")
-    private String content;
-
-    static public Message createMessage(String sender, String content) {
+    static public Message createMessage(Map<String, String> sender, String text){
         Message message = new Message();
 
         message.setSender(sender);
-        message.setContent(content);
+        message.setText(text);
 
         return message;
     }
+
 }
