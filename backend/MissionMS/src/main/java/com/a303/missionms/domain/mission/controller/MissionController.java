@@ -4,6 +4,7 @@ import com.a303.missionms.domain.dailyMission.DailyMission;
 import com.a303.missionms.domain.dailyMission.service.DailyMissionService;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
+import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.service.MissionService;
 import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.exception.code.SuccessCode;
@@ -57,7 +58,7 @@ public class MissionController {
 
 	//    @Operation(summary = "마이테이블관리")
 	@PutMapping("/v1/mytable")
-	public ResponseEntity<BaseResponse<List<MyTableMissionDTO>>> putMyTableMissions(
+	public ResponseEntity<BaseResponse<List<MyTableMissionRes>>> putMyTableMissions(
 		@RequestHeader("x-member-id") int memberId,
 		@RequestBody HashMap<Integer, MyTableMissionDTO> myTableMissionDTOMap) throws IOException {
 
@@ -67,7 +68,7 @@ public class MissionController {
 			System.out.println(m);
 		}
 
-		List<MyTableMissionDTO> myTableMissionDTOList = dailyMissionService.putMyTableMissions(
+		List<MyTableMissionRes> myTableMissionDTOList = dailyMissionService.putMyTableMissions(
 			memberId, myTableMissionDTOMap);
 
 		log.debug("missions/v1/mytable PUT api succeed with memberId:{}", memberId);
@@ -77,12 +78,12 @@ public class MissionController {
 
 	//    @Operation(summary = "마이테이블조회")
 	@GetMapping("/v1/mytable")
-	public ResponseEntity<BaseResponse<List<MyTableMissionDTO>>> getMyTableMissions(
+	public ResponseEntity<BaseResponse<List<MyTableMissionRes>>> getMyTableMissions(
 		@RequestHeader("x-member-id") int memberId) throws IOException {
 
 		log.debug("missions/v1/mytable GET api accepted with memberId:{}", memberId);
 
-		List<MyTableMissionDTO> myTableMissionDTOList = dailyMissionService.getMyTableMissions(
+		List<MyTableMissionRes> myTableMissionDTOList = dailyMissionService.getMyTableMissions(
 			memberId);
 
 		log.debug("missions/v1/mytable GET api succeed with memberId:{}", memberId);
