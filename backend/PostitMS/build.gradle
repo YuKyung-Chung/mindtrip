@@ -57,18 +57,17 @@ dependencies {
     // redis
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-// Security
-    // spring security
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-    // jwt
-//    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-//    implementation 'javax.xml.bind:jaxb-api:2.3.1' // jdk 8이상 필요
-    // gson
-//    implementation 'com.google.code.gson:gson:2.9.0'
-
-    // websocket
-//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // log & transaction
+    // prometheus
+    //    implementation 'io.micrometer:micrometer-registry-prometheus'
+    // micrometer
+    implementation platform('io.micrometer:micrometer-tracing-bom:latest.release')
+    implementation 'io.micrometer:micrometer-observation'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    // https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation 'io.github.openfeign:feign-micrometer'
 
     // springfox
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'

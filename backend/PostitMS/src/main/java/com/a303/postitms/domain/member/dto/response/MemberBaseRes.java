@@ -1,6 +1,6 @@
-package com.a303.postitms.global.client.dto.response;
+package com.a303.postitms.domain.member.dto.response;
 
-import com.a303.postitms.global.client.dto.Role;
+import com.a303.postitms.domain.member.Role;
 import lombok.Builder;
 
 @Builder
