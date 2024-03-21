@@ -1,29 +1,27 @@
-// fixmission.tsx
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import FixMissionBox from "../../components/missonbox/FixMissionBox";
 import { Link } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 
-interface Mission {
+type Mission = {
   missionId: number;
   name: string;
   isFinish: boolean;
 }
 
-interface CategoryMission {
+type CategoryMission = {
   category: string;
   missionBaseResList: Mission[];
 }
 
-interface AllMissionsResponse {
+type AllMissionsResponse = {
   result: {
     categoryMissionResList: CategoryMission[];
   };
 }
 
-interface TodayMissionsResponse {
+type TodayMissionsResponse =  {
   result: Mission[];
 }
 

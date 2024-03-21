@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import Successbtn from '../../atoms/buttons/successbtn';
+import Homebtn from "../../atoms/buttons/homebtn";
+
 
 // 미션 타입 정의
 type Mission =  {
@@ -64,6 +66,7 @@ function Mission() {
 
   return (
     <div className="bg-[#fff7e0] px-2 py-8 h-screen">
+      <Homebtn />
       <div className="flex flex-col justify-center items-center mb-6">
         <h1 className="text-5xl font-bold mt-20">오늘의 미션</h1>
       </div>
