@@ -1,5 +1,3 @@
-import React from "react";
-import SuccessButton from "../../atoms/buttons/successbtn";
 import { Button } from "@nextui-org/react";
 
 function Missionbox({ category, missions, addMissionToToday }) {

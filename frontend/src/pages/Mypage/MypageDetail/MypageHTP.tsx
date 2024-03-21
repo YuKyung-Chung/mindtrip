@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/react";
+import './MypageCss/MypageHTP.css'
 
 function MypageHTP() {
   return (
@@ -12,10 +13,10 @@ function MypageHTP() {
         <div>
           <div>집</div>
           <div className="flex justify-start w-[70%] min-h-[250px] max-h-[36vh] overflow-x-scroll overflow-y-hidden p-0 box-border">
-            <div className="bg-gray-300 h-40 w-40 mr-8" />
-            <div className="bg-gray-300 h-40 w-40 mr-8" />
-            <div className="bg-gray-300 h-40 w-40 mr-8" />
-      
+            <div className="card">
+              <div className="bg"></div>
+              <div className="blob"></div>
+            </div>
           </div>
         </div>
         <div>

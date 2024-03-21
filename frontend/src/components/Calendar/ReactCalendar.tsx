@@ -2,7 +2,7 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "./ReactCalendar.css";
 import moment from "moment";
-import Missionbox from "../missonbox/MissionBox";
+
 
 function MyCalendar() {
   const [value, onChange] = useState(new Date());
@@ -10,6 +10,8 @@ function MyCalendar() {
     "2024-03-15",
     "2024-03-20", // 임시데이터 넣은것
   ]);
+  setMark([...mark, "2024-03-25"]); // "2024-03-25"를 mark에 추가
+
   const [missions, setMissions] = useState<string[]>([]);
 
   const handleCalendarChange = (date: Date) => {

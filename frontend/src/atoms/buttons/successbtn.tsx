@@ -1,17 +1,36 @@
-import  { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 import { Button } from "@nextui-org/react";
 
-export default function SuccessButton() {
-  // 버튼의 클릭 여부를 저장할 상태 변수
-  const [isClicked, setIsClicked] = useState(false);
+interface SuccessButtonProps {
+  isFinish: boolean;
+  missionId: number; // 미션 ID를 받아옴
+  onClick: () => void;
+}
+
+function SuccessButton({ isFinish, missionId }: SuccessButtonProps) {
+  // isFinish 값을 초기 상태로 설정
+  const [isClicked, setIsClicked] = useState(isFinish);
 
   // 버튼 클릭 시 호출되는 함수
-  const handleButtonClick = () => {
-    // 버튼이 클릭되었을 때만 동작
-    if (!isClicked) {
+  const handleButtonClick = async () => {
+    try {
+      // 미션 완료 처리를 위한 POST 요청 보내기
+      await axios.post(
+        `https://mindtrip.site/api/missions/v1/mytable/${missionId}`,
+        { isFinish: true },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-member-id": "1"
+          }
+        }
+      );
       // 상태 변경
       setIsClicked(true);
       // TODO: 미션 완료 처리 또는 다른 작업 수행
+    } catch (error) {
+      console.error("Error completing mission:", error);
     }
   };
 
@@ -19,12 +38,13 @@ export default function SuccessButton() {
     <Button
       radius="full"
       className={`bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg ${
-        isClicked ? "cursor-not-allowed opacity-50" : "" // 클릭 불가능한 상태일 때 스타일 적용
+        isClicked ? "cursor-not-allowed opacity-50" : ""
       }`}
       onClick={handleButtonClick}
-      disabled={isClicked} // 클릭 불가능한 상태로 설정
+      disabled={isClicked}
     >
       {isClicked ? "미션 완료" : "미션 성공"}
     </Button>
   );
 }
+export default SuccessButton
