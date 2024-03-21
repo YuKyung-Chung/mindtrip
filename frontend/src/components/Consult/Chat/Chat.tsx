@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { changeList } from './../../../store/store';
+import { changeList } from './../../../store/chatSlice';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from './../../../store/store'
 import ChatLists from './ChatList';

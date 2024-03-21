@@ -1,10 +1,9 @@
 import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from "@nextui-org/react";
-import {useState} from 'react'
-import { toggleOpen, changeList } from "./../../store/store";
+import { useState} from 'react'
+import { toggleOpen, changeList } from "./../../store/chatSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from './../../store/store'
-
-
+import { consultType } from "../../types/DataTypes";
 // 다른 사람의 고민 하나의 컴포넌트
 // 고민 제목과 내용, 그리고 상담하기 버튼이 들어감
 // 상담하기 버튼을 누르면 전체 내용, 참여 여부를 확인하는 모달이 뜨고
@@ -18,7 +17,12 @@ type useDisclosureType = {
   onOpenChange: (isOpen: boolean) => void
 }
 
-function OtherConsult() {
+// 고민 타입
+type propsType = {
+  consult :consultType
+}
+
+function OtherConsult({consult} : propsType) {
   // 호버 제어용
   const [hover, sethover] = useState<boolean>(false)
   
@@ -39,7 +43,6 @@ function OtherConsult() {
     dispatch(changeList(false))
   }
 
-
   return (
     <Card 
       shadow={hover ? 'sm' : 'none'} 
@@ -48,9 +51,9 @@ function OtherConsult() {
       className="bg-amber-50 h-full"
     >
       <CardBody className="relative">
-        <p className="text-lg">고민 제목입니다.</p>
+        <p className="text-lg">{consult.title}</p>
         <div className="h-14 text-ellipsis overflow-hidden my-1 mb-2">
-          <p className="text-sm">고민 내용이 들어갑니다. 고민 내용이 들어갑니다. 고민 내용이 들어갑니다. 고민 내용이 들어갑니다.</p>
+          <p className="text-sm">{consult.content}</p>
         </div>
         <Button 
           color='warning' 
@@ -63,10 +66,11 @@ function OtherConsult() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>닉네임 님의 고민</ModalHeader>
+              <ModalHeader>닉네임(생기면)님의 고민</ModalHeader>
               <ModalBody className="flex-col items-center">
-                <div className="min-h-[25vh]">
-                  고민내용 들어가요
+                <div className="min-h-[25vh] text-center">
+                  <p className="text-xl mb-3">{consult.title}</p>
+                  <p>{consult.content}</p>
                 </div>
                 <Button className="w-36" onClick={() => {
                   onClose()
