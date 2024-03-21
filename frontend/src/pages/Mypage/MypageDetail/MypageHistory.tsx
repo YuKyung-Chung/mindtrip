@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import MyPostit from "../../../components/MyPostit/MyPostit";
 
-interface Memo {
-  date: Date;
-  content: string;
-}
+// interface Memo {
+//   date: Date;
+//   content: string;
+// }
 
-interface Props {
-  memos: Memo[]; // Memo 배열을 props로 받음
-}
+// interface Props {
+//   memos: Memo[]; // Memo 배열을 props로 받음
+// }
 
 function MypageHistory() {
   return (
@@ -21,6 +21,6 @@ function MypageHistory() {
     </div>
     </div>
   );
-};
+}
 
 export default MypageHistory;

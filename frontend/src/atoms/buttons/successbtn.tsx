@@ -1,3 +1,5 @@
+// SuccessButton 컴포넌트
+
 import { useState } from "react";
 import axios from "axios";
 import { Button } from "@nextui-org/react";
@@ -5,10 +7,10 @@ import { Button } from "@nextui-org/react";
 interface SuccessButtonProps {
   isFinish: boolean;
   missionId: number; // 미션 ID를 받아옴
-  onClick: () => void;
+  onClick: () => void; // onClick 이벤트를 필수로 받도록 수정
 }
 
-function SuccessButton({ isFinish, missionId }: SuccessButtonProps) {
+function SuccessButton({ isFinish, missionId, onClick }: SuccessButtonProps) {
   // isFinish 값을 초기 상태로 설정
   const [isClicked, setIsClicked] = useState(isFinish);
 
@@ -29,6 +31,7 @@ function SuccessButton({ isFinish, missionId }: SuccessButtonProps) {
       // 상태 변경
       setIsClicked(true);
       // TODO: 미션 완료 처리 또는 다른 작업 수행
+      onClick(); // 클릭 이벤트 호출
     } catch (error) {
       console.error("Error completing mission:", error);
     }
@@ -47,4 +50,5 @@ function SuccessButton({ isFinish, missionId }: SuccessButtonProps) {
     </Button>
   );
 }
-export default SuccessButton
+
+export default SuccessButton;

@@ -1,3 +1,5 @@
+// fixmission.tsx
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import FixMissionBox from "../../components/missonbox/FixMissionBox";
@@ -54,7 +56,7 @@ function Fixmission() {
     fetchData();
   }, []);
 
-  const addMissionToToday = async (mission: Mission) => {
+  const addMissionToToday = async (mission: Mission): Promise<void> => { // Promise<void>로 반환 타입 수정
     // 중복된 미션인지 확인
     if (todayMissions.find((item) => item.missionId === mission.missionId)) {
       console.log("이미 추가된 미션입니다.");

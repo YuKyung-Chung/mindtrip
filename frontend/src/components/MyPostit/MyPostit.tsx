@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import moment from 'moment';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './MyPostit.css';
 
 function MyPostit() {
   const [selectedDate, setSelectedDate] = useState(moment()); // 선택된 날짜 상태
-  const [memos, setMemos] = useState<{ [date: string]: string }>({
+  const [memos,] = useState<{ [date: string]: string }>({
     '2024-03-15': '오늘은 술을 마셔야겠다.',
     '2024-03-16': '오늘도 술을 마셔야겠다.',
     '2024-03-17': '싸피를 때려 쳐야겠다.',
@@ -38,12 +38,12 @@ function MyPostit() {
   };
 
   // 선택된 날짜 변경 함수
-  const onChangeDate = (date: Date | Date[]) => {
-    if (!Array.isArray(date)) {
-      setSelectedDate(moment(date));
-      toggleCalendar(); // 날짜를 선택하면 달력 숨기기
-    }
-  };
+  // const onChangeDate = (date: Date | Date[]) => {
+  //   if (!Array.isArray(date)) {
+  //     setSelectedDate(moment(date));
+  //     toggleCalendar(); // 날짜를 선택하면 달력 숨기기
+  //   }
+  // };
 
   return (
     <div className="my-postit-container">
@@ -51,10 +51,10 @@ function MyPostit() {
       <div className='mt-6'>그날의 질문</div>
       {showCalendar && (
         <div className="calendar-wrapper">
-          <Calendar
+          {/* <Calendar
             onChange={onChangeDate}
             value={new Date(selectedDate.format('YYYY-MM-DD'))}
-          />
+          /> */}
         </div>
       )}
       <div

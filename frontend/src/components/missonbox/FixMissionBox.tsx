@@ -1,7 +1,21 @@
+// fixmissionbox.tsx
+
 import { Button } from "@nextui-org/react";
 
-function Missionbox({ category, missions, addMissionToToday }) {
-  const handleAddMission = (mission) => {
+type Mission = {
+  missionId: number;
+  name: string;
+  isFinish: boolean; // isFinish 속성 추가
+}
+
+type MissionboxProps = {
+  category: string;
+  missions: Mission[];
+  addMissionToToday: (mission: Mission) => void;
+}
+
+function Missionbox({ category, missions, addMissionToToday }: MissionboxProps) {
+  const handleAddMission = (mission: Mission) => {
     addMissionToToday(mission);
   };
 
