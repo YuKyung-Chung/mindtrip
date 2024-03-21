@@ -6,6 +6,7 @@ import com.a303.missionms.domain.mission.dto.response.CategoryMissionRes;
 import com.a303.missionms.domain.mission.dto.response.MissionBaseRes;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
+import com.a303.missionms.global.client.MemberClient;
 import com.a303.missionms.global.exception.BaseExceptionHandler;
 import jakarta.transaction.Transactional;
 import java.io.IOException;

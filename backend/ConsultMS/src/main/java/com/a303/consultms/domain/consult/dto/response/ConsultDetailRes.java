@@ -7,9 +7,12 @@ public record ConsultDetailRes(
 
     int consultId,
     int memberId,
+    String nickname,
     String title,
     String content,
-    int categoryId
+    int categoryId,
+    boolean isClosed,
+    String channelId
 ) {
 
 }

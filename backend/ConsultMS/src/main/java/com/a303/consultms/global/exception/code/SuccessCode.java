@@ -7,6 +7,7 @@ public enum SuccessCode {
     // 조회 성공 코드 (HTTP Response: 200 OK)
     SELECT_SUCCESS(200, "200", "SELECT SUCCESS"),
     CHECK_SUCCESS(200, "200", "CHECK SUCCESS"),
+    CLOSED_SUCCESS(200,"200","CLOSED SUCCESS"),
     // 삭제 성공 코드 (HTTP Response: 200 OK)
     DELETE_SUCCESS(200, "200", "DELETE SUCCESS"),
     LOGIN_SUCCESS(200, "200", "LOGIN SUCCESS"),
