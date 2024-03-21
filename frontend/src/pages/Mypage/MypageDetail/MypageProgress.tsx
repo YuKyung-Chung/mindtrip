@@ -1,7 +1,8 @@
 // import React, { useState } from 'react';
 import MyProgress from "../../../components/Progress/Progress"
 // import Calendar from "../../../components/Calendar/Calendar"
-import MyCalendar from '../../../components/Calendar/ReactCalendar';
+// import MyCalendar from '../../../components/Calendar/ReactCalendar';
+import Testcal from "../../../components/Calendar/testcal";
 
 function MypageProgress() {
   
@@ -12,7 +13,8 @@ function MypageProgress() {
       </div>
       <span>월간보고서</span>
       <div>
-        <MyCalendar />
+        {/* <MyCalendar /> */}
+        <Testcal />
       </div>
     </div>
   );

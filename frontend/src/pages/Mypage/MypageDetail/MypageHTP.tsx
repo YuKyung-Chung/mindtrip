@@ -11,9 +11,11 @@ function MypageHTP() {
       <div className="gap-4 ml-4 absolute top-1/2">
         <div>
           <div>집</div>
-          <div className="flex space-x-2">
-            <div className="bg-gray-300 h-20 w-32" />
-            <div className="bg-gray-300 h-20 w-32" />
+          <div className="flex justify-start w-[70%] min-h-[250px] max-h-[36vh] overflow-x-scroll overflow-y-hidden p-0 box-border">
+            <div className="bg-gray-300 h-40 w-40 mr-8" />
+            <div className="bg-gray-300 h-40 w-40 mr-8" />
+            <div className="bg-gray-300 h-40 w-40 mr-8" />
+      
           </div>
         </div>
         <div>

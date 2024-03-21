@@ -10,6 +10,7 @@ function MyPostit() {
     '2024-03-15': '오늘은 술을 마셔야겠다.',
     '2024-03-16': '오늘도 술을 마셔야겠다.',
     '2024-03-17': '싸피를 때려 쳐야겠다.',
+    '2024-03-18': '인생이 힘들다.',
     // 임시 메모 데이터
   });
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 여부 상태
@@ -47,6 +48,7 @@ function MyPostit() {
   return (
     <div className="my-postit-container">
       <h1 className="postit-date" onClick={toggleCalendar}>{selectedDate.format('YYYY년 MM월 DD일')}</h1>
+      <div className='mt-6'>그날의 질문</div>
       {showCalendar && (
         <div className="calendar-wrapper">
           <Calendar

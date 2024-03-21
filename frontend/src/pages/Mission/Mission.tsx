@@ -5,7 +5,7 @@ import Successbtn from '../../atoms/buttons/successbtn';
 
 function Mission() {
   return (
-    <div className="bg-[#fff7e0] px-2 py-8">
+    <div className="bg-[#fff7e0] px-2 py-8 h-screen">
       <div className="flex flex-col justify-center items-center mb-6">
         <BackButton />
         <AlarmButton />
@@ -32,7 +32,7 @@ function Mission() {
         <p className="mb-4">오늘의 미션이 맘에 들지 않았다면,</p>
       
         <Link to="/fixmission" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4">
-        수정완료버튼
+        수정하러가기
       </Link>
       </div>
     </div>

@@ -1,21 +1,20 @@
-import { useState } from 'react';
-import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
-import "./ReactCalendar.css"
-import moment from 'moment';
-import Missionbox from '../missionbox';
+import { useState } from "react";
+import Calendar from "react-calendar";
+import "./ReactCalendar.css";
+import moment from "moment";
+import Missionbox from "../missonbox/MissionBox";
 
 function MyCalendar() {
   const [value, onChange] = useState(new Date());
   const [mark, setMark] = useState([
-    "2024-03-15", 
+    "2024-03-15",
     "2024-03-20", // 임시데이터 넣은것
   ]);
   const [missions, setMissions] = useState<string[]>([]);
 
   const handleCalendarChange = (date: Date) => {
     onChange(date); // 선택된 날짜로 상태를 업데이트
-    
+
     // 임시미션 리스트
     const dateStr = moment(date).format("YYYY-MM-DD");
     const temporaryMissions: Record<string, string[]> = {
@@ -34,8 +33,10 @@ function MyCalendar() {
     <div>
       <Calendar
         onChange={handleCalendarChange}
-        formatDay={(locale, date) => moment(date).format("DD")}
+        formatDay={(locale, date) => moment(date).format("D")}
         value={value}
+        next2Label={null}
+        prev2Label={null}
         className="mx-auto text-sm border-b"
         tileContent={({ date, view }) => {
           if (mark.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
@@ -52,15 +53,12 @@ function MyCalendar() {
       <div className="text-gray-500 mt-4">
         {moment(value).format("YYYY년 MM월 DD일")}의 미션
       </div>
-      <div className='mt-4'>
-        <ul>
-          {missions.map((mission, index) => (
-            
-            <Missionbox key={index} dailymission={mission} />
-            
-            
-          ))}
-        </ul>
+      <div className="mt-4">
+        {missions.map((mission, index) => (
+          <li key={index}>
+            {index} {mission}
+          </li>
+        ))}
       </div>
     </div>
   );
