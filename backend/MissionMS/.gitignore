@@ -38,4 +38,3 @@ out/
 ### secrets ###
 *.yml
 *.yaml
-*.xml

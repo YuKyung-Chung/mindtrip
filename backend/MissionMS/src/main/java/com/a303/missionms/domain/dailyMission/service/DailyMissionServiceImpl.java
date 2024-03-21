@@ -2,7 +2,6 @@ package com.a303.missionms.domain.dailyMission.service;
 
 import com.a303.missionms.domain.dailyMission.DailyMission;
 import com.a303.missionms.domain.dailyMission.repository.DailyMissionRepository;
-import com.a303.missionms.domain.member.dto.response.MemberBaseRes;
 import com.a303.missionms.domain.mission.Category;
 import com.a303.missionms.domain.mission.Mission;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
@@ -10,8 +9,6 @@ import com.a303.missionms.domain.mission.dto.response.CategoryMissionRes;
 import com.a303.missionms.domain.mission.dto.response.MissionBaseRes;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
-import com.a303.missionms.global.api.response.BaseResponse;
-import com.a303.missionms.global.client.MemberClient;
 import com.a303.missionms.global.exception.BaseExceptionHandler;
 import com.a303.missionms.global.exception.code.ErrorCode;
 import jakarta.persistence.criteria.CriteriaBuilder.In;
@@ -34,7 +31,6 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 	private final DailyMissionRepository dailyMissionRepository;
 	private final MissionRepository missionRepository;
-	private final MemberClient memberClient;
 
 
 	// TODO missionId가 바뀌지는 않지만 만약 없는 미션아이디일 경우의 예외처리도 필요하다.
@@ -104,9 +100,6 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	public List<MyTableMissionDTO> getMyTableMissions(int memberId)
 		throws BaseExceptionHandler, IOException {
 
-		BaseResponse<MemberBaseRes> memberBaseRes = memberClient.getMemberDtoByMemberId(memberId);
-		System.out.println(memberBaseRes.getResult());
-
 		List<DailyMission> myTableList = dailyMissionRepository.findByMemberId(memberId);
 
 		List<MyTableMissionDTO> myTableMissionDTOList = new ArrayList<>();
@@ -128,17 +121,10 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 		DailyMission dailyMission = dailyMissionRepository.findByMemberIdAndMission_MissionId(
 			memberId, missionId).orElseThrow(
-			() -> {
-				log.error("completeMission method memberId:{} missionId:{} 의 레코드가 없습니다.",
-					memberId, missionId);
-
-				return new BaseExceptionHandler(
-					"해당 멤버:" + memberId + " mission: " + missionId + "의 레코드가 없습니다.",
-					ErrorCode.NOT_FOUND_ERROR);
-			}
+			() -> new BaseExceptionHandler(
+				"해당 멤버:" + memberId + " mission: " + missionId + "의 레코드가 없습니다.",
+				ErrorCode.NOT_FOUND_ERROR)
 		);
-
-		log.debug("completeMission method memberId:{} missionId:{} success.", memberId, missionId);
 
 		dailyMission.setFinish(true);
 

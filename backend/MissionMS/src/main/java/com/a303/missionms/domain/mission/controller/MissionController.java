@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/missions")
 @RequiredArgsConstructor
 @CrossOrigin("*")
-@Slf4j
 public class MissionController {
 
 	private final MissionService missionService;
@@ -46,11 +44,7 @@ public class MissionController {
 	@GetMapping("/v1")
 	public ResponseEntity<BaseResponse<MissionListRes>> getMissionList() throws IOException {
 
-		log.debug("missions/v1 GET api accepted");
-
 		MissionListRes missionListRes = missionService.getMissionList();
-
-		log.debug("missions/v1 GET api succeed");
 
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, missionListRes);
 	}
@@ -61,16 +55,12 @@ public class MissionController {
 		@RequestHeader("x-member-id") int memberId,
 		@RequestBody HashMap<Integer, MyTableMissionDTO> myTableMissionDTOMap) throws IOException {
 
-		log.debug("missions/v1/mytable PUT api accepted with memberId:{}", memberId);
-
 		for (Entry<Integer, MyTableMissionDTO> m : myTableMissionDTOMap.entrySet()) {
 			System.out.println(m);
 		}
 
 		List<MyTableMissionDTO> myTableMissionDTOList = dailyMissionService.putMyTableMissions(
 			memberId, myTableMissionDTOMap);
-
-		log.debug("missions/v1/mytable PUT api succeed with memberId:{}", memberId);
 
 		return BaseResponse.success(SuccessCode.INSERT_SUCCESS, myTableMissionDTOList);
 	}
@@ -80,12 +70,8 @@ public class MissionController {
 	public ResponseEntity<BaseResponse<List<MyTableMissionDTO>>> getMyTableMissions(
 		@RequestHeader("x-member-id") int memberId) throws IOException {
 
-		log.debug("missions/v1/mytable GET api accepted with memberId:{}", memberId);
-
 		List<MyTableMissionDTO> myTableMissionDTOList = dailyMissionService.getMyTableMissions(
 			memberId);
-
-		log.debug("missions/v1/mytable GET api succeed with memberId:{}", memberId);
 
 		return BaseResponse.success(SuccessCode.INSERT_SUCCESS, myTableMissionDTOList);
 	}
@@ -96,13 +82,8 @@ public class MissionController {
 		@RequestHeader("x-member-id") int memberId,
 		@PathVariable("missionId") int missionId) throws IOException {
 
-		log.debug("missions/v1/mytable/{missionId} POST api accepted with memberId:{} missionId:{}",
-			memberId, missionId);
 
 		int dailyMissionId = dailyMissionService.completeMission(memberId, missionId);
-
-		log.debug("missions/v1/mytable/{missionId} POST api succeed with memberId:{} missionId:{}",
-			memberId, missionId);
 
 		return BaseResponse.success(SuccessCode.INSERT_SUCCESS, dailyMissionId);
 	}

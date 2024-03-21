@@ -39,16 +39,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // prometheus
-//    implementation 'io.micrometer:micrometer-registry-prometheus'
-    // micrometer
-    implementation platform('io.micrometer:micrometer-tracing-bom:latest.release')
-    implementation 'io.micrometer:micrometer-observation'
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
-    // https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'io.github.openfeign:feign-micrometer'
 
 // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

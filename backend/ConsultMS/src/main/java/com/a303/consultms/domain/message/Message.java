@@ -21,24 +21,19 @@ public class Message extends MongoBaseEntity {
     @Id
     private String id;
 
-    @Field(name = "channel_id")
-    private String channelId;
+    //고민상담소 방 ID
+    @Field(name = "consult_id")
+    private int counsultId;
 
-    @Field(name = "sender")
-    private String sender;
+    @Field(name = "message_id")
+    @NotNull
+    private int messageId;
 
-    @Field(name = "member_id")
-    private int memberId;
+    @Field(name = "message_to")
+    private String messageTo;
 
     @Field(name = "content")
     private String content;
 
-    static public Message createMessage(String sender, String content) {
-        Message message = new Message();
 
-        message.setSender(sender);
-        message.setContent(content);
-
-        return message;
-    }
 }

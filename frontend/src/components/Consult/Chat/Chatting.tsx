@@ -1,5 +1,5 @@
 import { Tooltip, Button, Input } from '@nextui-org/react'
-import { changeList } from '../../../store/chatSlice'
+import { changeList } from '../../../store/store'
 import { useDispatch } from "react-redux"
 import LeftIcon from '../../../atoms/Icons/LeftIcon'
 import UpIcon from '../../../atoms/Icons/UpIcon'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { changeList } from '../../../store/chatSlice'
+import { changeList } from '../../../store/store'
 import { useDispatch } from "react-redux"
 
 // 채팅방 리스트들이 들어가는 컴포넌트

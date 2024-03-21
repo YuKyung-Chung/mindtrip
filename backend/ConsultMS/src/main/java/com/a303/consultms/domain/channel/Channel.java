@@ -1,55 +1,42 @@
 package com.a303.consultms.domain.channel;
 
 import com.a303.consultms.domain.BaseEntity;
-import com.a303.consultms.domain.MongoBaseEntity;
 import com.a303.consultms.domain.consult.Consult;
-import com.a303.consultms.domain.message.Message;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 @Setter
-@Document(collection = "channel")
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Channel extends MongoBaseEntity {
+public class Channel extends BaseEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "channel_id")
+    private int channelId;
 
-    //고민상담소 방 ID
-    @Field(name = "consult_id")
-    private int counsultId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consult_id")
+    private Consult consult;
 
-    @Field(name = "member_id")
+    @Column(name = "member_id")
     private int memberId;
 
-    @Field(name = "is_closed")
-    private boolean isClosed = false; //기본값으로 false 설정
+    @Column(name = "is_closed")
+    private boolean isClosed;
 
-    @Field(name = "is_shared")
-    private boolean isShared = false; //기본값으로 false 설정
 
-    @DBRef
-    private List<Message> messageList;
 
-    public static Channel createChannel(int consultId, int memberId, boolean isClosed,
-        boolean isShared, List<Message> message) {
+    //생성 메서드
+    public static Channel createChannel(Consult consult){
         Channel channel = new Channel();
 
-        channel.setCounsultId(consultId);
-        channel.setMemberId(memberId);
-        channel.setMessageList(message);
-        channel.setClosed(isClosed);
-        channel.setShared(isShared);
+        channel.setConsult(consult);
 
         return channel;
     }

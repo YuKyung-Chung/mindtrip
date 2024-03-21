@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@nextui-org/react";
+import {Button } from "@nextui-org/react";
 import PostitBtn from '../components/Main/PostitBtn';
 
 function Main () {
   const navigate = useNavigate()
-
+  
   return(
     <div className='bg-slate-200 h-screen relative'>
       <h1>메인페이지</h1>

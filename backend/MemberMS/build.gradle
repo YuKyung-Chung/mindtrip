@@ -26,9 +26,10 @@ ext {
 }
 
 dependencies {
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
 
 
@@ -40,21 +41,6 @@ dependencies {
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-
-// log & transaction
-    // prometheus
-//    implementation 'io.micrometer:micrometer-registry-prometheus'
-    // micrometer
-    implementation platform('io.micrometer:micrometer-tracing-bom:latest.release')
-    implementation 'io.micrometer:micrometer-observation'
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
-    // https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'io.github.openfeign:feign-micrometer'
-
-
-
 // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // QueryDSL
@@ -63,9 +49,14 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+// MapStruct
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+
 // DB
     // MySQL
-    runtimeOnly 'com.mysql:mysql-connector-j'
+//    runtimeOnly 'com.mysql:mysql-connector-j'
     // MariaDB
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     // mongodb
