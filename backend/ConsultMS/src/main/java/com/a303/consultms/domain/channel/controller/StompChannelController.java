@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -28,11 +27,10 @@ public class StompChannelController {
     private final MemberClient memberClient;
 
     @MessageMapping(value = "/api/chat/enter")
-    public void enter(int receiver,
-        @AuthenticationPrincipal int memberId
+    public void enter(int receiver, int sender
     ) throws IOException {
 
-        Channel channel = channelService.readPersonalChatByRecevier(receiver, memberId);
+        Channel channel = channelService.readPersonalChatByRecevier(receiver, sender);
         template.convertAndSend("/sub/chat/room/" + channel.getChannelId(),  "채팅방에 입장하였습니다.");
     }
 
