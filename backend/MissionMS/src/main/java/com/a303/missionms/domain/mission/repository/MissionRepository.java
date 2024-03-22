@@ -16,4 +16,7 @@ public interface MissionRepository extends JpaRepository<Mission, Integer> {
 	List<Mission> getMissionsByMissionIdIn(
 		@Param("missionIdList") List<Integer> missionIdList);
 
+	@Query("SELECT DISTINCT m FROM Mission m")
+	List<Mission> getMissionList();
+
 }

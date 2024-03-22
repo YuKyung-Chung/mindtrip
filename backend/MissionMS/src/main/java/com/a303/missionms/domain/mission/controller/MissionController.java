@@ -7,8 +7,10 @@ import com.a303.missionms.domain.mission.dto.response.MissionListRes;
 import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.service.MissionService;
 import com.a303.missionms.global.api.response.BaseResponse;
+import com.a303.missionms.global.api.response.ErrorResponse;
 import com.a303.missionms.global.exception.code.SuccessCode;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -53,7 +55,7 @@ public class MissionController {
 
 		log.debug("missions/v1 GET api succeed");
 
-		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, missionListRes);
+		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, missionListRes);
 	}
 
 	//    @Operation(summary = "마이테이블관리")
@@ -88,7 +90,7 @@ public class MissionController {
 
 		log.debug("missions/v1/mytable GET api succeed with memberId:{}", memberId);
 
-		return BaseResponse.success(SuccessCode.INSERT_SUCCESS, myTableMissionDTOList);
+		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, myTableMissionDTOList);
 	}
 
 	//    @Operation(summary = "미션완료변경") TODO 캐시 및 배치 업데이트로 최적화 필요
@@ -105,7 +107,19 @@ public class MissionController {
 		log.debug("missions/v1/mytable/{missionId} POST api succeed with memberId:{} missionId:{}",
 			memberId, missionId);
 
-		return BaseResponse.success(SuccessCode.INSERT_SUCCESS, dailyMissionId);
+		return BaseResponse.success(SuccessCode.UPDATE_SUCCESS, dailyMissionId);
 	}
+
+	@GetMapping("/v1/schedule")
+	public ResponseEntity<BaseResponse<Integer>> completeMission() throws IOException {
+
+		dailyMissionService.dailyMissionRecommend();
+
+
+		return BaseResponse.success(SuccessCode.UPDATE_SUCCESS, 1);
+	}
+
+	//	---------------------------------------- Method -------------------------------------------
+
 
 }

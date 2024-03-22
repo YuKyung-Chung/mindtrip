@@ -71,7 +71,7 @@ function PersonDraw({goSurvey} :propsType1){
   return(
 <div className="flex h-svh w-svh justify-center items-center flex-col">
         <p className="text-center mb-8 font-bold text-3xl">사람을 한 명 그려주세요.</p>
-        <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full">
+        <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full bg-white">
           <Draw/>
           <Button className="absolute bottom-0 right-0 m-3" onClick={goSurvey}>다 그렸어요</Button>
         </div>
@@ -100,7 +100,14 @@ function PersonSurvey({ goNext, qna, isLast }: propsType) {
       {
         qna.ans.map((item, idx) => {
           return(
-            <Button className='w-4/5 lg:w-3/5 m-3 h-16 text-xl' onClick={() => {isLast ? navigate('/htp/result') : goNext()}} key={idx} variant="flat">{item}</Button>
+            <Button
+              key={idx}
+              variant="bordered"
+              className='w-4/5 lg:w-3/5 m-3 h-16 text-xl bg-white hover:bg-sky-800 hover:text-white shadow'
+              onClick={() => { isLast ? navigate('/htp/result') : goNext() }}
+            >
+              {item}
+            </Button>
           )
         })
       }

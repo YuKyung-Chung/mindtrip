@@ -11,9 +11,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface DailyMissionRepository extends JpaRepository<DailyMission, Integer> {
 //	List<DailyMission> findByMemberIdAndIsFinish(int memberId, boolean isFinish);
+	List<DailyMission> findAll();
 
 	List<DailyMission> findByMemberId(int memberId);
 
 	Optional<DailyMission> findByMemberIdAndMission_MissionId(int memberId, int missionId);
+
+
 
 }

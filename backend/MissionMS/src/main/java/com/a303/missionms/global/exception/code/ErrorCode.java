@@ -67,6 +67,10 @@ public enum ErrorCode {
     INCONSISTENT_REFRESH_TOKEN_EXCEPTION(403, "B104", "일치하지 않는 리프레시 토큰입니다."),
     NOT_SUPPORTED_CRAWLING_EXCEPTION(403, "B105", "지원하지 않는 사이트입니다."),
 
+    // 데일리 미션
+    INVALID_REQUEST_TIME_EXCEPTION(403, "B200", "유효한 시간대가 아닙니다."),
+
+
     // 유저가 존재하지 않음
     NOT_FOUND_USER_EXCEPTION(404, "B200", "존재하지 않는 유저입니다."),
     NOT_FOUND_ITEM_EXCEPTION(404, "B201", "존재하지 않는 아이템입니다."),

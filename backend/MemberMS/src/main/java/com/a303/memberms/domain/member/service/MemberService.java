@@ -13,6 +13,9 @@ public interface MemberService {
 	MemberBaseRes getMemberByMemberId(int memberId)
 		throws BaseExceptionHandler, IOException;
 
+	List<Integer> getMemberIdList()
+		throws BaseExceptionHandler, IOException;
+
     String standardLogin(MemberStandardLoginReq memberStandardLoginReq);
 
     boolean standardRegister(MemberStandardRegisterReq memberStandardRegisterReq);

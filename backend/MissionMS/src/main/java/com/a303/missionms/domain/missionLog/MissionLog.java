@@ -3,6 +3,7 @@ package com.a303.missionms.domain.missionLog;
 
 import com.a303.missionms.domain.dailyMission.DailyMission;
 import com.a303.missionms.domain.mission.Mission;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,7 @@ public class MissionLog {
 	@Column(name = "mission_log_id")
 	private int missionLogId;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(name = "mission_id")
 	private Mission mission;
 
@@ -40,11 +41,10 @@ public class MissionLog {
 
 	private boolean isFinish;
 
-	public static MissionLog createMissionLog(int missionLogId, Mission mission, int memberId,
+	public static MissionLog createMissionLog(Mission mission, int memberId,
 		LocalDate localDate, boolean isFinish) {
 
 		MissionLog missionLog = new MissionLog();
-		missionLog.setMissionLogId(missionLogId);
 		missionLog.setMission(mission);
 		missionLog.setMemberId(memberId);
 		missionLog.setMissionDate(localDate);

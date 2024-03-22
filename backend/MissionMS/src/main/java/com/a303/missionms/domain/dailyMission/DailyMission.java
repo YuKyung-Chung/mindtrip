@@ -2,6 +2,7 @@ package com.a303.missionms.domain.dailyMission;
 
 
 import com.a303.missionms.domain.mission.Mission;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,7 @@ public class DailyMission {
 	@Column(name = "daily_mission_id")
 	private int dailyMissionId;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(name = "mission_id")
 	private Mission mission;
 
