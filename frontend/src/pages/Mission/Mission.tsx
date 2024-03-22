@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from 'react-router-dom';
 import Successbtn from '../../atoms/buttons/successbtn';
 import Homebtn from "../../atoms/buttons/homebtn";
+import MissionTree from "../../components/Loading/MissionTree";
 
 
 // 미션 타입 정의
@@ -15,6 +16,10 @@ type Mission =  {
 function Mission() {
   // 미션 데이터 상태
   const [missions, setMissions] = useState<Mission[]>([]); // 미션 타입을 명시
+
+  const [isMidnight, setIsMidnight] = useState<boolean>(false) 
+  
+ 
 
   // 페이지가 로드될 때 미션 데이터를 가져오는 useEffect 훅
   useEffect(() => {
@@ -36,6 +41,19 @@ function Mission() {
 
     // 함수 실행
     fetchMissions();
+
+
+    // 시간확인
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+    const currentMinute = currentTime.getMinutes();
+    console.log(currentHour)
+    console.log(currentMinute)
+    
+    if (currentHour === 0 && currentMinute >= 0 && currentMinute <= 5) {
+      setIsMidnight(true)
+    }
+
   }, []);
 
   // 미션 성공 처리 함수
@@ -64,33 +82,44 @@ function Mission() {
     }
   };
 
+
   return (
-    <div className="bg-[#fff7e0] px-2 py-8 h-screen">
+    <div className="bg-[#fff7e0] px-2 py-8 h-screen ">
       <Homebtn />
       <div className="flex flex-col justify-center items-center mb-6">
         <h1 className="text-5xl font-bold mt-20">오늘의 미션</h1>
       </div>
-      <div className="flex justify-end text-sm mb-4 w-4/5 mx-auto">
-        <span>달성률: {missions.filter(mission => mission.isFinish).length}/{missions.length}</span>
+      { isMidnight ? (
+        <div>
+        <MissionTree />
+        <span className="block text-center">미션을 불러오는 중입니다...</span>
+        </div>
+      
+      ) : (
+      <div>
+        <div className="flex justify-end text-sm mb-4 w-4/5 mx-auto">
+          <span>달성률: {missions.filter(mission => mission.isFinish).length}/{missions.length}</span>
+        </div>
+        <div className="space-y-4">
+          {/* 미션 데이터를 반복하여 출력 */}
+          {missions.map((mission) => (
+            <div key={mission.missionId} className="flex justify-between items-center p-2 bg-white rounded-lg shadow w-4/5 mx-auto">
+              {/* 미션 이름 출력 */}
+              <span className="text-lg">{mission.name}</span>
+              {/* 성공 버튼 */}
+              <Successbtn isFinish={mission.isFinish} missionId={mission.missionId} onClick={() => handleMissionSuccess(mission.missionId)} />
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 p-2 rounded-lg text-center w-4/5 mx-auto">
+          <p className="mb-4">오늘의 미션이 맘에 들지 않았다면,</p>
+          {/* 수정하러 가는 링크 */}
+          <Link to="/fixmission" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4">
+            수정하러가기
+          </Link>
+        </div>
       </div>
-      <div className="space-y-4">
-        {/* 미션 데이터를 반복하여 출력 */}
-        {missions.map((mission) => (
-          <div key={mission.missionId} className="flex justify-between items-center p-2 bg-white rounded-lg shadow w-4/5 mx-auto">
-            {/* 미션 이름 출력 */}
-            <span className="text-lg">{mission.name}</span>
-            {/* 성공 버튼 */}
-            <Successbtn isFinish={mission.isFinish} missionId={mission.missionId} onClick={() => handleMissionSuccess(mission.missionId)} />
-          </div>
-        ))}
-      </div>
-      <div className="mt-8 p-2 rounded-lg text-center w-4/5 mx-auto">
-        <p className="mb-4">오늘의 미션이 맘에 들지 않았다면,</p>
-        {/* 수정하러 가는 링크 */}
-        <Link to="/fixmission" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4">
-          수정하러가기
-        </Link>
-      </div>
+      )}
     </div>
   );
 }
