@@ -3,8 +3,8 @@ import { Button } from '@nextui-org/react';
 
 function Draw() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isDrawing, setIsDrawing] = useState(false)
-
+  const [isDrawing, setIsDrawing] = useState<boolean>(false)
+  const [penColor, setPencolor] = useState<string>('black')
 
 // 좌표 정보를 얻는 함수
 const getCoordinates = (canvas :HTMLCanvasElement, event :MouseEvent|TouchEvent) => {
@@ -53,6 +53,7 @@ const getCoordinates = (canvas :HTMLCanvasElement, event :MouseEvent|TouchEvent)
     const { offsetX, offsetY } = getCoordinates(canvas, e);
     ctx.lineTo(offsetX, offsetY);
     ctx.stroke();
+    ctx.strokeStyle = penColor
   }, [isDrawing]);
 
   // 그만 그리면 멈춰주는 함수
@@ -128,6 +129,23 @@ const getCoordinates = (canvas :HTMLCanvasElement, event :MouseEvent|TouchEvent)
           <TrashIcon/>
         }
       >초기화</Button>
+      <div className='absolute top-3 left-[130px] flex'>
+        <div 
+          onClick={() => setPencolor('black')}
+          className='w-8 h-8 rounded-full bg-black mx-2 hover:cursor-pointer'/>
+        <div 
+        onClick={() => setPencolor('red')}
+        className='w-8 h-8 rounded-full bg-red-500 mx-2 hover:cursor-pointer'/>
+        <div 
+        onClick={() => setPencolor('#3b82f6')}
+        className='w-8 h-8 rounded-full bg-blue-500 mx-2 hover:cursor-pointer'/>
+        <div 
+        onClick={() => setPencolor('rgb(132 204 22)')}
+        className='w-8 h-8 rounded-full bg-lime-400 mx-2 hover:cursor-pointer'/>
+        <div 
+        onClick={() => setPencolor('rgb(113 63 18)')}
+        className='w-8 h-8 rounded-full bg-yellow-900 mx-2 hover:cursor-pointer'/>
+      </div>
     </div>
   )
 }

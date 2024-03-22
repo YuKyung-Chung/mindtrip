@@ -1,18 +1,15 @@
-import { Card, CardBody } from "@nextui-org/react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 function Result() {
   return(
-  <Card className="h-full m-auto mx-auto xs:w-full md:w-4/5 xl:w-2/3" >
-    <CardBody className="flex-col content-center">
-      <p className="text-center text-4xl m-10">결과 두두둥</p>
-      <div className="text-center border-3 rounded-md border-indigo-200 min-h-[65vh] mt-0 m-5 p-6">
+  <div className="">
+      <p className="text-center text-4xl py-10">결과 두두둥</p>
+      <div className="w-full lg:w-[70vw] mx-auto text-center border-3 rounded-md bg-white min-h-[65vh] p-5">
         <p className="min-h-[55vh]">결과는 여기에 들어감</p>
       </div>
-    </CardBody>
     <MyBtn/>
-  </Card>
+  </div>
   )
 }
 

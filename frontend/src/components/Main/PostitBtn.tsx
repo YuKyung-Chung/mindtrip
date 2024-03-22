@@ -44,21 +44,23 @@ function PostitBtn() {
         renderer.render(scene, camera)
 
         // 호버했을 때 돌려보자
-        function animate() {
-          animationFrameId.current = requestAnimationFrame(animate);
-          gltf.scene.rotation.y -= 0.01
-          renderer.render(scene, camera);
-        }
-        if (enter) {
-          camera.position.set(0, 1, 6)
-          animate()
-        } else {
-          if (animationFrameId.current) {
-            cancelAnimationFrame(animationFrameId.current);
-          }
-          camera.position.set(0, 1, 6)
-          renderer.render(scene, camera)
-        }
+        // function animate() {
+        //   animationFrameId.current = requestAnimationFrame(animate);
+        //   gltf.scene.rotation.y -= 0.01
+        //   renderer.render(scene, camera);
+        // }
+        // if (enter) {
+        //   camera.position.set(0, 1, 6)
+        //   animate()
+        // } else {
+        //   if (animationFrameId.current) {
+        //     cancelAnimationFrame(animationFrameId.current);
+        //   }
+        //   camera.position.set(0, 1, 6)
+        //   renderer.render(scene, camera)
+        // }
+        camera.position.set(0, 1, 6)
+        renderer.render(scene, camera)
       }, undefined, function (err: any) {
         console.log(err)
       })

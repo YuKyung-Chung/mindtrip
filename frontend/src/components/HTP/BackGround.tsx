@@ -6,15 +6,18 @@ function Background() {
   // 3d 모델 우선 띄우기
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const loader = new GLTFLoader()
+
   // 배경
   const scene = new THREE.Scene()
-  // scene.background = new THREE.Color(0xE2E8F0)
+
   // 카메라
-  const camera = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.1, 1000)
-  camera.position.set(0,17,70)
-  camera.rotation.x -= 0.2
+  const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(10,35,200)
+  camera.rotation.x += 0.3
+  
   useEffect(() => {
-    if (canvasRef.current) {
+
+    if (canvasRef.current) { 
       let renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current })
       // 캔버스 크기
       renderer.setSize(window.innerWidth, window.innerHeight)
@@ -37,7 +40,7 @@ function Background() {
   }, [])
 
   return (
-      <div>
+      <div className='bg-sky-100'>
         <canvas ref={canvasRef}></canvas>
       </div>
   )
