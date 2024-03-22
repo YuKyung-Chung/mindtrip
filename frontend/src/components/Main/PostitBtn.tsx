@@ -23,7 +23,7 @@ function PostitBtn() {
     setEnter(false)
   }
 
-  const animationFrameId: any = useRef();
+  // const animationFrameId: any = useRef();
 
   useEffect(() => {
     if (canvasRef.current) {
