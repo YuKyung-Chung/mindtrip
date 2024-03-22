@@ -27,39 +27,43 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
-    public Member(MemberStandardRegisterReq memberStandardRegisterReq) {
-        this.id = memberStandardRegisterReq.id();
-        this.password = memberStandardRegisterReq.password();
-        this.nickname = memberStandardRegisterReq.nickname();
-    }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private int memberId;
+	public static Member createMember(String id, String password, String nickname) {
+		Member member = new Member();
+		member.setId(id);
+		member.setPassword(password);
+		member.setNickname(nickname);
 
-    @Column(length = 24)
-    private String id;
+		return member;
+	}
 
-    @Column(length = 30)
-    private String password;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "member_id")
+	private int memberId;
 
-    @Column(length = 300)
-    private String socialId;
+	@Column(length = 24)
+	private String id;
 
-    @Column(length = 80)
-    private String nickname;
+	@Column(length = 30)
+	private String password;
 
-    private Integer villageId;
-    private int level;
-    private int missionCount;
-    private int reportCount;
+	@Column(length = 300)
+	private String socialId;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+	@Column(length = 80)
+	private String nickname;
 
-    // 신고테이블과의 일대다 관계 설정
-    @OneToMany(mappedBy = "reportee")
-    private List<ReportMember> reportedList;
+	private Integer villageId;
+	private int level;
+	private int missionCount;
+	private int reportCount;
+
+	@Enumerated(EnumType.STRING)
+	private Role role;
+
+	// 신고테이블과의 일대다 관계 설정
+	@OneToMany(mappedBy = "reportee")
+	private List<ReportMember> reportedList;
 
 }

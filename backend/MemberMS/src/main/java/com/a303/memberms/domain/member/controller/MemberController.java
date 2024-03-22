@@ -9,6 +9,7 @@ import com.a303.memberms.global.exception.code.SuccessCode;
 import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +36,13 @@ public class MemberController {
 
 		log.info("Entering the member-controller  ");
 
-
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its memberms");
 	}
 
 
-//------------------------- 다른 msa와 통신 -------------------------------
+	//------------------------- 다른 msa와 통신 -------------------------------
 	//    @Operation(summary = "멤버아이디로 멤버 조회")
 	@GetMapping("/v1/{memberId}")
-	@Timed(value = "get-memberdto")
 	public ResponseEntity<BaseResponse<MemberBaseRes>> getMemberDtoByMemberId(
 		@PathVariable("memberId") int memberId
 	) throws IOException {
@@ -53,34 +52,42 @@ public class MemberController {
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, memberBaseRes);
 	}
 
-    @PostMapping("/v1/login")
-    public ResponseEntity<BaseResponse<String>> login(
-        @RequestBody
-        MemberStandardLoginReq memberStandardLoginReq,
-        HttpServletResponse response
-    ) {
-        String token = memberService.standardLogin(memberStandardLoginReq);
-        response.setHeader("Authorization", "Bearer " + token);
+	@GetMapping("/v0/id-list")
+	public ResponseEntity<BaseResponse<List<Integer>>> getMemberIdList() throws IOException {
 
-        log.debug("Authorization: {}", token);
+		List<Integer> memberIdList = memberService.getMemberIdList();
 
-        return BaseResponse.success(
-            SuccessCode.LOGIN_SUCCESS,
-            "로그인 성공"
-        );
-    }
+		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, memberIdList);
+	}
 
-    @PostMapping("/v1/register")
-    public ResponseEntity<BaseResponse<String>> register(
-        @RequestBody
-        MemberStandardRegisterReq memberStandardRegisterReq
-    ) {
-        memberService.standardRegister(memberStandardRegisterReq);
+	@PostMapping("/v1/login")
+	public ResponseEntity<BaseResponse<String>> login(
+		@RequestBody
+		MemberStandardLoginReq memberStandardLoginReq,
+		HttpServletResponse response
+	) {
+		String token = memberService.standardLogin(memberStandardLoginReq);
+		response.setHeader("Authorization", "Bearer " + token);
 
-        return BaseResponse.success(
-            SuccessCode.INSERT_SUCCESS,
-            "회원가입 성공"
-        );
-    }
+		log.debug("Authorization: {}", token);
+
+		return BaseResponse.success(
+			SuccessCode.LOGIN_SUCCESS,
+			"로그인 성공"
+		);
+	}
+
+	@PostMapping("/v1/register")
+	public ResponseEntity<BaseResponse<String>> register(
+		@RequestBody
+		MemberStandardRegisterReq memberStandardRegisterReq
+	) {
+		memberService.standardRegister(memberStandardRegisterReq);
+
+		return BaseResponse.success(
+			SuccessCode.INSERT_SUCCESS,
+			"회원가입 성공"
+		);
+	}
 }
 

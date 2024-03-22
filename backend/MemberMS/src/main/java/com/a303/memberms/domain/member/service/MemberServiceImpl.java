@@ -10,8 +10,10 @@ import com.a303.memberms.global.api.response.BaseResponse;
 import com.a303.memberms.global.exception.BaseExceptionHandler;
 import com.a303.memberms.global.exception.code.ErrorCode;
 import com.a303.memberms.global.client.AuthClient;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +55,14 @@ public class MemberServiceImpl implements MemberService {
 			.build();
 	}
 
-    @Override
+	@Override
+	public List<Integer> getMemberIdList() throws BaseExceptionHandler, IOException {
+		List<Integer> memberIdList = memberRepository.findDistinctMemberId();
+
+		return memberIdList;
+	}
+
+	@Override
     public String standardLogin(MemberStandardLoginReq memberStandardLoginReq) {
         //1. ID로 존재 여부 확인(사실상 일치 여부도 확인됨)
 //        String id = memberStandardLoginReq.id();
@@ -139,7 +148,11 @@ public class MemberServiceImpl implements MemberService {
         //...은 mapstruct에서 이루어진다.
 
 //        Member member = DtoToEntityMapper.MAPPER.toMember(memberStandardRegisterReq);
-        Member member = new Member(memberStandardRegisterReq);
+        Member member = Member.createMember(
+			memberStandardRegisterReq.id(),
+			memberStandardRegisterReq.password(),
+			memberStandardRegisterReq.nickname()
+		);
         memberRepository.save(member);
 
         return true;

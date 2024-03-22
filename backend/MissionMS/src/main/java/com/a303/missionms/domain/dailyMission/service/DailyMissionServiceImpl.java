@@ -11,20 +11,29 @@ import com.a303.missionms.domain.mission.dto.response.MissionBaseRes;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
 import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
+import com.a303.missionms.domain.missionLog.MissionLog;
+import com.a303.missionms.domain.missionLog.repository.MissionLogRepository;
 import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.client.MemberClient;
 import com.a303.missionms.global.exception.BaseExceptionHandler;
 import com.a303.missionms.global.exception.code.ErrorCode;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,7 +42,12 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class DailyMissionServiceImpl implements DailyMissionService {
 
+	@Autowired
+	private final EntityManager em;
+
+
 	private final DailyMissionRepository dailyMissionRepository;
+	private final MissionLogRepository missionLogRepository;
 	private final MissionRepository missionRepository;
 	private final MemberClient memberClient;
 
@@ -43,6 +57,14 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	public List<MyTableMissionRes> putMyTableMissions(int memberId,
 		HashMap<Integer, MyTableMissionDTO> myTableMissionDTOMap)
 		throws BaseExceptionHandler, IOException {
+
+		// 스케쥴링 시간과 겹치지는 않는지 체크
+		if (!isValidRequestTime()) {
+			log.error("putMyTableMissions method failed with request-time:{}", LocalDateTime.now());
+
+			throw new BaseExceptionHandler("12시~12시5분은 수정,삭제,추가 요청이 불가합니다.",
+				ErrorCode.INVALID_REQUEST_TIME_EXCEPTION);
+		}
 
 		// 기존 저장된 유저의 마이테이블 미션들을 엔티티 형태로 가져온다.
 		List<DailyMission> dailyMissions = dailyMissionRepository.findByMemberId(
@@ -91,7 +113,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		List<MyTableMissionRes> myTableMissionDTOList = new ArrayList<>();
 		for (DailyMission dailyMission : dailyMissions) {
 			myTableMissionDTOList.add(
-					MyTableMissionRes.builder()
+				MyTableMissionRes.builder()
 					.missionId(dailyMission.getMission().getMissionId())
 					.name(dailyMission.getMission().getName())
 					.isFinish(dailyMission.isFinish())
@@ -106,15 +128,15 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	public List<MyTableMissionRes> getMyTableMissions(int memberId)
 		throws BaseExceptionHandler, IOException {
 
-		BaseResponse<MemberBaseRes> memberBaseRes = memberClient.getMemberDtoByMemberId(memberId);
-		System.out.println(memberBaseRes.getResult());
+//		BaseResponse<MemberBaseRes> memberBaseRes = memberClient.getMemberDtoByMemberId(memberId);
+//		System.out.println(memberBaseRes.getResult());
 
 		List<DailyMission> myTableList = dailyMissionRepository.findByMemberId(memberId);
 
 		List<MyTableMissionRes> myTableMissionDTOList = new ArrayList<>();
 		for (DailyMission dailyMission : myTableList) {
 			myTableMissionDTOList.add(
-					MyTableMissionRes.builder()
+				MyTableMissionRes.builder()
 					.missionId(dailyMission.getMission().getMissionId())
 					.name(dailyMission.getMission().getName())
 					.isFinish(dailyMission.isFinish())
@@ -128,6 +150,14 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	@Override
 	public int completeMission(int memberId, int missionId)
 		throws BaseExceptionHandler, IOException {
+
+		// 스케쥴링 시간과 겹치지는 않는지 체크
+		if (!isValidRequestTime()) {
+			log.error("putMyTableMissions method failed with request-time:{}", LocalDateTime.now());
+
+			throw new BaseExceptionHandler("12시~12시5분은 수정,삭제,추가 요청이 불가합니다.",
+				ErrorCode.INVALID_REQUEST_TIME_EXCEPTION);
+		}
 
 		DailyMission dailyMission = dailyMissionRepository.findByMemberIdAndMission_MissionId(
 			memberId, missionId).orElseThrow(
@@ -146,5 +176,83 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		dailyMission.setFinish(true);
 
 		return dailyMission.getDailyMissionId();
+	}
+
+
+	// TODO 멤버의 마을을 고려한 추천이 이루어져야할 것 + 삽입 최적화 필요
+	@Override
+	public void dailyMissionRecommend() throws BaseExceptionHandler {
+		// daily_mission테이블 missionlog에 append
+		List<MissionLog> missionLogList = new ArrayList<>();
+		LocalDate yesterday = LocalDate.now().minusDays(1);
+
+		List<DailyMission> yesterdayList = dailyMissionRepository.findAll();
+		for (DailyMission dailyMission : yesterdayList) {
+			MissionLog missionLog = MissionLog.createMissionLog(
+				dailyMission.getMission(),
+				dailyMission.getMemberId(),
+				yesterday,
+				dailyMission.isFinish()
+			);
+
+			missionLogList.add(missionLog);
+		}
+
+		missionLogRepository.saveAll(missionLogList);
+		em.createQuery("DELETE FROM DailyMission where 1=1").executeUpdate();
+
+
+		// 새로운 미션 3개씩 선정해서 넣기
+		List<Integer> memberIdList = memberClient.getMemberIdList().getResult();
+		if (memberIdList.size() == 0) {
+			return;
+		}
+
+		List<Mission> missionList = missionRepository.getMissionList();
+
+		List<DailyMission> scheduledList = new ArrayList<>();
+
+		Random random = new Random();
+		Set<Integer> pickedSet = new HashSet();
+
+		for (int i = 0; i < memberIdList.size(); i++) {
+			int memberId = memberIdList.get(i);
+			pickedSet.clear();
+			int cnt = 0;
+			while (cnt < 3) {
+				int index = random.nextInt(missionList.size());
+				if (pickedSet.contains(index)) {
+					// 다시 뽑아야 함
+					continue;
+				}
+				// 넣어도 됨
+				DailyMission dailyMission = DailyMission.createDailyMission(
+					missionList.get(index),
+					memberId
+				);
+				scheduledList.add(dailyMission);
+				pickedSet.add(index);
+				cnt++;
+			}
+		}
+
+		if (scheduledList.size() != 0) {
+			dailyMissionRepository.saveAll(scheduledList);
+		}
+
+	}
+
+
+	//	----------------------------- 일반 메서드 -------------------------------------
+	private boolean isValidRequestTime() {
+		LocalDateTime now = LocalDateTime.now();
+		if (now.getHour() == 0 &&
+			now.getMinute() >= 0 && now.getMinute() < 5) {
+//			System.out.println("현재 시각은 12시00분00초와 12시05분00초 미만입니다.");
+			return false;
+		} else {
+//			System.out.println("현재 시각은 12시00분00초와 12시05분00초 미만이 아닙니다.");
+			return true;
+		}
 	}
 }

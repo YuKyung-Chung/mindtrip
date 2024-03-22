@@ -18,5 +18,7 @@ public interface DailyMissionService {
 
 	int completeMission(int memberId, int missionId) throws BaseExceptionHandler, IOException;
 
+	void dailyMissionRecommend() throws BaseExceptionHandler;
+
 
 }
