@@ -1,5 +1,6 @@
 package com.a303.htpms.domain.htp.controller;
 
+import com.a303.htpms.domain.htp.service.HtpService;
 import com.a303.htpms.global.api.response.BaseResponse;
 import com.a303.htpms.global.exception.code.SuccessCode;
 import io.micrometer.core.annotation.Timed;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 @Slf4j
 public class HtpController {
+    private final HtpService htpService;
 
 	//    @Operation(summary = "health check")
 	@GetMapping("/welcome")
@@ -32,6 +34,15 @@ public class HtpController {
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its htpms");
 	}
 
+    @GetMapping("/v1/analysis")
+    public ResponseEntity<BaseResponse<String>> register() {
+        String testResult = htpService.htpTestAnalysis();
+
+        return BaseResponse.success(
+            SuccessCode.SELECT_SUCCESS,
+            testResult
+        );
+    }
 //------------------------- 다른 msa와 통신 -------------------------------
 
 }
