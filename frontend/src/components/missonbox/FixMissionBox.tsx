@@ -14,7 +14,7 @@ type MissionboxProps = {
   addMissionToToday: (mission: Mission) => void;
 }
 
-function Missionbox({ category, missions, addMissionToToday }: MissionboxProps) {
+function FixMissionbox({ category, missions, addMissionToToday }: MissionboxProps) {
   const handleAddMission = (mission: Mission) => {
     addMissionToToday(mission);
   };
@@ -43,4 +43,4 @@ function Missionbox({ category, missions, addMissionToToday }: MissionboxProps) 
   );
 }
 
-export default Missionbox;
+export default FixMissionbox;
