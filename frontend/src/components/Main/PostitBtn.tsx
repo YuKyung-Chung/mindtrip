@@ -29,13 +29,13 @@ function PostitBtn() {
     if (canvasRef.current) {
       let renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current })
       // 캔버스 크기
-      renderer.setSize(250, 250)
+      renderer.setSize(200, 200)
       // 배경(투명하게 설정)
       renderer.setClearColor(0x000000, 0);
       // 모델 불러오기
       loader.load('/board.glb', function (gltf: any) {
         // 조명
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 4); // color, intensity
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 3); // color, intensity
         directionalLight.position.set(0, 1, 2); // x, y, z
         scene.add(directionalLight);
         // 정면 볼 수 있게 돌리기
@@ -69,7 +69,7 @@ function PostitBtn() {
 
   return (
     <Tooltip showArrow={true} content="포스트잇 붙이러가기" className='text-lg font-bold'>
-      <div onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} className='w-[250px] h-[230px] hover:cursor-pointer'>
+      <div onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} className='w-[200px] h-[200px] hover:cursor-pointer'>
         <canvas ref={canvasRef} onClick={() => { navigate('/postit') }}></canvas>
       </div>
     </Tooltip>
