@@ -8,7 +8,19 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        transparent: 'transparent',
+        current: 'currentColor',
+        apple : '#ef4444',
+        orange : '#fea50b',
+        pineapple : '#ffe35e',
+        watermelon : '#a3e635',
+        grape : '#5a74a0',
+        peach : '#ffbdb2',
+        blueberry : '#aacbf5'
+      }
+    },
   },
   darkMode: "class",
   plugins: [nextui()],

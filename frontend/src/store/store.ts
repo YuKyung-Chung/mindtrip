@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import chatSlice from './chatSlice';
 import {consultSlice} from './consultSlice';
+import memberSlice from './memberSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storageSession from 'redux-persist/lib/storage/session';
 
@@ -11,14 +12,15 @@ const persistConfig = {
   key: 'root',
   storage: storageSession,
   // 로컬에 저장하고 싶은 애만 빼주기
-  whitelist: ['chat']
+  whitelist: ['chat', 'member']
 }
 
 const persistedReducer = persistReducer(
   persistConfig,
   combineReducers({
     chat: chatSlice.reducer,
-    consultSlice: consultSlice.reducer
+    consultSlice: consultSlice.reducer,
+    member: memberSlice.reducer
   })
 )
 

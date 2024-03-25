@@ -1,6 +1,8 @@
 import { Input, Card, CardBody, Button } from "@nextui-org/react";
 import { useState } from 'react';
 import kakao from './../assets/login/kakao.png'
+import google from './../assets/login/google.png'
+import { login } from "../api/member";
 
 function Login() {
   // 비밀번호 보이고 안보이고 제어
@@ -15,9 +17,9 @@ function Login() {
 
   return (
     <Card
-      className="mt-8 mx-auto xs:w-full md:w-3/5 xl:w-1/3"
+      className="h-[80vh] mt-[8vh] sm:h-[90vh] sm:mt-[5vh] mx-auto xs:w-full md:w-3/5 xl:w-1/3"
     >
-      <CardBody className="flex-col content-center pt-12 pb-12">
+      <CardBody className="flex-col content-center pt-20 sm:pt-12 pb-3 sm:pb-12">
         <p className="text-center text-4xl mb-12">Login</p>
         {/* 아이디 입력 창 */}
         <Input 
@@ -47,18 +49,28 @@ function Login() {
           }
           type={isVisible ? "text" : "password"}
           className="w-96 mx-auto my-5"
+          
         />
         {/* 로그인 버튼 */}
-        <Button className="w-96 mx-auto my-8" size='lg' variant="bordered">로그인</Button>
+        <Button 
+          onClick={() => {login(id, password)}}
+          size='lg'
+          className="w-96 mx-auto my-8 bg-[#eeeeee] shadow" 
+        >로그인</Button>
         {/* Divider */}
         <div className="flex justify-center w-full items-center">
           <hr className="w-1/3"/>
           <p className="mx-5 text-slate-400 text-xs">또는</p>
           <hr className="w-1/3"/>
         </div>
-        <Button className="w-96 mx-auto my-8 bg-[#FEE500] pr-7" size='lg'>
+        {/* 소셜 로그인 버튼 */}
+        <Button className="w-96 mx-auto my-2 mt-4 bg-[#FEE500] pr-7 shadow" size='lg'>
           <img className='w-8 h-9 mb-1' src={kakao} alt="kakaoLogo" />
           <p>카카오로 로그인하기</p>
+        </Button>
+        <Button className="w-96 mx-auto my-2 bg-[#ffffff] pr-7 shadow" size='lg'>
+          <img className='w-6 h-6 mr-3' src={google} alt="googleLogo" />
+          <p>구글로 로그인하기</p>
         </Button>
       </CardBody>
     </Card>

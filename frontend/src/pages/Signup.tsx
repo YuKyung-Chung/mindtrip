@@ -1,15 +1,26 @@
 import { Input, Card, CardBody, Button } from "@nextui-org/react";
 import { useEffect, useState } from 'react';
+import { signup } from "../api/member";
 import kakao from './../assets/login/kakao.png'
+import google from './../assets/login/google.png'
 
 // 회원가입 페이지
 
 function Signup () {
   // 아이디
   const [id, setId] = useState<string>('')
-  
+  const [checkId, setCheckId] = useState<boolean|null>(null)
+  const idTest = function() {
+    // 여기서 중복 검사하고
+    setCheckId(true)
+  }
   // 닉네임
   const [nickname, setNickname] = useState<string>('')
+  const [checkNickname, setCheckNickname] = useState<boolean|null>(null)
+  const nicknameTest = function() {
+    // 여기서 중복검사
+    setCheckNickname(true)
+  }
 
   // 비밀번호1
   const [password1, setPassword1] = useState<string>('')
@@ -42,37 +53,55 @@ function Signup () {
     }
   }, [password2])
 
+
+  // 회원가입 로직
+  const requestSignup = function() {
+    // 중복검사를 안했다면,
+    if (checkId === null){
+      setCheckId(false)
+    }
+    if (checkNickname === null) {
+      setCheckNickname(false)
+    }
+    // 중복검사를 모두 통과하고 비밀번호가 서로 같다면
+    if (checkId === true && checkNickname === true && okay){
+      signup(id, password1, nickname)
+    }
+  }
   return(
     <Card
-      className="m-auto mt-5 mx-auto xs:w-full md:w-3/5 xl:w-1/3"
+      className="my-[5vh] h-[90vh] mx-auto xs:w-full md:w-3/5 xl:w-1/3"
     >
-      <CardBody className="flex-col content-center pt-12 pb-10">
-        <p className="text-center text-4xl mb-5">Sign Up</p>
+      <CardBody className="flex-col content-center mt-8">
+        <p className="text-center text-4xl mb-2">Sign Up</p>
         {/* 아이디 입력 창 */}
-        <div className="w-96 mx-auto mt-5 flex items-center">
+        <div className="w-96 mx-auto mt-2 flex items-center">
           <Input 
             isClearable 
             value={id}
             onValueChange={setId}
             variant="underlined" 
             label='아이디' 
-            // placeholder="아이디를 입력해주세요."
+            isInvalid={checkId === false ? true : false}
+            errorMessage={checkId === false ? '중복 검사를 실행해주세요' : null}
             className="mr-4"
           />
-          <Button variant="ghost" className="mt-5">중복 검사</Button>
+          <Button variant="ghost" className="mt-5" onClick={idTest}>중복 검사</Button>
         </div>
         {/* 닉네임 입력 창 */}
-        <div className="w-96 mx-auto mt-3 flex items-center">
+        <div className="w-96 mx-auto flex mt-2 items-center">
           <Input 
             isClearable 
             value={nickname}
             onValueChange={setNickname}
             variant="underlined" 
             label='닉네임' 
+            isInvalid={checkNickname === false ? true : false}
+            errorMessage={checkNickname === false ? '중복 검사를 실행해주세요' : null}
             // placeholder="사용할 닉네임을 입력해주세요."
             className="mr-5"
           />
-          <Button variant="ghost" className="mt-5">중복 검사</Button>
+          <Button variant="ghost" className="mt-5" onClick={nicknameTest}>중복 검사</Button>
         </div>
         
         {/* 비밀번호 1번 입력 창 */}
@@ -92,7 +121,7 @@ function Signup () {
             </button>
           }
           type={isVisible1 ? "text" : "password"}
-          className="w-96 mx-auto mt-5 pr-1"
+          className="w-96 mx-auto mt-2 pr-1"
         />
 
         {/* 비밀번호 2번 입력 창 */}
@@ -114,21 +143,29 @@ function Signup () {
             </button>
           }
           type={isVisible2 ? "text" : "password"}
-          className="w-96 mx-auto mt-5 pr-1"
+          className="w-96 mx-auto mt-2 pr-1"
         />
 
         {/* 회원가입 버튼 */}
-        <Button className="w-96 mx-auto mb-5 mt-10" size='lg' variant="bordered">회원가입</Button>
+        <Button 
+          onClick={requestSignup}
+          size='lg'
+          variant="bordered"
+          className="w-96 mx-auto mb-5 mt-10">회원가입</Button>
         
         {/* Divider */}
-        <div className="flex justify-center w-full items-center">
+        <div className="flex justify-center w-full items-center mb-3">
           <hr className="w-1/3"/>
           <p className="mx-5 text-slate-400 text-xs">또는</p>
           <hr className="w-1/3"/>
         </div>
-        <Button className="w-96 mx-auto my-5 bg-[#FEE500] pr-7" size='lg'>
+        <Button className="w-96 mx-auto my-2 bg-[#FEE500] pr-7" size='lg'>
           <img className='w-8 h-9 mb-1' src={kakao} alt="kakaoLogo" />
           <p>카카오로 회원가입하기</p>
+        </Button>
+        <Button className="w-96 mx-auto my-2 bg-[#ffffff] pr-7 shadow" size='lg'>
+          <img className='w-6 h-6 mr-3' src={google} alt="googleLogo" />
+          <p>구글로 회원가입하기</p>
         </Button>
       </CardBody>
     </Card>

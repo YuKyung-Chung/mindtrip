@@ -21,6 +21,7 @@ function House() {
     setOrder(order + 1);
   };
 
+
   const [isSurvey, setIsSurvey] = useState<boolean>(false)
   const goSurvey = function (): void {
     setIsSurvey(true)
@@ -66,12 +67,17 @@ function HouseDraw({ goSurvey }: propsType1) {
       }).then(() => { goSurvey() })
     }
   }, [file])
+
+
   return (
     <div className="flex h-svh w-svh justify-center items-center flex-col">
       <p className="text-center mb-8 font-bold text-3xl">집을 그려주세요.</p>
       <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full bg-white">
         <Draw />
-        <Button className="absolute bottom-0 right-0 m-3" onClick={goSurvey}>다 그렸어요</Button>
+        <Button
+          className='absolute bottom-0 right-0 m-3'
+          onClick={goSurvey}
+        >다 그렸어요</Button>
       </div>
       <div className="flex items-center text-slate-500 mt-2">
         <p className="mr-3">그리기 힘들다면?</p>
