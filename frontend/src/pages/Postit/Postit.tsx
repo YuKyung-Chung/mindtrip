@@ -45,11 +45,11 @@ const PostitPage: React.FC = () => {
           }
         }
       );
-      console.log("New postit added:", response.data);
+      console.log("새 포스트잇:", response.data);
       setIsModalOpen(false); // 새로운 포스트잇을 추가한 후에 모달을 닫습니다.
       fetchData(); // 모달을 닫은 후에 포스트잇 목록을 다시 불러옵니다.
     } catch (error) {
-      console.log("Error adding new postit:", error);
+      console.log("새 포스트잇 에러 :", error);
     }
   };
 
