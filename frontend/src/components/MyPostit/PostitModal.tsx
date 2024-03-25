@@ -1,22 +1,20 @@
-// PostitModal.tsx
+import { useState } from 'react';
+import Modal, { Styles } from 'react-modal';
 
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-
-const customModalStyles = {
+const customModalStyles: Styles = {
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.4)",
     width: "100%",
     height: "100vh",
-    zIndex: "10",
+    zIndex: 10,
     position: "fixed",
-    top: "0",
-    left: "0",
+    top: 0,
+    left: 0,
   },
   content: {
     width: "360px",
     height: "180px",
-    zIndex: "150",
+    zIndex: 150,
     position: "absolute",
     top: "50%",
     left: "50%",

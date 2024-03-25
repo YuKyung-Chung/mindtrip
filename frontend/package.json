@@ -32,6 +32,7 @@
     "@types/react": "^18.2.56",
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^18.2.19",
+    "@types/react-modal": "^3.16.3",
     "@types/react-query": "^1.2.9",
     "@types/three": "^0.162.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",

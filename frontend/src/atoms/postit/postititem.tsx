@@ -1,18 +1,22 @@
+// Postititem.tsx
 import React from 'react';
 import './postit.css';
 
-interface PostitProps {
+type PostitProps = {
   color: string;
-  onClick: () => void; // 클릭 이벤트를 받는 속성 추가
+  onClick?: () => void; // onClick prop을 선택적으로(Optional) 처리
+  children: string;
+  style?: React.CSSProperties;
 }
 
-const Postit: React.FC<PostitProps> = ({ color, onClick, children }) => {
+const Postit: React.FC<PostitProps> = ({ color, onClick, children, style }) => {
   const postitStyle: React.CSSProperties = {
-    backgroundColor: color
+    backgroundColor: color,
+    ...style // 전달받은 style을 포함합니다.
   };
 
   return (
-    <div className="rgyPostIt" style={postitStyle} onClick={onClick}> {/* 클릭 이벤트 추가 */}
+    <div className="rgyPostIt" style={postitStyle} onClick={onClick}>
       <p>{children}</p>
     </div>
   );

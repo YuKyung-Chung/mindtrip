@@ -12,21 +12,22 @@ const PostitPage: React.FC = () => {
   const [topicId, setTopicId] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("https://mindtrip.site/api/postits/v1?date=2024-03-21&order=like&village=1", {
+        headers: {
+          "x-member-id": "4"
+        }
+      });
+      setPostits(response.data.result.postitResList);
+      setTopic(response.data.result.topic);
+      setTopicId(response.data.result.topicId);
+    } catch (error) {
+      console.log("Error fetching missions:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("https://mindtrip.site/api/postits/v1?date=2024-03-21&order=like&village=1", {
-          headers: {
-            "x-member-id": "4"
-          }
-        });
-        setPostits(response.data.result.postitResList);
-        setTopic(response.data.result.topic);
-        setTopicId(response.data.result.topicId);
-      } catch (error) {
-        console.log("Error fetching missions:", error);
-      }
-    };
     fetchData(); 
   }, []);
 
