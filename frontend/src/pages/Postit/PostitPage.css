@@ -1,0 +1,24 @@
+.postit-page {
+  background-color: #fff7e0;
+  padding: 20px;
+}
+
+.postit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.postit-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.postit-item {
+  margin: 10px;
+  transition: all 0.3s ease; /* 애니메이션 효과 적용 */
+}
+
+.postit-item:hover {
+  transform: scale(1.1); /* 호버 시 크기 변화 */
+}

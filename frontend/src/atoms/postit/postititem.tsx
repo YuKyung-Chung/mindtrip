@@ -1,21 +1,19 @@
 import React from 'react';
 import './postit.css';
 
-const Postit: React.FC = () => {
-  // 랜덤 색상 배열
-  const colors = ['#ffff88', '#ffcc00', '#ff9999', '#99ccff'];
+interface PostitProps {
+  color: string;
+  onClick: () => void; // 클릭 이벤트를 받는 속성 추가
+}
 
-  // 랜덤 색상 선택
-  const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-  // 스타일 객체 생성
+const Postit: React.FC<PostitProps> = ({ color, onClick, children }) => {
   const postitStyle: React.CSSProperties = {
-    backgroundColor: randomColor
+    backgroundColor: color
   };
 
   return (
-    <div className="rgyPostIt" style={postitStyle}>
-      <p>방가</p>
+    <div className="rgyPostIt" style={postitStyle} onClick={onClick}> {/* 클릭 이벤트 추가 */}
+      <p>{children}</p>
     </div>
   );
 };

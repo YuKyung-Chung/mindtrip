@@ -1,115 +1,106 @@
-  // import React, { useState, useEffect } from 'react';
-  // import BackButton from '../../atoms/buttons/backbtn';
-  // import AlarmButton from '../../atoms/buttons/alambtn';
-  // import PostIt from '../../atoms/postit/postititem';
+import React, { useState, useEffect } from 'react';
+import BackButton from '../../atoms/buttons/backbtn';
+import AlarmButton from '../../atoms/buttons/alambtn';
+import PostIt from '../../atoms/postit/postititem';
+import PostitModal from '../../components/MyPostit/PostitModal'; // 모달 컴포넌트를 import 해주세요
+import axios from 'axios';
 
-  // const Postit: React.FC = () => {
-  //   // 포스트잇 색상 배열
-  //   const colors = ['#ffff88', '#ffcc00', '#ff9999', '#99ccff'];
+const PostitPage: React.FC = () => {
+  const colors = ['#ffff88', '#ffcc00', '#ff9999', '#99ccff'];
+  const [postits, setPostits] = useState<any[]>([]);
+  const [topic, setTopic] = useState<string>("");
+  const [topicId, setTopicId] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  //   // 포스트잇 데이터 상태
-  //   const [postits, setPostits] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("https://mindtrip.site/api/postits/v1?date=2024-03-21&order=like&village=1", {
+          headers: {
+            "x-member-id": "4"
+          }
+        });
+        setPostits(response.data.result.postitResList);
+        setTopic(response.data.result.topic);
+        setTopicId(response.data.result.topicId);
+      } catch (error) {
+        console.log("Error fetching missions:", error);
+      }
+    };
+    fetchData(); 
+  }, []);
 
-  //   useEffect(() => {
-  //     // API 호출 등으로 데이터를 받아온다고 가정
-  //     // 받아온 데이터를 상태에 설정
-  //     const fetchedData = [...Array(10)].map(() => ({
-  //       // API에서 받아온 데이터 형식에 따라 조정할 수 있습니다.
-  //       id: Math.random().toString(),
-  //       content: "포스트잇 내용",
-  //       // 랜덤 색상 선택
-  //       color: colors[Math.floor(Math.random() * colors.length)]
-  //     }));
-  //     setPostits(fetchedData);
-  //   }, []);
-
-  //   return (
-  //     <div className="bg-[#fff7e0] px-2 py-8">
-  //       <div className="flex flex-col justify-center items-center mb-6">
-  //         <BackButton />
-  //         <AlarmButton />
-  //         <h1 className="text-5xl font-bold mt-20">포스트 잇</h1>
-  //       </div>
-  //       <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-4/5 mx-auto">
-  //         <div className="flex justify-center items-center flex-wrap ">
-  //           {postits.map((postit) => (
-  //             <div className="m-2" key={postit.id}>
-  //               <PostIt />
-  //             </div>
-  //           ))}
-  //         </div>
-  //       </div>
-  //       <div className="mt-8 p-2 rounded-lg text-center w-4/5 mx-auto">
-          
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // export default Postit;
-
-  // ------------------------------------------------------------
-
-  // API받으면 이거 써보기
-
-  import React, { useState, useEffect } from 'react';
-  // import { Link } from 'react-router-dom';
-  import BackButton from '../../atoms/buttons/backbtn';
-  import AlarmButton from '../../atoms/buttons/alambtn';
-  import PostIt from '../../atoms/postit/postititem';
-
-  const PostitPage: React.FC = () => {
-    // 포스트잇 색상 배열
-    const colors = ['#ffff88', '#ffcc00', '#ff9999', '#99ccff'];
-
-    // 포스트잇 데이터 상태
-    const [postits, setPostits] = useState<any[]>([]);
-
-    useEffect(() => {
-      // API 호출 등으로 데이터를 받아온다고 가정
-      // 받아온 데이터를 상태에 설정
-      const fetchData = async () => {
-        try {
-          // 데이터를 받아오는 API 호출
-          const response = await fetch('API_ENDPOINT');
-          const data = await response.json();
-
-          // 받아온 데이터를 상태에 설정
-          setPostits(data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
+  const addPostit = async (content: string) => {
+    try {
+      const response = await axios.post(
+        "https://mindtrip.site/api/postits/v1",
+        {
+          topicId: topicId,
+          postitDate: "2024-03-21",
+          content: content
+        },
+        {
+          headers: {
+            "x-member-id": "4"
+          }
         }
-      };
+      );
+      console.log("New postit added:", response.data);
+      setIsModalOpen(false); // 새로운 포스트잇을 추가한 후에 모달을 닫습니다.
+      fetchData(); // 모달을 닫은 후에 포스트잇 목록을 다시 불러옵니다.
+    } catch (error) {
+      console.log("Error adding new postit:", error);
+    }
+  };
 
-      fetchData(); // 데이터 가져오기 함수 호출
-    }, []); // 빈 배열을 넘겨주어 컴포넌트가 마운트될 때만 useEffect가 실행되도록 함
+  const handleFirstPostitClick = () => {
+    setIsModalOpen(true);
+  };
 
-    return (
-      <div className="bg-[#fff7e0] px-2 py-8">
-        <div className="flex flex-col justify-center items-center mb-6">
-          <BackButton />
-          <AlarmButton />
-          <h1 className="text-5xl font-bold mt-20">포스트 잇</h1>
-        </div>
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-4/5 mx-auto">
-          <div className="flex justify-center items-center flex-wrap ">
-            {postits.map((postit) => (
-              <div className="m-2" key={postit.id}>
-                <PostIt color={colors[Math.floor(Math.random() * colors.length)]}>
-                  {postit.content}
-                </PostIt>
-              </div>
-            ))}
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleNewPostSubmit = (content: string) => {
+    addPostit(content);
+  };
+
+  return (
+    <div className="bg-[#fff7e0] px-2 py-8">
+      <div className="flex flex-col justify-center items-center mb-6">
+        <BackButton />
+        <AlarmButton />
+        <h1 className="text-xl font-bold mt-20">{topic}</h1>
+      </div>
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-4/5 mx-auto">
+        <div className="flex justify-center items-center flex-wrap ">
+          <div className="m-2">
+            <PostIt
+              color={colors[Math.floor(Math.random() * colors.length)]}
+              onClick={handleFirstPostitClick}
+              style={{ transition: "transform 0.3s ease-in-out" }}
+            >
+              추가하기
+            </PostIt>
           </div>
-        </div>
-        <div className="mt-8 p-2 rounded-lg text-center w-4/5 mx-auto">
-          {/* <p className="mb-4">오늘의 미션이 맘에 들지 않았다면,</p>
-          <Link to="/fixmission" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4">
-            수정완료버튼
-          </Link> */}
+          {postits.map((postit) => (
+            <div className="m-2" key={postit.id}>
+              <PostIt color={postit.color}>
+                {postit.content}
+              </PostIt>
+            </div>
+          ))}
         </div>
       </div>
-    );
-  }
+      <div className="mt-8 p-2 rounded-lg text-center w-4/5 mx-auto">
+      </div>
+      <PostitModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleNewPostSubmit}
+      />
+    </div>
+  );
+};
 
-  export default PostitPage;
+export default PostitPage;
