@@ -3,15 +3,19 @@ package com.a303.postitms.domain.postit.repository;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 
 import com.a303.postitms.domain.postit.Postit;
+import com.a303.postitms.domain.postit.dto.reponse.MyPostitRes;
 import com.a303.postitms.domain.postit.dto.reponse.PostitRes;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
@@ -19,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+
 @RequiredArgsConstructor
 public class PostitRepositoryImpl implements PostitCustomRepository {
 
@@ -36,7 +41,8 @@ public class PostitRepositoryImpl implements PostitCustomRepository {
     }
 
     @Override
-    public List<PostitRes> findByPostitTopicIdAndVillageOrder(String postitTopicId, String order, int village) {
+    public List<PostitRes> findByPostitTopicIdAndVillageOrder(String postitTopicId, String order,
+        int village, Pageable pageable) {
 
         // $match 스테이지: 필요한 조건으로 데이터 필터링
         Criteria criteria = Criteria.where("postit_topic.$id").is(new ObjectId(postitTopicId));
@@ -57,7 +63,7 @@ public class PostitRepositoryImpl implements PostitCustomRepository {
 
         SortOperation sortOperation;
 
-        if(order.equals("like")) {
+        if (order.equals("like")) {
             sortOperation = Aggregation.sort(
                 Sort.by(Sort.Direction.DESC, "likeCount", "createTime")
             );
@@ -68,13 +74,28 @@ public class PostitRepositoryImpl implements PostitCustomRepository {
         }
 
         // Aggregation 파이프라인 생성
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation, sortOperation);
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation,
+            sortOperation, skip((long) pageable.getPageNumber() * pageable.getPageSize()),
+            limit(pageable.getPageSize()));
 
         // Aggregation 실행 및 결과 매핑
-        AggregationResults<PostitRes> results = mongoTemplate.aggregate(aggregation, "postit", PostitRes.class);
+        AggregationResults<PostitRes> results = mongoTemplate.aggregate(aggregation, "postit",
+            PostitRes.class);
         List<PostitRes> postitResList = results.getMappedResults();
 
         return postitResList;
+    }
+
+    @Override
+    public List<Postit> findByMemberId(int memberId) {
+
+        Query query = new Query(
+            Criteria.where("member_id").is(memberId)
+        );
+
+        query.with(Sort.by(Sort.Direction.DESC, "create_time"));
+
+        return mongoTemplate.find(query, Postit.class);
     }
 
 }

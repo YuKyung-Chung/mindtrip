@@ -1,15 +1,16 @@
 package com.a303.postitms.domain.postit.controller;
 
+import com.a303.postitms.domain.postit.dto.reponse.MyPostitRes;
 import com.a303.postitms.domain.postit.dto.reponse.PostitTopicListRes;
 import com.a303.postitms.domain.postit.dto.request.PostitRegistReq;
 import com.a303.postitms.domain.postit.service.PostitService;
 import com.a303.postitms.global.api.response.BaseResponse;
 import com.a303.postitms.global.exception.code.SuccessCode;
 import jakarta.validation.Valid;
-import java.util.Date;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,11 +36,25 @@ public class PostitController {
         @RequestParam String date,
         @RequestParam String order,
         @RequestParam int village,
+        Pageable pageable,
         @RequestHeader("x-member-id") int memberId) {
 
-        PostitTopicListRes postitTopicListRes = postitService.readPostitList(date, order, village);
+        PostitTopicListRes postitTopicListRes = postitService.readPostitList(date, order, village, pageable);
 
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, postitTopicListRes);
+    }
+
+    @GetMapping("/v1/my")
+    public ResponseEntity<BaseResponse<List<MyPostitRes>>> readMyPostitList(
+        @RequestHeader("x-member-id") int memberId) {
+
+        log.debug("postits/v1/my GET api accepted");
+
+        List<MyPostitRes> myPostitResList = postitService.readMyPostitList(memberId);
+
+        log.debug("postits/v1/my GET api succeed");
+
+        return BaseResponse.success(SuccessCode.SELECT_SUCCESS, myPostitResList);
     }
 
     @PostMapping("/v1")
