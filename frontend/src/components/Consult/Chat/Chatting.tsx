@@ -16,13 +16,13 @@ function Chatting() {
     const dispatch = useDispatch();
 
     let chat = useSelector((state: RootState) => state.chat);
-    const [channelId, setChannelId] = useState<string|null>(chat.selectedId);
+    const channelId = chat.selectedId;
 
       // 추가정보 열고 닫고
     const [show, setShow] = useState<boolean>(false)
 
     const [stompClient, setStompClient] = useState<Client | null>(null);
-    const [connected, setConnected] = useState<boolean>(false);
+    // const [connected, setConnected] = useState<boolean>(false);
     // const [name, setName] = useState<string>('');
     // const [message, setMessage] = useState<string>('');
     const [ newMessage, setNewMessage] = useState("");
@@ -49,7 +49,7 @@ function Chatting() {
       setIsLoading(true);
 
       stomp.onConnect = (frame: Frame) => {
-          setConnected(true);
+        //   setConnected(true);
           console.log('Connected: ' + frame);
           console.log(channelId)
           stomp.subscribe(`/sub/${channelId}`, 
