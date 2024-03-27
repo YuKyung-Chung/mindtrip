@@ -9,7 +9,8 @@ import LeftIcon from '../../../atoms/Icons/LeftIcon'
 import UpIcon from '../../../atoms/Icons/UpIcon'
 import DownIcon from '../../../atoms/Icons/DownIcon'
 import SendIcon from '../../../atoms/Icons/SendIcon'
-import './Ballon.css';
+import { villageBackgroundColor } from '../../../atoms/color'
+// 채팅방
 import { getPersonalChat, send } from '../../../services/chat';
 
 function Chatting() {
@@ -56,7 +57,7 @@ function Chatting() {
           console.log('Connected: ' + frame);
           console.log(channelId)
           stomp.subscribe(`/sub/${channelId}`, 
-          (res) => {
+          (res: { body: string; }) => {
             setRecvList(prevRecvList => [...prevRecvList, JSON.parse(res.body)]);
           });
           console.log(recvList);
@@ -326,21 +327,20 @@ type propsType = {
 };
 
 function OtherBallon({ message }: propsType) {
-    return (
-        <div className="relative bg-[#f5a524] rounded-lg w-fit max-w-[90%] py-1 px-2 ml-4 my-2">
-            {message}
-            <div className="absolute tail-left" />
-        </div>
-    );
+  return (
+    <div className={`bg-gray-300 rounded-lg w-fit max-w-[90%] py-1 px-2 my-2`}>
+      {message}
+    </div>
+  )
 }
 
 function MyBallon({ message }: propsType) {
-    return (
-        <div className="flex justify-end">
-            <div className="relative bg-[#e5ceae] rounded-lg w-fit max-w-[90%] py-1 px-2 my-2 mr-1.5">
-                {message}
-                <div className="absolute tail-right" />
-            </div>
-        </div>
-    );
+  let member = useSelector((state: RootState) => state.member)
+  return (
+    <div className='flex justify-end'>
+      <div className={`${villageBackgroundColor[member.villageName]} rounded-lg w-fit max-w-[90%] py-1 px-2 my-2 mr-1.5`}>
+        {message}
+      </div>
+    </div>
+  )
 }

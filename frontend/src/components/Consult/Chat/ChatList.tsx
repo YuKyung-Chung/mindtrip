@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { changeList, changeSelectedId } from '../../../store/chatSlice'
-import { useDispatch } from "react-redux"
+import { changeList, changeSelectedId} from '../../../store/chatSlice'
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from '../../../store/store'
+import { villageBackgroundColor } from '../../../atoms/color'
+
 
 // 채팅방 리스트들이 들어가는 컴포넌트
 
@@ -9,6 +12,8 @@ function ChatList() {
   const [pickFirst, setpickFirst] = useState<boolean>(true)
   // const [personalChatId, setPersonalChatId] = useState<string>("")
 
+  let member = useSelector((state: RootState) => state.member)
+
   return (
     <div className="h-[70vh]">
       <div className="flex h-[8vh] justify-between items-center text-center">
@@ -16,7 +21,7 @@ function ChatList() {
         <div className="w-1/2 hover:cursor-pointer" onClick={() => setpickFirst(false)}>내가 들어준 고민</div>
       </div>
       <div
-        className="w-1/2 h-1 bg-[#f9c56f] rounded-md mb-2"
+        className={`${villageBackgroundColor[member.villageName]} border-2 border-gray-200 w-1/2 h-1 rounded-md mb-2`}
         style={{ transition: 'margin-left 0.3s ease', marginLeft: pickFirst ? 0 : '50%' }}
       />
         {
@@ -37,7 +42,6 @@ function ChatList() {
             </div>
           )
         }
-
     </div>
   )
 }
@@ -53,6 +57,7 @@ type propstype = {
 
 function Chatting({title, content, alert, channelId} :propstype) {
   const dispatch = useDispatch()
+  let member = useSelector((state: RootState) => state.member)
 
   const handleClick = (channelId : string) => {
     dispatch(changeList(false))
@@ -63,7 +68,7 @@ function Chatting({title, content, alert, channelId} :propstype) {
     <div className="relative border-b h-24 p-3 hover:bg-gray-100" onClick={() => handleClick(channelId)}>
       <p className="text-lg">{title}</p>
       <p className="text-sm overflow-hidden">{content}</p>
-      <div className="absolute right-[5%] top-[30%] rounded-full bg-[#f2dec2] w-10 h-10 text-center">
+      <div className={`absolute right-[5%] top-[30%] rounded-full ${villageBackgroundColor[member.villageName]} w-10 h-10 text-center`}>
         <p className="mt-2.5 text-sm">{alert > 300 ? '300+' : alert}</p>
       </div>
     </div>

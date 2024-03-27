@@ -9,7 +9,7 @@ const initialMemberState :memberType = {
   nickname: null,
   socialId: null,
   villageId: null,
-  villageName: 'grape',
+  villageName: 'peach',
   level: null,
   missionCount: null,
   accessToken: null

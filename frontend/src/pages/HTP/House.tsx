@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Draw from "../../components/HTP/Draw";
 
+
 // props의 타입을 지정해주자
 type propsType = {
   goNext: () => void
@@ -20,7 +21,6 @@ function House() {
   const goNext: () => void = () => {
     setOrder(order + 1);
   };
-
 
   const [isSurvey, setIsSurvey] = useState<boolean>(false)
   const goSurvey = function (): void {
@@ -69,13 +69,14 @@ function HouseDraw({ goSurvey }: propsType1) {
   }, [file])
 
 
+
   return (
     <div className="flex h-svh w-svh justify-center items-center flex-col">
       <p className="text-center mb-8 font-bold text-3xl">집을 그려주세요.</p>
       <div className="relative border-2 rounded h-2/3 lg:w-2/3 w-full bg-white">
         <Draw />
         <Button
-          className='absolute bottom-0 right-0 m-3'
+          className={`absolute bottom-0 right-0 m-3 opacity-50`}
           onClick={goSurvey}
         >다 그렸어요</Button>
       </div>
