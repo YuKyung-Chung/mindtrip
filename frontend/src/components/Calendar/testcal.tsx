@@ -68,7 +68,7 @@
 // export default TestCal
 
 import { useState, useEffect } from 'react';
-import axios from 'axios'; // axios 임포트
+// import axios from 'axios'; 
 import Calendar from 'react-calendar';
 import './ReactCalendar.css';
 import moment from 'moment';
@@ -97,44 +97,40 @@ import badimo from '../../assets/imoticon/badimo.png';
 //     fetchData(); // 컴포넌트가 마운트될 때 한 번만 데이터를 가져옴
 //   }, []);
 
+interface MissionData {
+  [date: string]: {
+    count: number;
+    missions: { missionname: string; isFinish: boolean }[];
+  };
+}
 
+interface DayData {
+  [date: string]: number;
+}
 function TestCal() {
-  const curDate = new Date();
-  const [value, onChange] = useState(curDate);
-  const [dayData, setDayData] = useState({});
-  const [missionInfo, setMissionInfo] = useState({});
-  const [selectedMissions, setSelectedMissions] = useState([]);
+  const [value, onChange] = useState<Date>(new Date());
+
+  const [dayMissionData, setDayMissionData] = useState<{ dayData: DayData; missionInfo: MissionData }>({
+    dayData: {},
+    missionInfo: {},
+  });
+  const [selectedMissions, setSelectedMissions] = useState<string[]>([]);
 
   useEffect(() => {
     // 임시 데이터 설정
-    const tempData = {
+    const tempData: DayData = {
       '2024-03-10': 3,
       '2024-03-11': 3,
       '2024-03-12': 3,
       '2024-03-13': 3,
       '2024-03-14': 3,
-      '2024-03-15': 3,
-      '2024-03-16': 3,
-      '2024-03-17': 3,
-      '2024-03-18': 3,
-      '2024-03-19': 3,
-      '2024-03-20': 3,
     };
 
-    setDayData(tempData); // 임시 데이터를 상태로 설정
-
-    // 임시 미션 데이터 설정
-    const tempMissionData = {
+    const tempMissionData: MissionData = {
       '2024-03-10': {
         count: 2,
         missions: [
           { missionname: '미션 1', isFinish: true },
-          { missionname: '미션 2', isFinish: true },
-          { missionname: '미션 3', isFinish: false },
-          { missionname: '미션 2', isFinish: true },
-          { missionname: '미션 3', isFinish: false },
-          { missionname: '미션 2', isFinish: true },
-          { missionname: '미션 3', isFinish: false },
           { missionname: '미션 2', isFinish: true },
           { missionname: '미션 3', isFinish: false },
         ],
@@ -150,13 +146,13 @@ function TestCal() {
       // 이하 생략
     };
 
-    setMissionInfo(tempMissionData); // 임시 미션 데이터를 상태로 설정
+    setDayMissionData({ dayData: tempData, missionInfo: tempMissionData }); // 임시 데이터를 상태로 설정
   }, []);
 
-  const addContent = ({ date }) => {
+  const addContent = ({ date }: { date: Date }) => {
     const contents = [];
     const formattedDate = moment(date).format('YYYY-MM-DD');
-    const dayValue = dayData[formattedDate];
+    const dayValue = dayMissionData.dayData[formattedDate];
 
     if (dayValue === 3) {
       contents.push(
@@ -192,13 +188,13 @@ function TestCal() {
         />
       );
     }
-    
+
     return <div>{contents}</div>;
   };
 
-  const handleDayClick = (date) => {
+  const handleDayClick = (date: Date) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
-    const missions = missionInfo[formattedDate]?.missions || [];
+    const missions = dayMissionData.missionInfo[formattedDate]?.missions || [];
 
     if (missions.length === 0) {
       setSelectedMissions(['해당 날짜에 미션이 없습니다.']);
@@ -215,12 +211,12 @@ function TestCal() {
     <>
       <Calendar
         locale="en"
-        onChange={onChange}
+        onChange={(date) => onChange(date as Date)}
         value={value}
         next2Label={null}
         prev2Label={null}
-        formatDay={(locale, date) => moment(date).format('D')}
-        formatShortWeekday={(locale, date) => moment(date).format('dd')}
+        formatDay={( date ) => moment(date).format('D')}
+        formatShortWeekday={( date ) => moment(date).format('dd')}
         tileContent={addContent}
         showNeighboringMonth={false}
         onClickDay={handleDayClick} // 날짜를 클릭했을 때 이벤트 핸들러 추가

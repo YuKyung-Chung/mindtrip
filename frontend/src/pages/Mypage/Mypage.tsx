@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Avatar } from "@nextui-org/react";
 import { Card } from "@nextui-org/react";
 import { Link, Outlet } from "react-router-dom";
-import Homebtn from "../../atoms/buttons/homebtn";
 
 function Mypage() {
   const [menuOpen, setMenuOpen] = useState(false);
