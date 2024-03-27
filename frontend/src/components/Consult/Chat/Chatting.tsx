@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Frame, Client } from '@stomp/stompjs';
 import { Tooltip, Button, Input } from '@nextui-org/react';
 import { changeList, toggleOpen } from '../../../store/chatSlice';
@@ -10,8 +10,7 @@ import UpIcon from '../../../atoms/Icons/UpIcon'
 import DownIcon from '../../../atoms/Icons/DownIcon'
 import SendIcon from '../../../atoms/Icons/SendIcon'
 import './Ballon.css';
-import { registPersonalChat, getPersonalChat, send } from '../../../services/chat';
-import SockJS from 'sockjs-client';
+import { getPersonalChat, send } from '../../../services/chat';
 
 function Chatting() {
     const dispatch = useDispatch();
@@ -24,8 +23,8 @@ function Chatting() {
 
     const [stompClient, setStompClient] = useState<Client | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
-    const [name, setName] = useState<string>('');
-    const [message, setMessage] = useState<string>(''); // 채팅 메시지를 상태로 관리합니다.
+    // const [name, setName] = useState<string>('');
+    // const [message, setMessage] = useState<string>('');
     const [ newMessage, setNewMessage] = useState("");
     const [recvList, setRecvList] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -129,14 +128,14 @@ function Chatting() {
   //     return `${createDate.getFullYear()}-${(createDate.getMonth() + 1).toString().padStart(2, '0')}-${createDate.getDate().toString().padStart(2, '0')} ${createDate.getHours().toString().padStart(2, '0')}:${createDate.getMinutes().toString().padStart(2, '0')}`;
   // }
 
-  const formattedMessage = (message : string) => {
-      return message.split('\n').map((line, index) => (
-          <React.Fragment key={index}>
-              {line}
-              <br />
-          </React.Fragment>
-      ));
-  }
+//   const formattedMessage = (message : string) => {
+//       return message.split('\n').map((line, index) => (
+//           <React.Fragment key={index}>
+//               {line}
+//               <br />
+//           </React.Fragment>
+//       ));
+//   }
   // useEffect(() => {
   //     // 새로운 채팅이 도착할 때마다 스크롤을 자동으로 올립니다.
   //     if (scrollContainerRef.current) {
@@ -182,19 +181,19 @@ function Chatting() {
     // };
 
 
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
-    };
+    // const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setName(event.target.value);
+    // };
 
     // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //     event.preventDefault();
     //     sendName(event.target.value);
     // };
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMessage(event.target.value); // 입력 필드의 값을 상태에 업데이트합니다.
-      // console.log(event.target.value);
-  };
+//     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//       setMessage(event.target.value); // 입력 필드의 값을 상태에 업데이트합니다.
+//       console.log(event.target.value);
+//   };
 
     // 고민 종료하는 함수
     const endConsult = function () {
@@ -293,7 +292,7 @@ function Chatting() {
                             size="sm"
                             variant="ghost"
                             color="danger"
-                            // onClick={kickUser}
+                            onClick={kickUser}
                         >
                             상대 내보내기
                         </Button>
@@ -301,7 +300,7 @@ function Chatting() {
                             size="sm"
                             variant="ghost"
                             color="primary"
-                            // onClick={endConsult}
+                            onClick={endConsult}
                             className="ml-3"
                         >
                             고민 종료하기

@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux"
 function ChatList() {
   // 상단 탭 제어용 true면 나의 고민
   const [pickFirst, setpickFirst] = useState<boolean>(true)
-  const [personalChatId, setPersonalChatId] = useState<string>("")
+  // const [personalChatId, setPersonalChatId] = useState<string>("")
 
   return (
     <div className="h-[70vh]">
