@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Avatar } from "@nextui-org/react";
 import { Card } from "@nextui-org/react";
 import { Link, Outlet } from "react-router-dom";
+import Homebtn from "../../atoms/buttons/homebtn";
 
 function Mypage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,16 +12,15 @@ function Mypage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto my-8 p-6 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between">
-        <div className="flex space-x-4">
+    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md ">
+      <div className="flex justify-between h-[10vh] items-center">
+        <div className="flex space-x-4 items-center">
           <Avatar />
           <div className="flex flex-col justify-center">
             <span className="text-sm font-semibold text-gray-700">나의마을 : 마을이름</span>
             사용자님 환영합니다.
           </div>
         </div>
-        {/* 햄버거 메뉴 - 작은 화면에서만 표시 */}
         <div className="md:hidden">
           <button onClick={toggleMenu} className="text-gray-600 hover:text-gray-800 focus:outline-none">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,7 +28,6 @@ function Mypage() {
             </svg>
           </button>
         </div>
-        {/* 햄버거 메뉴 - 작은 화면에서만 표시 */}
         {/* 메뉴 아이템 - 큰 화면에서 표시 */}
         <div className="hidden md:flex space-x-4">
           <div><Link to={'/mypage/htp'} className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1">HTP검사결과</Link></div>
@@ -36,10 +35,9 @@ function Mypage() {
           <div><Link to={'/mypage/history'} className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1">내기록</Link></div>
           <div><Link to={'/mypage/fix'} className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1">내정보수정</Link></div>
         </div>
-        {/* 메뉴 아이템 - 큰 화면에서 표시 */}
       </div>
       {/* 햄버거 메뉴를 열었을 때 표시되는 아이템들 - 작은 화면에서만 표시 */}
-      <div className={`md:hidden ${menuOpen ? 'block' : 'hidden'}`}>
+      <div className= {`md:hidden ${menuOpen ? 'block' : 'hidden'}`}>
         <div className="flex flex-col space-y-4">
           <Link to={'/mypage/htp'} className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1">HTP검사결과</Link>
           <Link to={'/mypage/progress'} className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1">진척도</Link>
@@ -48,14 +46,10 @@ function Mypage() {
         </div>
       </div>
       {/* 햄버거 메뉴를 열었을 때 표시되는 아이템들 - 작은 화면에서만 표시 */}
-      <div className="mt-6 gap-4">
-        <div>
-          <div className="flex flex-col space-y-6">
-            <Card className="w-full">
+      <div className="mt-6 gap-4 flex flex-col space-y-6 min-h-[80vh] ">
+            <Card className="w-full overflow-y-auto h-fit">
               <Outlet />
             </Card>
-          </div>
-        </div>
       </div>
     </div>
   );

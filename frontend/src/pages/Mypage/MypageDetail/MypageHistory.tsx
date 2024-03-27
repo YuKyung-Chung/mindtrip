@@ -12,9 +12,8 @@ import MyPostit from "../../../components/MyPostit/MyPostit";
 
 function MypageHistory() {
   return (
-    <div className="bg-[#f4c2c2] flex justify-end flex-col min-h-screen relative">
-        <h1 className="text-2xl font-bold mb-4">내기록</h1>
-      <div className="flex justify-center items-center min-h-screen">
+    <div className="bg-[#f4c2c2] flex justify-end flex-col h-[80vh] relative">
+      <div className="flex justify-center items-center h-[80vh]">
       <div>
         <MyPostit />
       </div>

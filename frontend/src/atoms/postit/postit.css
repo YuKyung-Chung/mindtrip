@@ -19,6 +19,8 @@ div.rgyPostIt {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffff88', endColorstr='#ffffc6', GradientType=1);
   transition: all 0.2s;
   -webkit-transition: all 0.2s;
+  width: 250px;
+  height: 175px; 
 }
 
 div.rgyPostIt::after {
