@@ -1,8 +1,6 @@
 import * as THREE from 'three'
 import { useRef, useEffect } from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { cameraNear } from 'three/examples/jsm/nodes/Nodes.js';
-
 
 function Background() {
   // 3d 모델
