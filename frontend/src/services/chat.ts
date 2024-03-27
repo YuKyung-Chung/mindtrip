@@ -7,14 +7,11 @@ const getPersonalChat = async (
     channelId: string
     ): Promise<any> => {
     try {
-        // const res: AxiosResponse = await axios.get(`https://i10a810.p.ssafy.io/api/channels/v1/${channelId}`,{
-        const res: AxiosResponse = await axios.get(`http://localhost:8000/api/channels/v1/${channelId}`,{
+        const res: AxiosResponse = await axios.get(`https://mindtrip.site/api/channels/v1/${channelId}`,{
             headers: {
                 "x-member-id": memberId,
             }
         });
-        // readPersonalChat(accessToken, personalChatId);
-        // readPersonalChat(personalChatId);
         return res.data.result;
     } catch (err) {
         console.log(err);
@@ -32,8 +29,7 @@ const registPersonalChat = async (
     // memberId: number
     ): Promise<any> => {
     try {
-        // const res: AxiosResponse = await axios.post(`https://i10a810.p.ssafy.io/api/personal-chat/v1`,{
-        const res: AxiosResponse = await axios.post(`http://localhost:8000/api/channels/v1/enter/${consultId}`,{
+        const res: AxiosResponse = await axios.post(`https://mindtrip.site/api/channels/v1/enter/${consultId}`,{
             "receiver": receiver,
         }, {
             headers: {
@@ -87,6 +83,6 @@ export {
     getPersonalChat,
     send,
     entranceChannel
-    // readPersonalChat,
+    // readPersonalChat
     // readChannelChat
 }

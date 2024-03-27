@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Frame, Client } from '@stomp/stompjs';
 import { Tooltip, Button, Input } from '@nextui-org/react';
 import { changeList, toggleOpen } from '../../../store/chatSlice';
@@ -24,26 +24,29 @@ function Chatting() {
     const [stompClient, setStompClient] = useState<Client | null>(null);
     // const [connected, setConnected] = useState<boolean>(false);
     // const [name, setName] = useState<string>('');
-    // const [message, setMessage] = useState<string>('');
-    const [ newMessage, setNewMessage] = useState("");
+    const [newMessage, setNewMessage] = useState("");
     const [recvList, setRecvList] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [personalChat, setPersonalChat] = useState<any>({
-      channelId: "66021b7bb91c095bbc4f81d7",
+      channelId: null,
       receiver: {
-          memberId: 1,
-          nickname: "동준"
+          memberId: null,
+          nickname: null
       },
       sender: {
-          memberId: 2,
-          nickname: "유경"
+          memberId: null,
+          nickname: null
       },
       messageList: []
   });
 
+  // 스크롤바 조정
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
     const chatPrivateConnect = () => {
       const stomp = new Client({
         brokerURL: 'ws://localhost:8000/api/chat'
+        // brokerURL: 'https://mindtrip.site/api/chat'
       });
       
       setIsLoading(true);
@@ -56,6 +59,7 @@ function Chatting() {
           (res) => {
             setRecvList(prevRecvList => [...prevRecvList, JSON.parse(res.body)]);
           });
+          console.log(recvList);
           setIsLoading(false);
       };
 
@@ -74,11 +78,11 @@ function Chatting() {
 
       setStompClient(stomp);
 
-      return () => {
-        if (stomp.connected) {
-            stomp.deactivate();
-        }
-      };
+    //   return () => {
+    //     if (stomp.connected) {
+    //         stomp.deactivate();
+    //     }
+    //   };
     };
 
     // 연결 끊기
@@ -94,14 +98,17 @@ function Chatting() {
   useEffect(() =>  {
       disconnectChat();
       if(channelId != null) {
+        console.log("연결")
           chatPrivateConnect();
       }
       // 연결
       const fetchData = async () => {
           try {
+            console.log("fetch")
               if(channelId != null){
-                const personalChat = await getPersonalChat(1, channelId);
+                const personalChat = await getPersonalChat(2, channelId);
                 setPersonalChat(personalChat);
+                console.log(personalChat);
                 setRecvList(personalChat.messageList);
               }
               
@@ -109,19 +116,24 @@ function Chatting() {
               console.error("Error fetching personal chat:", error);
           }
       };
-        fetchData();
+      fetchData();
   }, [channelId]);
-
-
 
   // 메시지 전송
   const sendMessage = () => {
     // console.log(newMessage);
     // console.log(channelId);
       send(stompClient, personalChat.sender, newMessage, personalChat.channelId);
-      // readPersonalChat(accessToken, personalChat.personalChatId);
+    //   readPersonalChat(accessToken, personalChat.personalChatId);
       setNewMessage("");
   };
+
+  useEffect(() => {
+    // 채팅방이 처음 열렸을 때 스크롤을 자동으로 올립니다.
+    if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+    }
+}, []);
 
   // const formattedDate = (time) =>{
   //     const createDate = new Date(time);
@@ -136,12 +148,6 @@ function Chatting() {
 //           </React.Fragment>
 //       ));
 //   }
-  // useEffect(() => {
-  //     // 새로운 채팅이 도착할 때마다 스크롤을 자동으로 올립니다.
-  //     if (scrollContainerRef.current) {
-  //         scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
-  //     }
-  // }, [recvList]);
 
   const handleKeyPress = (event : any) => {
       if (event.key === 'Enter' && !event.shiftKey) {
@@ -245,14 +251,14 @@ function Chatting() {
             </div>
 
             {/* 채팅방 */}
-            <div className="h-[43vh] w-full p-1 overflow-scroll">
+            <div ref={scrollContainerRef} className="h-[43vh] w-full p-1 overflow-scroll">
                 {
                   recvList.map((msg, index) => (
                     <div key={index}>
                       {msg.sender.memberId ===  personalChat.sender.memberId ? (
-                          <OtherBallon message={msg.text}/>
-                      ) : (
                           <MyBallon message={msg.text} />
+                      ) : (
+                          <OtherBallon message={msg.text}/>
                       )}
                     </div>
                   )) }
