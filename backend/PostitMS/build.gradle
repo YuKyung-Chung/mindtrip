@@ -78,8 +78,8 @@ dependencies {
 
 sonar {
     properties {
-        property "sonar.projectKey", "mindtrip"
-        property "sonar.projectName", "mindtrip"
+        property "sonar.projectKey", "backend-postit"
+        property "sonar.projectName", "backend-postit"
     }
 }
 
