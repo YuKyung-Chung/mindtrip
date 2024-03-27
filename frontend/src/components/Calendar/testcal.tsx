@@ -213,12 +213,13 @@ function TestCal() {
   return (
     <>
       <Calendar
-      // @ts-ignore
         onChange={(date) => onChange(date as Date)}
         value={value}
         next2Label={null}
         prev2Label={null}
+        // @ts-ignore
         formatDay={(locale, date) => moment(date).format("D")} 
+        // @ts-ignore
         formatShortWeekday={(locale, date) => moment(date).format("dd")} 
         tileContent={addContent}
         showNeighboringMonth={false}
