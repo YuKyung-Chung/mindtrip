@@ -107,6 +107,8 @@ interface MissionData {
 interface DayData {
   [date: string]: number;
 }
+
+
 function TestCal() {
   const [value, onChange] = useState<Date>(new Date());
 
@@ -210,17 +212,16 @@ function TestCal() {
   return (
     <>
       <Calendar
-        locale="en"
-        onChange={(date) => onChange(date as Date)}
-        value={value}
-        next2Label={null}
-        prev2Label={null}
-        formatDay={( date ) => moment(date).format('D')}
-        formatShortWeekday={( date ) => moment(date).format('dd')}
-        tileContent={addContent}
-        showNeighboringMonth={false}
-        onClickDay={handleDayClick} // 날짜를 클릭했을 때 이벤트 핸들러 추가
-      />
+  onChange={(date) => onChange(date as Date)}
+  value={value}
+  next2Label={null}
+  prev2Label={null}
+  formatDay={(locale, date) => moment(date).format('D')} // 로케일 값 사용 예시
+  formatShortWeekday={(locale, date) => moment(date).format('dd')} // 로케일 값 사용 예시
+  tileContent={addContent}
+  showNeighboringMonth={false}
+  onClickDay={handleDayClick}
+/>
       {selectedMissions.length > 0 && (
         <div className="mt-4 text-center bg-white w-4/5 p-4 rounded-lg border border-gray-300 mx-auto">
           <p>선택한 날짜의 미션 정보:</p>
