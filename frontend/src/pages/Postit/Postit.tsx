@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import BackButton from '../../atoms/buttons/backbtn';
+import Homebtn from "../../atoms/buttons/homebtn";
 import AlarmButton from '../../atoms/buttons/alambtn';
 import PostIt from '../../atoms/postit/postititem';
 import PostitModal from '../../components/MyPostit/PostitModal'; // 모달 컴포넌트를 import 해주세요
@@ -69,7 +69,7 @@ const PostitPage: React.FC = () => {
   return (
     <div className="bg-[#fff7e0] px-2 py-8">
       <div className="flex flex-col justify-center items-center mb-6">
-        <BackButton />
+        <Homebtn />
         <AlarmButton />
         <h1 className="text-xl font-bold mt-20">{topic}</h1>
       </div>
