@@ -1,24 +1,20 @@
 package com.a303.missionms.domain.dailyMission.service;
 
 import com.a303.missionms.domain.dailyMission.DailyMission;
+import com.a303.missionms.domain.dailyMission.dto.NotificationEventDto;
 import com.a303.missionms.domain.dailyMission.repository.DailyMissionRepository;
-import com.a303.missionms.domain.member.dto.response.MemberBaseRes;
-import com.a303.missionms.domain.mission.Category;
 import com.a303.missionms.domain.mission.Mission;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
-import com.a303.missionms.domain.mission.dto.response.CategoryMissionRes;
-import com.a303.missionms.domain.mission.dto.response.MissionBaseRes;
-import com.a303.missionms.domain.mission.dto.response.MissionListRes;
 import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
 import com.a303.missionms.domain.missionLog.MissionLog;
 import com.a303.missionms.domain.missionLog.repository.MissionLogRepository;
-import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.client.MemberClient;
 import com.a303.missionms.global.exception.BaseExceptionHandler;
 import com.a303.missionms.global.exception.code.ErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,6 +30,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,6 +42,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	@Autowired
 	private final EntityManager em;
 
+	private final KafkaTemplate<String, String> notificationEventDtoKafkaTemplate;
 
 	private final DailyMissionRepository dailyMissionRepository;
 	private final MissionLogRepository missionLogRepository;
@@ -201,7 +199,6 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		missionLogRepository.saveAll(missionLogList);
 		em.createQuery("DELETE FROM DailyMission where 1=1").executeUpdate();
 
-
 		// 새로운 미션 3개씩 선정해서 넣기
 		List<Integer> memberIdList = memberClient.getMemberIdList().getResult();
 		if (memberIdList.size() == 0) {
@@ -239,6 +236,26 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		if (scheduledList.size() != 0) {
 			dailyMissionRepository.saveAll(scheduledList);
 		}
+
+		// 알림 전송 kafka(notification에서는 알림테이블에 저장 + 실시간 알림 전송)
+
+		NotificationEventDto eventDto = NotificationEventDto.builder()
+			.eventType("DailyMissionSchedule")
+			.memberId(-1)
+			.build();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString;
+		// 객체를 JSON 문자열로 변환
+		try {
+			jsonString = objectMapper.writeValueAsString(eventDto);
+			notificationEventDtoKafkaTemplate.send("notification-topic", jsonString);
+
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+//		log.info("리뷰 답글 알림 전송. userId : {}, message : {}",userId, message);
 
 	}
 

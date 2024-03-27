@@ -15,8 +15,8 @@ java {
 
 sonar {
     properties {
-        property "sonar.projectKey", "backend-member"
-        property "sonar.projectName", "backend-member"
+        property "sonar.projectKey", "backend-notification"
+        property "sonar.projectName", "backend-notification"
     }
 }
 
@@ -48,9 +48,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-
-// log & transaction
     // prometheus
 //    implementation 'io.micrometer:micrometer-registry-prometheus'
     // micrometer
@@ -62,8 +59,6 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'io.github.openfeign:feign-micrometer'
 
-
-
 // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // QueryDSL
@@ -74,13 +69,15 @@ dependencies {
 
 // DB
     // MySQL
-    runtimeOnly 'com.mysql:mysql-connector-j'
+//    runtimeOnly 'com.mysql:mysql-connector-j'
     // MariaDB
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     // mongodb
 //    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     // redis
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
 
 // Security
     // spring security

@@ -11,6 +11,8 @@ public class DailyMissionScheduler {
 
 	private final DailyMissionService dailyMissionService;
 
+	private final int ONE_MINUTE = 60000;
+
 	@Scheduled(cron = "5 0 12 * * *")  // 매일 12시 00분 5초
 	@Transactional
 	public void dailyMissionRecommend() {
