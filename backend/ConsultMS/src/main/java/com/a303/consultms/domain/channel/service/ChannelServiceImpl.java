@@ -1,20 +1,10 @@
 package com.a303.consultms.domain.channel.service;
 
 import com.a303.consultms.domain.channel.Channel;
-import com.a303.consultms.domain.channel.dto.request.ChannelReq;
 import com.a303.consultms.domain.channel.dto.response.ChannelRes;
 import com.a303.consultms.domain.channel.repository.ChannelRepository;
-import com.a303.consultms.domain.consult.Consult;
-import com.a303.consultms.domain.consult.dto.request.ConsultUpdateReq;
-import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
-import com.a303.consultms.domain.consult.repository.ConsultRepository;
 import com.a303.consultms.domain.member.dto.response.MemberBaseRes;
-import com.a303.consultms.domain.message.Message;
-import com.a303.consultms.global.api.response.BaseResponse;
 import com.a303.consultms.global.client.MemberClient;
-import com.a303.consultms.global.exception.BaseExceptionHandler;
-import com.a303.consultms.global.exception.code.ErrorCode;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +45,7 @@ public class ChannelServiceImpl implements ChannelService {
         return channel.getChannelId();
     }
 
+    //참여중인 채팅방 목록 조회
     @Override
     public List<ChannelRes> getPersonalChatList(int sender) {
 
@@ -70,16 +61,16 @@ public class ChannelServiceImpl implements ChannelService {
 
             int other = (sender == senderId) ? receiverId : senderId;
 
-            MemberBaseRes memberBaseRes = memberClient.getMember(other).getResult();
+            MemberBaseRes receiverInfo = memberClient.getMember(receiverId).getResult();
+            MemberBaseRes senderInfo = memberClient.getMember(senderId).getResult();
+
 
             //TODO: 탈퇴한 사용자 처리
-//            if(memberBaseRes == null) {
-//                memberBaseRes = MemberBaseRes.builder().nickname("탈퇴한 사용자").build();
-//            }
 
             ChannelRes channelRes = ChannelRes.builder()
                 .channelId(channel.getChannelId())
-                .receiver(memberBaseRes)
+                .receiver(receiverInfo)
+                .sender(senderInfo)
                 .build();
 
             channelResList.add(channelRes);
@@ -92,21 +83,23 @@ public class ChannelServiceImpl implements ChannelService {
     //개인 채팅 조회
     @Override
     public Channel readPersonalChat(String channelId, int memberId) {
-        
+
         Channel channel = channelRepository.findById(channelId).get();
-        
+        System.out.println(channel);
+
         Map<String, String> sender = channel.getSender();
-        
+        System.out.println(sender);
+
         if(memberId != Integer.parseInt(sender.get("memberId"))){
             channel.setSender(channel.getReceiver());
             channel.setReceiver(sender);
         }
-        
-        int receiverId = Integer.parseInt(channel.getReceiver().get("memberId"));
-        
+
+//        int receiverId = Integer.parseInt(channel.getReceiver().get("memberId"));
+
         // TODO: 탈퇴한 사용자 처리
-        
-        
+
+
         return channel;
     }
 

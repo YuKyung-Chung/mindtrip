@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/channels/v1")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class ChannelController {
 
     private final ChannelService channelService;
@@ -35,22 +35,22 @@ public class ChannelController {
     //고민상담소 입장(채팅방 생성)
     @PostMapping("/enter/{consultId}")
     @Transactional
-    public ResponseEntity<BaseResponse<String>> enterConsultRoom(
+    public ResponseEntity<BaseResponse<String>> registerPersonalChat(
         @PathVariable int consultId,
-        @RequestBody PersonalChatReq personalChatReq,
-        @RequestHeader("x-member-id") int memberId
+        @RequestBody ChannelReq channelReq,
+        @RequestHeader("x-member-id") int sender //입장하는 사람
     ) throws IOException {
 
         //채팅방 조회
         Channel channel = channelService.readPersonalChatByRecevier(
-            personalChatReq.receiver(),
-            memberId
+            channelReq.receiver(),
+            sender
         );
 
         String channelId;
 
         if (channel == null) { //존재하지 않을 경우 생성
-            channelId = channelService.registerPersonalChat(personalChatReq.receiver(), memberId);
+            channelId = channelService.registerPersonalChat(channelReq.receiver(), sender);
         } else {
             channelId = channel.getChannelId();
         }

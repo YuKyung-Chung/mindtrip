@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Message extends MongoBaseEntity {
 
     @Id
-    private String id;
+    private String messageId;
 
     @Field(name = "sender")
     private Map<String, String> sender;

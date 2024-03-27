@@ -6,7 +6,8 @@ import lombok.Builder;
 @Builder
 public record ChannelRes(
     String channelId,
-    MemberBaseRes receiver
+    MemberBaseRes receiver,
+    MemberBaseRes sender
 ) {
 
 }

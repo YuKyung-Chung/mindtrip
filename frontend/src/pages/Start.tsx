@@ -5,8 +5,8 @@ function Start() {
   const navigate = useNavigate()
   return (
     <div className="relative">
-      <div className="flex items-center justify-center h-screen relative z-10">
-        <div className="text-center">
+      <div className="flex items-center justify-center h-screen w-screen relative z-10">
+        <div className="text-center pb-[20%] md:pb-[10%]">
           <p className="font-bold text-3xl leading-relaxed">HTP 검사를 통해<br />나를 위한 여정을 떠나보세요.</p>
           {/* <Button variant="ghost" className="mt-5" endContent={<StartIcon/>} onClick={() => {navigate('/htp/house')}}>검사하러 가기</Button> */}
           <div className='mt-5 mb-4' onClick={() => { navigate('/htp/house') }}>

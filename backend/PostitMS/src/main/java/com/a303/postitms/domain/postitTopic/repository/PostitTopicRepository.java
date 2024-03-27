@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface PostitTopicRepository extends MongoRepository<PostitTopic, String>, PostitTopicCustomRepository {
+public interface PostitTopicRepository extends MongoRepository<PostitTopic, String> {
+
+    List<PostitTopic> findAllByOrderByPostitDate();
     PostitTopic getPostitTopicById(String postitTopicId);
 
     PostitTopic findPostitTopicByPostitDate(String postitDate);

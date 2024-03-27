@@ -15,6 +15,8 @@ import { RootState } from './../../store/store'
 import { getConsultCategory } from '../../store/consultSlice';
 import { getConsults, getCategory } from './../../api/consults'
 import { consultType, categoryType } from '../../types/DataTypes';
+import { villageBackgroundColor, villageTextColor } from '../../atoms/color';
+
 
 // 고민상담소 첫 페이지
 
@@ -23,6 +25,9 @@ function Consult() {
 
   // 채팅창 관련 가져오기
   let chat = useSelector((state: RootState) => state.chat)
+
+  // 회원 정보
+  let member = useSelector((state: RootState) => state.member)
 
   // 카테고리 받기
   let category = useSelector((state: RootState) => state.consultSlice.category)
@@ -72,9 +77,9 @@ function Consult() {
           isIconOnly
           size='lg'
           radius='full'
-          variant={chat.isOpen ? 'solid' : 'faded'}
+          variant={chat.isOpen ? 'solid' : 'flat'}
           onClick={() => dispatch(toggleOpen())}
-          className='fixed bottom-10 right-[4%] shadow-xl'
+          className={`${villageBackgroundColor[member.villageName]} ${villageTextColor[member.villageName]} fixed bottom-10 right-[4%] shadow-xl`}
         >
           {chat.isOpen ? <XIcon /> : <ChatIcon />}
         </Button>
@@ -118,6 +123,7 @@ function Others() {
       try {
         let tempOtherConsult: consultType[] = await getConsults()
         setOtherConsult(tempOtherConsult)
+        console.log(tempOtherConsult)
       } catch (err) {
         console.log(err)
       }

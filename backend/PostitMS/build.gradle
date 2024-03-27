@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.A303'
@@ -73,6 +74,13 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 
 
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "backend-postit"
+        property "sonar.projectName", "backend-postit"
+    }
 }
 
 dependencyManagement {

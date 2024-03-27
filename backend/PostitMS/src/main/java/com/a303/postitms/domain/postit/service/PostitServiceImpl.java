@@ -1,11 +1,13 @@
 package com.a303.postitms.domain.postit.service;
 
 import com.a303.postitms.domain.postit.Postit;
+import com.a303.postitms.domain.postit.dto.reponse.MyPostitRes;
 import com.a303.postitms.domain.postit.dto.reponse.PostitRes;
 import com.a303.postitms.domain.postit.dto.reponse.PostitTopicListRes;
 import com.a303.postitms.domain.postit.dto.request.PostitRegistReq;
 import com.a303.postitms.domain.postit.repository.PostitRepository;
 import com.a303.postitms.domain.postitTopic.PostitTopic;
+import com.a303.postitms.domain.postitTopic.dto.reponse.PostitTopicRes;
 import com.a303.postitms.domain.postitTopic.repository.PostitTopicRepository;
 import com.a303.postitms.global.api.response.BaseResponse;
 import com.a303.postitms.global.client.MemberClient;
@@ -13,9 +15,12 @@ import com.a303.postitms.domain.member.Role;
 import com.a303.postitms.domain.member.dto.response.MemberBaseRes;
 import com.a303.postitms.global.exception.BaseExceptionHandler;
 import com.a303.postitms.global.exception.code.ErrorCode;
+import java.lang.reflect.Member;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +34,8 @@ public class PostitServiceImpl implements PostitService {
     private final MemberClient memberClient;
 
     @Override
-    public PostitTopicListRes readPostitList(String date, String order, int village) {
+    public PostitTopicListRes readPostitList(String date, String order, int village,
+        Pageable pageable) throws BaseExceptionHandler {
 
         PostitTopic postitTopic = postitTopicRepository.findPostitTopicByPostitDate(date);
 
@@ -42,7 +48,7 @@ public class PostitServiceImpl implements PostitService {
 
         List<PostitRes> postitResList = postitRepository.findByPostitTopicIdAndVillageOrder(
             postitTopic.getId(),
-            order, village);
+            order, village, pageable);
 
         return PostitTopicListRes.builder()
             .topicId(postitTopic.getId())
@@ -53,8 +59,31 @@ public class PostitServiceImpl implements PostitService {
     }
 
     @Override
+    public List<MyPostitRes> readMyPostitList(int memberId) throws BaseExceptionHandler {
+
+        List<Postit> postitResList = postitRepository.findByMemberId(memberId);
+
+        List<MyPostitRes> myPostitResList = postitResList.stream()
+            .map(postit -> MyPostitRes.builder()
+                .id(postit.getId())
+                .postitTopicRes(PostitTopicRes.builder()
+                    .id(postit.getPostitTopic().getId())
+                    .topic(postit.getPostitTopic().getTopic())
+                    .postitDate(postit.getPostitTopic().getPostitDate()).build())
+                .content(postit.getContent())
+                .reportCount(postit.getReportCount())
+                .likeCount(postit.getLikeCount())
+                .village(postit.getVillage())
+                .build()
+            ).collect(Collectors.toList());
+
+        return myPostitResList;
+    }
+
+
+    @Override
     @Transactional
-    public String registerPostit(PostitRegistReq postitRegistReq, int memberId) {
+    public String registerPostit(PostitRegistReq postitRegistReq, int memberId) throws BaseExceptionHandler  {
 
         BaseResponse<MemberBaseRes> memberRes = memberClient.getMember(memberId);
 
@@ -97,7 +126,7 @@ public class PostitServiceImpl implements PostitService {
 
     @Override
     @Transactional
-    public void deletePostit(String postitId, String date, int memberId) {
+    public void deletePostit(String postitId, String date, int memberId) throws BaseExceptionHandler {
         Postit postit = postitRepository.findPostitById(postitId);
 
         if (postit == null) {

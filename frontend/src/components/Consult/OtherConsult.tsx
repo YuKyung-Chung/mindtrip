@@ -48,18 +48,17 @@ function OtherConsult({consult} : propsType) {
       shadow={hover ? 'sm' : 'none'} 
       onMouseEnter={() => {sethover(true)}} 
       onMouseLeave={() => {sethover(false)}}
-      className="bg-amber-50 h-full"
+      className='h-full border-2'
     >
-      <CardBody className="relative">
-        <p className="text-lg">{consult.title}</p>
-        <div className="h-14 text-ellipsis overflow-hidden my-1 mb-2">
+      <CardBody className="relative p-4">
+        <p className="text-lg z-10">{consult.title}</p>
+        <div className="h-14 text-ellipsis overflow-hidden my-1 mb-2 z-10">
           <p className="text-sm">{consult.content}</p>
         </div>
         <Button 
-          color='warning' 
-          variant="ghost" 
+          variant="light" 
           onPress={onOpen}
-          className="max-w-40 min-w-32 absolute bottom-3 right-7"
+          className={`max-w-40 min-w-32 absolute bottom-5 right-7 z-10`}
         >상담하기</Button>
       </CardBody>
       <Modal size="sm" placement='center' isOpen={isOpen} onOpenChange={onOpenChange}>
