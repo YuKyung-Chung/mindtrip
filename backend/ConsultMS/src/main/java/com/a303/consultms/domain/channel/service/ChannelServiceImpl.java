@@ -55,6 +55,7 @@ public class ChannelServiceImpl implements ChannelService {
         return channel.getChannelId();
     }
 
+    //참여중인 채팅방 목록 조회
     @Override
     public List<ChannelRes> getPersonalChatList(int sender) {
 
@@ -70,16 +71,15 @@ public class ChannelServiceImpl implements ChannelService {
 
             int other = (sender == senderId) ? receiverId : senderId;
 
-            MemberBaseRes memberBaseRes = memberClient.getMember(other).getResult();
+            MemberBaseRes receiverInfo = memberClient.getMember(receiverId).getResult();
+            MemberBaseRes senderInfo = memberClient.getMember(senderId).getResult();
 
             //TODO: 탈퇴한 사용자 처리
-//            if(memberBaseRes == null) {
-//                memberBaseRes = MemberBaseRes.builder().nickname("탈퇴한 사용자").build();
-//            }
 
             ChannelRes channelRes = ChannelRes.builder()
                 .channelId(channel.getChannelId())
-                .receiver(memberBaseRes)
+                .receiver(receiverInfo)
+                .sender(senderInfo)
                 .build();
 
             channelResList.add(channelRes);
@@ -92,29 +92,31 @@ public class ChannelServiceImpl implements ChannelService {
     //개인 채팅 조회
     @Override
     public Channel readPersonalChat(String channelId, int memberId) {
-        
+
         Channel channel = channelRepository.findById(channelId).get();
-        
+        System.out.println(channel);
+
         Map<String, String> sender = channel.getSender();
-        
-        if(memberId != Integer.parseInt(sender.get("memberId"))){
+        System.out.println(sender);
+
+        if (memberId != Integer.parseInt(sender.get("memberId"))) {
             channel.setSender(channel.getReceiver());
             channel.setReceiver(sender);
         }
-        
-        int receiverId = Integer.parseInt(channel.getReceiver().get("memberId"));
-        
+
+//        int receiverId = Integer.parseInt(channel.getReceiver().get("memberId"));
+
         // TODO: 탈퇴한 사용자 처리
-        
-        
+
         return channel;
     }
 
 
     @Override
-    public Channel readPersonalChatByRecevier(int receiver, int memberId) {
+    public Channel readPersonalChatByRecevier(int receiver, int sender) {
+
         Channel channel = channelRepository.findBySenderOrReceiver(String.valueOf(receiver),
-            String.valueOf(memberId));
+            String.valueOf(sender));
 
         return channel;
     }
@@ -142,9 +144,9 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     //고민상담소 존재여부 유효성 검사
-//    private void consultException(int consultId) {
+    private void consultException(int consultId) {
 //        if (consultRepository.findConsultByConsultId(consultId) == null) {
 //            throw new BaseExceptionHandler(ErrorCode.NOT_FOUND_CONSULT_EXCEPTION);
 //        }
-//    }
+    }
 }

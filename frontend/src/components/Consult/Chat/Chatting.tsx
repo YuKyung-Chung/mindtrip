@@ -1,151 +1,341 @@
-import { Tooltip, Button, Input } from '@nextui-org/react'
-import { changeList, toggleOpen } from '../../../store/chatSlice'
-import { useDispatch } from "react-redux"
+import React, { useState, useEffect, useRef } from 'react';
+import { Frame, Client } from '@stomp/stompjs';
+import { Tooltip, Button, Input } from '@nextui-org/react';
+import { changeList, toggleOpen } from '../../../store/chatSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 import Swal from 'sweetalert2'
 import LeftIcon from '../../../atoms/Icons/LeftIcon'
 import UpIcon from '../../../atoms/Icons/UpIcon'
 import DownIcon from '../../../atoms/Icons/DownIcon'
 import SendIcon from '../../../atoms/Icons/SendIcon'
-import { useState } from 'react'
-import './Ballon.css'
-
-// 채팅방
+import './Ballon.css';
+import { registPersonalChat, getPersonalChat, send } from '../../../services/chat';
+import SockJS from 'sockjs-client';
 
 function Chatting() {
-  const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-  // 추가정보 열고 닫고
-  const [show, setShow] = useState<boolean>(false)
+    let chat = useSelector((state: RootState) => state.chat);
+    const [channelId, setChannelId] = useState<string|null>(chat.selectedId);
 
+      // 추가정보 열고 닫고
+    const [show, setShow] = useState<boolean>(false)
 
-  // 고민 종료하는 함수
-  const endConsult = function () {
-    Swal.fire({
-      title: '고민을 종료합니다'
-    }).then(() => {
-      // 여기에 종료 로직
+    const [stompClient, setStompClient] = useState<Client | null>(null);
+    const [connected, setConnected] = useState<boolean>(false);
+    const [name, setName] = useState<string>('');
+    const [message, setMessage] = useState<string>(''); // 채팅 메시지를 상태로 관리합니다.
+    const [ newMessage, setNewMessage] = useState("");
+    const [recvList, setRecvList] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [personalChat, setPersonalChat] = useState<any>({
+      channelId: "66021b7bb91c095bbc4f81d7",
+      receiver: {
+          memberId: 1,
+          nickname: "동준"
+      },
+      sender: {
+          memberId: 2,
+          nickname: "유경"
+      },
+      messageList: []
+  });
 
-      // 창 닫아줌
-      dispatch(toggleOpen())
-      // 다음에 리스트로 가게
-      dispatch(changeList(true))
-    })
-  }
+    const chatPrivateConnect = () => {
+      const stomp = new Client({
+        brokerURL: 'ws://localhost:8000/api/chat'
+      });
+      
+      setIsLoading(true);
 
-  // 사용자 내보내는 함수
-  const kickUser = function () {
-    Swal.fire({
-      title: '현재 상담자를 내보냅니다'
-    }).then(() => {
-      // 여기에 내보내는 로직
-      Swal.fire({
-        title: '사용자를 내보냈습니다'
-      }).then(() => {
-        // 리스트로 가게해줌
-        dispatch(changeList(true))
-      })
-    })
-  }
+      stomp.onConnect = (frame: Frame) => {
+          setConnected(true);
+          console.log('Connected: ' + frame);
+          console.log(channelId)
+          stomp.subscribe(`/sub/${channelId}`, 
+          (res) => {
+            setRecvList(prevRecvList => [...prevRecvList, JSON.parse(res.body)]);
+          });
+          setIsLoading(false);
+      };
 
-  return (
-    <div>
-      {/* 상단 */}
-      <div className='relative flex items-center justify-between mb-5'>
-        <Tooltip placement='bottom' content='뒤로가기'>
-          <Button
-            isIconOnly
-            variant='light'
-            onClick={() => dispatch(changeList(true))}
-          ><LeftIcon /></Button>
-        </Tooltip>
-        <p>고민 제목</p>
-        <Button
-          isIconOnly
-          size='sm'
-          variant='light'
-          onClick={() => setShow(!show)}
-        >{show ? <UpIcon /> : <DownIcon />}</Button>
-      </div>
-      {/* 채팅방 */}
-      <div className='h-[43vh] w-full p-1 overflow-scroll'>
-        <OtherBallon message='어떤 고민인가요?' />
-        <MyBallon message='아니 진짜 들어보세요' />
-        <MyBallon message='오늘 저녁으로 육회를 먹고싶은데' />
-        <MyBallon message='어떨까요?' />
-        <OtherBallon message='그걸 지금 고민이라고 올린거에요?' />
-        <OtherBallon message='완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 완전 긴 텍스트 ' />
-        <MyBallon message='너무하시네 그럴수도 있지ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ ' />
-      </div>
-      {/* 채팅 치는 곳 */}
-      <div className='mt-3 flex justify-between items-center'>
-        <Input variant='bordered' className='w-[88%]' />
-        <Button
-          isIconOnly
-          size='sm'
-          variant='light'
-        ><SendIcon /></Button>
-      </div>
-      {/* 추가정보 나오는 곳 */}
-      {
-        show && (
-          <div
-            className='absolute top-[15%] 
-            border-1 rounded-xl p-3 
-            w-[90%] h-[40%]
-            bg-white'
-          >
-            <p>고민제목</p>
-            <div className='min-h-[60%] overflow-scroll'>
-              <p className='text-sm'>고민내용</p>
-            </div>
-            <div className='flex justify-end'>
-              <Button
-                size='sm'
-                variant='ghost'
-                color='danger'
-                onClick={kickUser}
-              >상대 내보내기</Button>
-              <Button
-                size='sm'
-                variant='ghost'
-                color='primary'
-                onClick={endConsult}
-                className='ml-3'
-              >고민 종료하기</Button>
-            </div>
-          </div>
-        )
+      stomp.activate(); //클라이언트 활성화
+
+      //웹소켓 오류 발생 시 처리
+      stomp.onWebSocketError = (error: Event) => {
+          console.error('Error with websocket', error);
+      };
+
+      //연결 오류 발생 시 처리
+      stomp.onStompError = (frame: Frame) => {
+          console.error('Broker reported error: ' + frame.headers['message']);
+          console.error('Additional details: ' + frame.body);
+      };
+
+      setStompClient(stomp);
+
+      return () => {
+        if (stomp.connected) {
+            stomp.deactivate();
+        }
+      };
+    };
+
+    // 연결 끊기
+    const disconnectChat = () => {
+      if (stompClient !== null) {
+          stompClient.deactivate(); // STOMP 클라이언트 비활성화
+          setStompClient(null); // stompClient 상태 초기화
+          setIsLoading(false); // isLoading 상태를 false로 설정
+          setRecvList([]); // 받은 메시지 목록 초기화
       }
-    </div>
-  )
+  };
+
+  useEffect(() =>  {
+      disconnectChat();
+      if(channelId != null) {
+          chatPrivateConnect();
+      }
+      // 연결
+      const fetchData = async () => {
+          try {
+              if(channelId != null){
+                const personalChat = await getPersonalChat(1, channelId);
+                setPersonalChat(personalChat);
+                setRecvList(personalChat.messageList);
+              }
+              
+          } catch (error) {
+              console.error("Error fetching personal chat:", error);
+          }
+      };
+        fetchData();
+  }, [channelId]);
+
+
+
+  // 메시지 전송
+  const sendMessage = () => {
+    // console.log(newMessage);
+    // console.log(channelId);
+      send(stompClient, personalChat.sender, newMessage, personalChat.channelId);
+      // readPersonalChat(accessToken, personalChat.personalChatId);
+      setNewMessage("");
+  };
+
+  // const formattedDate = (time) =>{
+  //     const createDate = new Date(time);
+  //     return `${createDate.getFullYear()}-${(createDate.getMonth() + 1).toString().padStart(2, '0')}-${createDate.getDate().toString().padStart(2, '0')} ${createDate.getHours().toString().padStart(2, '0')}:${createDate.getMinutes().toString().padStart(2, '0')}`;
+  // }
+
+  const formattedMessage = (message : string) => {
+      return message.split('\n').map((line, index) => (
+          <React.Fragment key={index}>
+              {line}
+              <br />
+          </React.Fragment>
+      ));
+  }
+  // useEffect(() => {
+  //     // 새로운 채팅이 도착할 때마다 스크롤을 자동으로 올립니다.
+  //     if (scrollContainerRef.current) {
+  //         scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+  //     }
+  // }, [recvList]);
+
+  const handleKeyPress = (event : any) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+          // console.log(event);
+          // Enter 키가 눌렸고, Shift 키가 눌리지 않았을 때
+          event.preventDefault(); // 기본 동작인 폼 제출 방지
+          event.stopPropagation();
+          sendMessage();
+      }
+  };
+
+    // const connect = () => {
+    //   setConnected(true)
+    //     if (stompClient) {
+    //         stompClient.activate();
+    //     }else{
+    //       console.error('연결 실패: Stomp 클라이언트가 연결되지 않았습니다.');
+    //     }
+    // };
+
+    // const disconnect = () => {
+    //     if (stompClient) {
+    //         stompClient.deactivate();
+    //         setConnected(false);
+    //         console.log('Disconnected');
+    //     }
+    // };
+
+    // const sendName = (message : string) => {
+    //     if (stompClient) {
+    //       console.log(message)
+    //         stompClient.publish({
+    //             destination: '/pub/api/chat/send/{channelId}',
+    //             // body: JSON.stringify({ name: name })
+    //         });
+    //     }
+    // };
+
+
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setName(event.target.value);
+    };
+
+    // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    //     event.preventDefault();
+    //     sendName(event.target.value);
+    // };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setMessage(event.target.value); // 입력 필드의 값을 상태에 업데이트합니다.
+      // console.log(event.target.value);
+  };
+
+    // 고민 종료하는 함수
+    const endConsult = function () {
+        Swal.fire({
+        title: '고민을 종료합니다'
+        }).then(() => {
+        // 여기에 종료 로직
+
+        // 창 닫아줌
+        dispatch(toggleOpen())
+        // 다음에 리스트로 가게
+        dispatch(changeList(true))
+        })
+    }
+
+    // 사용자 내보내는 함수
+    const kickUser = function () {
+        Swal.fire({
+        title: '현재 상담자를 내보냅니다'
+        }).then(() => {
+        // 여기에 내보내는 로직
+        Swal.fire({
+            title: '사용자를 내보냈습니다'
+        }).then(() => {
+            // 리스트로 가게해줌
+            dispatch(changeList(true))
+        })
+        })
+    }
+
+    return (
+        <div>
+            {/* 상단 */}
+            <div className='relative flex items-center justify-between mb-5'>
+                <Tooltip placement='bottom' content='뒤로가기'>
+                <Button
+                    isIconOnly
+                    variant='light'
+                    onClick={() => dispatch(changeList(true))}
+                ><LeftIcon /></Button>
+                </Tooltip>
+                <p>고민 제목</p>
+                <Button
+                isIconOnly
+                size='sm'
+                variant='light'
+                onClick={() => setShow(!show)}
+                >{show ? <UpIcon /> : <DownIcon />}</Button>
+            </div>
+
+            {/* 채팅방 */}
+            <div className="h-[43vh] w-full p-1 overflow-scroll">
+                {
+                  recvList.map((msg, index) => (
+                    <div key={index}>
+                      {msg.sender.memberId ===  personalChat.sender.memberId ? (
+                          <OtherBallon message={msg.text}/>
+                      ) : (
+                          <MyBallon message={msg.text} />
+                      )}
+                    </div>
+                  )) }
+            </div>
+
+            {/* 채팅 치는 곳 */}
+            {
+              isLoading ? 
+               <div>채팅을 연결하는 중입니다. 잠시만 기다려주세요</div> 
+               :
+               <div className="mt-3 flex justify-between items-center">
+                <Input variant="bordered" className="w-[88%]" 
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                  />
+                <Button isIconOnly size="sm" variant="light" onClick={sendMessage}>
+                    <SendIcon />
+                </Button>
+              </div>
+            }
+            
+            {/* 추가정보 나오는 곳 */}
+            {show && (
+                <div
+                    className="absolute top-[15%] 
+                        border-1 rounded-xl p-3 
+                        w-[90%] h-[40%]
+                        bg-white"
+                            >
+                    <p>고민제목</p>
+                    <div className="min-h-[60%] overflow-scroll">
+                        <p className="text-sm">고민내용</p>
+                    </div>
+                    <div className="flex justify-end">
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            color="danger"
+                            // onClick={kickUser}
+                        >
+                            상대 내보내기
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            color="primary"
+                            // onClick={endConsult}
+                            className="ml-3"
+                        >
+                            고민 종료하기
+                        </Button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+    
 }
 
-export default Chatting
+export default Chatting;
 
-
-// props로 넘어가는 타입 지정
 type propsType = {
-  message: string
-}
+    message: string;
+};
 
-// 남의 채팅(버블)
 function OtherBallon({ message }: propsType) {
-  return (
-    <div className='relative bg-[#f5a524] rounded-lg w-fit max-w-[90%] py-1 px-2 ml-4 my-2'>
-      {message}
-      <div className='absolute tail-left' />
-    </div>
-  )
+    return (
+        <div className="relative bg-[#f5a524] rounded-lg w-fit max-w-[90%] py-1 px-2 ml-4 my-2">
+            {message}
+            <div className="absolute tail-left" />
+        </div>
+    );
 }
 
-// 내 채팅(버블)
 function MyBallon({ message }: propsType) {
-  return (
-    <div className='flex justify-end'>
-      <div className='relative bg-[#e5ceae] rounded-lg w-fit max-w-[90%] py-1 px-2 my-2 mr-1.5'>
-        {message}
-        <div className='absolute tail-right' />
-      </div>
-    </div>
-  )
+    return (
+        <div className="flex justify-end">
+            <div className="relative bg-[#e5ceae] rounded-lg w-fit max-w-[90%] py-1 px-2 my-2 mr-1.5">
+                {message}
+                <div className="absolute tail-right" />
+            </div>
+        </div>
+    );
 }

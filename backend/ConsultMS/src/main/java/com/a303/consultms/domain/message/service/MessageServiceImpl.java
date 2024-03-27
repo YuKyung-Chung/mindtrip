@@ -3,7 +3,6 @@ package com.a303.consultms.domain.message.service;
 import com.a303.consultms.domain.channel.Channel;
 import com.a303.consultms.domain.channel.repository.ChannelRepository;
 import com.a303.consultms.domain.message.Message;
-import com.a303.consultms.domain.message.dto.ChatMessage;
 import com.a303.consultms.domain.message.repository.MessageRepository;
 import com.a303.consultms.global.exception.BaseExceptionHandler;
 import java.io.IOException;

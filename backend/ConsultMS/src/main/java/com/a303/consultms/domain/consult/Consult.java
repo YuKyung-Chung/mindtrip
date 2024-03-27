@@ -1,9 +1,13 @@
 package com.a303.consultms.domain.consult;
 
 import com.a303.consultms.domain.BaseEntity;
+import com.a303.consultms.domain.channel.Channel;
+import com.a303.consultms.domain.message.Message;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 
 @Getter

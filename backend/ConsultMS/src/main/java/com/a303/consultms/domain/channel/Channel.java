@@ -24,12 +24,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Channel extends MongoBaseEntity {
 
     @Id
-    @Field(name = "channel_id")
     private String channelId;
 
-    //고민상담소 방 ID
+    //고민상담소
     @Field(name = "consult_id")
-    private int counsultId;
+    private int consultId;
 
     @Field(name = "receiver")
     private Map<String, String> receiver;

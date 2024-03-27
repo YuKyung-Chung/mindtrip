@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.A303'
@@ -71,6 +72,11 @@ dependencies {
 
     // websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'io.projectreactor:reactor-test'
+    //json
+    implementation 'org.json:json:20210307'
+    implementation 'com.google.code.gson:gson:2.8.0'
 
     // springfox
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
@@ -99,4 +105,11 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "mindtrip"
+        property "sonar.projectName", "mindtrip"
+    }
 }
