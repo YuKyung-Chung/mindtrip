@@ -79,13 +79,13 @@ public class MemberController {
 		HttpServletResponse response
 	) {
 		String token = memberService.standardLogin(memberStandardLoginReq);
-		response.setHeader("Authorization", "Bearer " + token);
+//		response.setHeader("Authorization", "Bearer " + token);
 
 		log.debug("Authorization: {}", token);
 
 		return BaseResponse.success(
 			SuccessCode.LOGIN_SUCCESS,
-			"로그인 성공"
+			"Bearer " + token
 		);
 	}
 
