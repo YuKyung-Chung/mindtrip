@@ -1,20 +1,10 @@
 package com.a303.consultms.domain.channel.service;
 
 import com.a303.consultms.domain.channel.Channel;
-import com.a303.consultms.domain.channel.dto.request.ChannelReq;
 import com.a303.consultms.domain.channel.dto.response.ChannelRes;
 import com.a303.consultms.domain.channel.repository.ChannelRepository;
-import com.a303.consultms.domain.consult.Consult;
-import com.a303.consultms.domain.consult.dto.request.ConsultUpdateReq;
-import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
-import com.a303.consultms.domain.consult.repository.ConsultRepository;
 import com.a303.consultms.domain.member.dto.response.MemberBaseRes;
-import com.a303.consultms.domain.message.Message;
-import com.a303.consultms.global.api.response.BaseResponse;
 import com.a303.consultms.global.client.MemberClient;
-import com.a303.consultms.global.exception.BaseExceptionHandler;
-import com.a303.consultms.global.exception.code.ErrorCode;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +64,7 @@ public class ChannelServiceImpl implements ChannelService {
             MemberBaseRes receiverInfo = memberClient.getMember(receiverId).getResult();
             MemberBaseRes senderInfo = memberClient.getMember(senderId).getResult();
 
+
             //TODO: 탈퇴한 사용자 처리
 
             ChannelRes channelRes = ChannelRes.builder()
@@ -99,7 +90,7 @@ public class ChannelServiceImpl implements ChannelService {
         Map<String, String> sender = channel.getSender();
         System.out.println(sender);
 
-        if (memberId != Integer.parseInt(sender.get("memberId"))) {
+        if(memberId != Integer.parseInt(sender.get("memberId"))){
             channel.setSender(channel.getReceiver());
             channel.setReceiver(sender);
         }
@@ -108,15 +99,15 @@ public class ChannelServiceImpl implements ChannelService {
 
         // TODO: 탈퇴한 사용자 처리
 
+
         return channel;
     }
 
 
     @Override
-    public Channel readPersonalChatByRecevier(int receiver, int sender) {
-
+    public Channel readPersonalChatByRecevier(int receiver, int memberId) {
         Channel channel = channelRepository.findBySenderOrReceiver(String.valueOf(receiver),
-            String.valueOf(sender));
+            String.valueOf(memberId));
 
         return channel;
     }
@@ -144,9 +135,9 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     //고민상담소 존재여부 유효성 검사
-    private void consultException(int consultId) {
+//    private void consultException(int consultId) {
 //        if (consultRepository.findConsultByConsultId(consultId) == null) {
 //            throw new BaseExceptionHandler(ErrorCode.NOT_FOUND_CONSULT_EXCEPTION);
 //        }
-    }
+//    }
 }
