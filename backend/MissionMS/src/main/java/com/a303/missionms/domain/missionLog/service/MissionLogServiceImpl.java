@@ -61,7 +61,11 @@ public class MissionLogServiceImpl implements MissionLogService {
 			}
 		}
 		percent *= 100;
-		percent /= missionLogBaseResList.size();
+		if (missionLogBaseResList.size()!=0) {
+			percent /= missionLogBaseResList.size();
+		} else {
+			percent = 0;
+		}
 
 		for (Entry<Integer, List<MyTableMissionRes>> entry : dayMap.entrySet()) {
 			int day = entry.getKey();
