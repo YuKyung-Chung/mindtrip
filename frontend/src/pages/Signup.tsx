@@ -5,13 +5,11 @@ import kakao from './../assets/login/kakao.png'
 import google from './../assets/login/google.png'
 import { memberType } from "../types/DataTypes";
 import { saveToken, saveUserInfo } from "../store/memberSlice";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 // 회원가입 페이지
 
 function Signup () {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   // 아이디
