@@ -33,6 +33,7 @@ public class Member {
 		member.setId(id);
 		member.setPassword(password);
 		member.setNickname(nickname);
+        member.setRole(Role.USER);
 
 		return member;
 	}
