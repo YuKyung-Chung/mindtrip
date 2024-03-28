@@ -5,9 +5,15 @@ import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ConsultRepository extends JpaRepository<Consult, Integer> {
+public interface ConsultRepository extends JpaRepository<Consult, Integer>, ConsultCustomRepository {
     ConsultDetailRes findConsultByConsultId(int consultId);
 
     //날짜 내림차순으로 정렬
     List<Consult> findAllByOrderByCreateTimeDesc();
+
+    //공유된 고민 리스트 조회, 날짜 내림차순 정렬
+    List<Consult> findAllByIsSharedOrderByCreateTimeDesc(boolean isShared);
+
+    List<Consult> findAllByChannelIdOrderByCreateTimeDesc(String channelId);
+
 }

@@ -12,12 +12,15 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import zipkin2.Call.Base;
 
 @RestController
 @RequestMapping("/api/channels/v1")
@@ -33,33 +36,11 @@ public class ChannelController {
     @Transactional
     public ResponseEntity<BaseResponse<String>> registerPersonalChat(
         @PathVariable int consultId,
-//        @RequestBody ChannelReq channelReq,
         @RequestHeader("x-member-id") int sender //입장하는 사람
     ) throws IOException {
 
-        //채팅방 조회
-//        Channel channel = channelService.readPersonalChatByRecevier(
-//            channelReq.receiver(),
-//            sender
-//        );
-
         //고민상담소 입장
-//        String channelId = consultService.registerChannel(channelReq, consultId, sender);
         String channelId = consultService.registerChannel(consultId, sender);
-
-
-//        String channelId;
-//
-//        if (channel == null) { //존재하지 않을 경우 생성
-//            channelId = channelService.registerPersonalChat(channelReq.receiver(), sender);
-//        } else {
-//            channelId = channel.getChannelId();
-//        }
-//        System.out.println(channelId);
-//
-//        // 고민상담소에 채널 정보를 업데이트
-//        consultService.updateConsultChannel(consultId, channelId);
-
         return BaseResponse.success(SuccessCode.INSERT_SUCCESS, channelId);
     }
 
@@ -69,7 +50,6 @@ public class ChannelController {
         @RequestHeader("x-member-id") int memberId
     ) {
         List<ChannelRes> channelResList = channelService.getPersonalChatList(memberId);
-
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, channelResList);
     }
 
@@ -78,11 +58,23 @@ public class ChannelController {
     public ResponseEntity<BaseResponse<Channel>> getPersonalChat(
         @PathVariable String channelId,
         @RequestHeader("x-member-id") int memberId
-    ){
+    ) {
         //채팅방 조회
         Channel channel = channelService.readPersonalChat(channelId, memberId);
-
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, channel);
+    }
+
+    //고민상담소 퇴장
+    @PutMapping("/exit/{consultId}")
+    @Transactional
+    public ResponseEntity<BaseResponse<String>> exitPersonalChat(
+        @PathVariable int consultId,
+        @RequestHeader("x-member-id") int sender //퇴장하는 사람
+    ) throws IOException {
+
+        //고민상담소 나가기
+        consultService.exitConsultingRoom(consultId, sender);
+        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, "");
     }
 
 }

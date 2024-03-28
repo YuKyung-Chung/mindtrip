@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import zipkin2.Call.Base;
 
 @RestController
 @RequestMapping("/api/consults/v1")
@@ -54,6 +55,15 @@ public class ConsultController {
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultListRes);
     }
 
+    //입장가능한 고민상담소 리스트 조회(channelId = null 인 방들)
+    @GetMapping("/available")
+    public ResponseEntity<BaseResponse<ConsultListRes>> getAvailableConsultList(
+        @RequestHeader("x-member-id") int memberId
+    ){
+        ConsultListRes consultListRes = consultService.getAvailableConsultingRooms();
+        return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultListRes);
+    }
+
     //고민상담소 개별 정보 조회
     @GetMapping("/detail/{consultId}")
     public ResponseEntity<BaseResponse<ConsultDetailRes>> getConsultDetail(
@@ -64,7 +74,7 @@ public class ConsultController {
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultDetailRes);
     }
 
-    //고민상담소 고민해결 (isClosed = 'Y' 로 변경)
+    //고민상담소 종료 (isClosed = 'Y' 로 변경)
     //현재 저장된 채널의 공유여부 저장하기 (@RequestParam isShared)
     @PutMapping("/close/{consultId}")
     @Transactional
@@ -85,4 +95,15 @@ public class ConsultController {
         ConsultCategoryListRes consultCategoryList = consultService.getConsultCategoryList();
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultCategoryList);
     }
+
+    //공유된 고민상담소 리스트 조회
+    @GetMapping("/shared")
+    public ResponseEntity<BaseResponse<ConsultListRes>> getSharedConsultList(
+        @RequestHeader("x-member-id") int memberId
+    ) {
+        ConsultListRes consultListRes = consultService.getSharedConsultingRooms();
+        return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultListRes);
+    }
+
+
 }

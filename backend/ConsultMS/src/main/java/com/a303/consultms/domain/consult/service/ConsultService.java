@@ -32,6 +32,14 @@ public interface ConsultService {
     //고민상담소 카테고리 조회
     ConsultCategoryListRes getConsultCategoryList();
 
-    void updateConsultChannel(int consultId, String channelId);
+//    void updateConsultChannel(int consultId, String channelId);
 
+    //공유된 고민 리스트 조회
+    ConsultListRes getSharedConsultingRooms();
+
+    //고민상담소 나가기(퇴장)
+    void exitConsultingRoom(int consultId, int sender);
+
+    //입장가능한 고민상담소 리스트 조회
+    ConsultListRes getAvailableConsultingRooms();
 }
