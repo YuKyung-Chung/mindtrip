@@ -6,15 +6,13 @@ function Start() {
   return (
     <div className="relative">
       <div className="flex items-center justify-center h-screen w-screen relative z-10">
-        <div className="text-center pb-[20%] md:pb-[10%]">
+        <div className="text-center pb-[50%] md:pb-[10%]">
           <p className="font-bold text-3xl leading-relaxed">HTP 검사를 통해<br />나를 위한 여정을 떠나보세요.</p>
-          {/* <Button variant="ghost" className="mt-5" endContent={<StartIcon/>} onClick={() => {navigate('/htp/house')}}>검사하러 가기</Button> */}
-          <div className='mt-5 mb-4' onClick={() => { navigate('/htp/house') }}>
+          <div className='my-2' onClick={() => { navigate('/htp/house') }}>
             <MyBtn />
           </div>
-
           <p className="mt-3 text-sm text-slate-400">이미 검사를 진행하셨다면,<br />
-            <Link to={'/login'} className="underline hover:text-cyan-500">로그인 해주세요.</Link>
+            <Link to={'/login'} className="underline text-cyan-500">로그인 해주세요.</Link>
           </p>
         </div>
       </div>
@@ -22,7 +20,6 @@ function Start() {
         <Background />
       </div>
     </div>
-
   )
 }
 

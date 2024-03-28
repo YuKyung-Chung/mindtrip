@@ -1,51 +1,93 @@
-// import * as THREE from 'three'
-// import { useRef, useEffect } from 'react'
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import * as THREE from 'three'
+import { useRef, useEffect } from 'react'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-// function MainBackground() {
-//   // 3d 모델 우선 띄우기
-//   const canvasRef = useRef<HTMLCanvasElement>(null);
-//   const loader = new GLTFLoader()
+type propsType = {
+    go:string|null
+}
 
-//   // 배경
-//   const scene = new THREE.Scene()
+function MainBackground({go} :propsType) {
+  // 3d 모델
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const loader = new GLTFLoader()
 
-//   // 카메라
-//   const camera = new THREE.PerspectiveCamera(15, window.innerWidth / window.innerHeight, 0.1, 1000)
-//   // camera.position.set(-30,4,0)
-//   // camera.rotation.y -= 1.5
-//   camera.position.set(-1.5,6,30)
-//   camera.rotation.x -= 0.1
+  // 배경
+  const scene = new THREE.Scene()
 
-//   useEffect(() => {
+  // 카메라
+  const camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 200)
+  camera.position.set(5, 45, 150)
+  camera.rotation.x -= 0.25
 
-//     if (canvasRef.current) { 
-//       let renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current })
-//       // 캔버스 크기
-//       renderer.setSize(window.innerWidth, window.innerHeight)
-//       // 배경(투명하게 설정)
-//       renderer.setClearColor(0x000000, 0);
-//       // 모델 불러오기
-//       loader.load('/village.glb', function (gltf: any) {
-//         // 조명
-//         const directionalLight = new THREE.DirectionalLight(0xffffff, 4); // color, intensity
-//         directionalLight.position.set(-5, 3, 1); // x, y, z
-//         scene.add(directionalLight);
-//         // 정면 볼 수 있게 돌리기
-//         gltf.scene.rotation.y -= 1.5
-//         scene.add(gltf.scene)
-//         renderer.render(scene, camera)
-//       }, undefined, function (err: any) {
-//         console.log(err)
-//       })
-//     }
-//   }, [])
+  // 조명
+  const directionalLight = new THREE.DirectionalLight('#faf3ea', 3); // color, intensity
+  directionalLight.position.set(0, 100, 100); // x, y, z
+  scene.add(directionalLight);
 
-//   return (
-//       <div className='bg-sky-100'>
-//         <canvas ref={canvasRef}></canvas>
-//       </div>
-//   )
-// }
+  useEffect(() => {
+    if (canvasRef.current) {
+      // 렌더
+      let renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current })
 
-// export default MainBackground
+      // 윈도우 사이즈 바껴도 계속 맞춰주기
+      window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        // 메쉬비율 유지
+        camera.aspect = window.innerWidth / window.innerHeight
+        camera.updateProjectionMatrix()
+        renderer.render(scene, camera)
+      })
+
+      // 배경(투명하게 설정)
+      renderer.setClearColor(0x000000, 0);
+      renderer.setSize(window.innerWidth, window.innerHeight)
+
+      // 모델 불러오기
+      loader.load('/mainbackground.glb', function (gltf: any) {
+        scene.add(gltf.scene)
+
+        // 랜더링
+        renderer.render(scene, camera)
+
+        // 카메라를 움직여보자
+        function animateCamera(startPosition:THREE.Vector3 ,targetPosition:THREE.Vector3, duration:number, callback:Function|null) :void {
+          const startTime:number = performance.now()
+          function update() {
+            const elapsedTime:number = performance.now() - startTime
+            const progress:number = elapsedTime / duration
+            if (progress < 1) {
+              // 처음위치, 타겟위치, 얼마나 갈껀지
+              camera.position.lerpVectors(startPosition, targetPosition, progress);
+              requestAnimationFrame(update);
+            } else {
+              camera.position.copy(targetPosition);
+              if (callback) {callback()} else {
+                console.log('도착?')
+              }
+            }
+            renderer.render(scene, camera);
+          }
+          update()
+        }
+        
+        if (go === 'mission') {
+            animateCamera(new THREE.Vector3(5, 45, 150), new THREE.Vector3(3, 25, 80), 2000, () => {
+              animateCamera(new THREE.Vector3(3, 25, 80), new THREE.Vector3(3, 24, 80), 2000, null)})
+        }
+        
+        
+        
+      }, undefined, function (err: any) {
+        console.log(err)
+      })
+    }
+  }, [go])
+
+  return (
+    <div className='bg-sky-100'>
+      <canvas ref={canvasRef} className='w-screen h-screen'></canvas>
+    </div>
+  )
+}
+
+export default MainBackground
