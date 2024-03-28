@@ -1,11 +1,14 @@
 package com.a303.missionms.domain.mission.controller;
 
+import com.a303.missionms.domain.BaseEntity;
 import com.a303.missionms.domain.dailyMission.dto.NotificationEventDto;
 import com.a303.missionms.domain.dailyMission.service.DailyMissionService;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
+import com.a303.missionms.domain.mission.dto.response.MissionReportRes;
 import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.service.MissionService;
+import com.a303.missionms.domain.missionLog.service.MissionLogService;
 import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.exception.code.SuccessCode;
 import java.io.IOException;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,18 +38,12 @@ public class MissionController {
 
 	private final MissionService missionService;
 	private final DailyMissionService dailyMissionService;
+	private final MissionLogService missionLogService;
 
 
 	//    @Operation(summary = "health check")
 	@GetMapping("/welcome")
 	public ResponseEntity<BaseResponse<String>> welcome() throws IOException {
-
-		// 알림 전송 kafka(notification에서는 알림테이블에 저장 + 실시간 알림 전송)
-		NotificationEventDto eventDto = NotificationEventDto.builder()
-			.eventType("DailyMissionSchedule")
-			.memberId(-1)
-			.build();
-
 
 //		log.info("리뷰 답글 알림 전송. userId : {}, message : {}",userId, message);
 
@@ -122,8 +120,18 @@ public class MissionController {
 
 		dailyMissionService.dailyMissionRecommend();
 
-
 		return BaseResponse.success(SuccessCode.UPDATE_SUCCESS, 1);
+	}
+
+	@GetMapping("/v1/report")
+	public ResponseEntity<BaseResponse<MissionReportRes>> getMyMonthlyReport(
+		@RequestHeader("x-member-id") int memberId,
+		@RequestParam("year") int year,
+		@RequestParam("month") int month
+	) throws IOException {
+		MissionReportRes missionReportRes = missionLogService.getMissionReport(memberId, year, month);
+
+		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, missionReportRes);
 	}
 
 	//	---------------------------------------- Method -------------------------------------------

@@ -5,6 +5,7 @@ import com.a303.missionms.domain.dailyMission.dto.NotificationEventDto;
 import com.a303.missionms.domain.dailyMission.repository.DailyMissionRepository;
 import com.a303.missionms.domain.mission.Mission;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
+import com.a303.missionms.domain.mission.dto.response.MissionReportRes;
 import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
 import com.a303.missionms.domain.missionLog.MissionLog;
@@ -179,7 +180,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 	// TODO 멤버의 마을을 고려한 추천이 이루어져야할 것 + 삽입 최적화 필요
 	@Override
-	public void dailyMissionRecommend() throws BaseExceptionHandler {
+	public MissionReportRes dailyMissionRecommend() throws BaseExceptionHandler {
 		// daily_mission테이블 missionlog에 append
 		List<MissionLog> missionLogList = new ArrayList<>();
 		LocalDate yesterday = LocalDate.now().minusDays(1);
@@ -202,7 +203,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		// 새로운 미션 3개씩 선정해서 넣기
 		List<Integer> memberIdList = memberClient.getMemberIdList().getResult();
 		if (memberIdList.size() == 0) {
-			return;
+			return null;
 		}
 
 		List<Mission> missionList = missionRepository.getMissionList();
@@ -257,6 +258,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 //		log.info("리뷰 답글 알림 전송. userId : {}, message : {}",userId, message);
 
+		return null;
 	}
 
 
