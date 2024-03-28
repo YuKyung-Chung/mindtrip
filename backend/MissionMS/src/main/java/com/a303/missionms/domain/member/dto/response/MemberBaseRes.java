@@ -11,6 +11,7 @@ public record MemberBaseRes(
 	String socialId,
 	String nickname,
 	Integer villageId,
+	String villageName,
 	int level,
 	int missionCount,
 	int reportCount,

@@ -47,7 +47,9 @@ public class MemberServiceImpl implements MemberService {
 			)
 		);
 
-		VillageBaseRes villageBaseRes = villageClient.getVillage(member.getVillageId()).getResult();
+		VillageBaseRes villageBaseRes;
+		if (member.getVillageId()==null) villageBaseRes = VillageBaseRes.builder().build();
+		else villageBaseRes = villageClient.getVillage(member.getVillageId()).getResult();
 
 		return MemberBaseRes.builder()
 			.memberId(memberId)
@@ -55,7 +57,8 @@ public class MemberServiceImpl implements MemberService {
 			.password(member.getPassword())
 			.socialId(member.getSocialId())
 			.nickname(member.getNickname())
-			.village(villageBaseRes)
+			.villageId(villageBaseRes.villageId())
+			.villageName(villageBaseRes.villageName())
 			.level(member.getLevel())
 			.missionCount(member.getMissionCount())
 			.reportCount(member.getReportCount())

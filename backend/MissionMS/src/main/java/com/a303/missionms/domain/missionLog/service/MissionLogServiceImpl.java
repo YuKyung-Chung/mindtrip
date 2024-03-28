@@ -32,7 +32,7 @@ public class MissionLogServiceImpl implements MissionLogService {
 	public MissionReportRes getMissionReport(int memberId, int year, int month) {
 
 		Map<Integer, List<MyTableMissionRes>> dayMap = new HashMap<>();
-		Map<Integer, CalenderDayMissionRes> calenderDayMissionResMap = new HashMap<>();
+		Map<LocalDate, CalenderDayMissionRes> calenderDayMissionResMap = new HashMap<>();
 		int[] daySuccessCountArray = new int[33];
 
 		int percent = 0;
@@ -98,13 +98,14 @@ public class MissionLogServiceImpl implements MissionLogService {
 
 		for (Entry<Integer, List<MyTableMissionRes>> entry : dayMap.entrySet()) {
 			int day = entry.getKey();
+			LocalDate dayString = LocalDate.of(year, month, day);
 
 			CalenderDayMissionRes calenderDayMissionRes = CalenderDayMissionRes.builder()
 				.count(daySuccessCountArray[day])
 				.missions(entry.getValue())
 				.build();
 
-			calenderDayMissionResMap.put(day, calenderDayMissionRes);
+			calenderDayMissionResMap.put(dayString, calenderDayMissionRes);
 		}
 
 		System.out.println(calenderDayMissionResMap);
