@@ -74,7 +74,19 @@ public class ChannelController {
 
         //고민상담소 나가기
         consultService.exitConsultingRoom(consultId, sender);
-        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, "");
+        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, "고민상담소를 퇴장하셨습니다.");
     }
 
+    //고민상담소에서 강제로 내보내기
+    @PutMapping("/expel/{consultId}")
+    @Transactional
+    public ResponseEntity<BaseResponse<String>> expelPersonalChat(
+        @PathVariable int consultId,
+        @RequestHeader("x-member-id") int sender //추방시키는 사람(방장인지 확인필요)
+    ){
+
+        //강제로 추방시키기
+        consultService.expelConsultingRoom(consultId, sender);
+        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, "참여자가 강제로 추방되었습니다.");
+    }
 }

@@ -42,4 +42,7 @@ public interface ConsultService {
 
     //입장가능한 고민상담소 리스트 조회
     ConsultListRes getAvailableConsultingRooms();
+
+    //참여자 강제로 추방시키기
+    void expelConsultingRoom(int consultId, int sender);
 }

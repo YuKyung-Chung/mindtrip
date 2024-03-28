@@ -285,7 +285,32 @@ public class ConsultServiceImpl implements ConsultService {
         consult.setChannelId(null);
     }
 
+    //참여자 강제로 추방시키기
+    @Override
+    public void expelConsultingRoom(int consultId, int sender) {
+        //consultId 기반으로 현재 Consult 조회
+        Consult consult = consultRepository.findById(consultId)
+            .orElseThrow(() -> new BaseExceptionHandler(NOT_FOUND_CONSULT_EXCEPTION));
 
+        //channelId가 없는 경우 예외 처리
+        String channelId = consult.getChannelId();
+        if (channelId == null || channelId.isEmpty()) {
+            throw new BaseExceptionHandler(CHANNEL_NOT_FOUND_EXCEPTION);
+        }
+
+        //고민상담소가 닫혀있는지 확인 -> 이미 닫힌 고민상담소는 퇴장 불가
+        if(consult.isClosed()) {
+            throw new BaseExceptionHandler(ALREADY_CLOSED_EXCEPTION);
+        }
+
+        //퇴장시키려는 사람이 상담소를 열지 않은 사람인지 확인 -> 그렇다면 예외 처리
+        if(consult.getMemberId() != sender){
+            throw new BaseExceptionHandler(UNAUTHORIZED_USER_EXCEPTION);
+        }
+
+        //channelId가 있다면 삭제
+        consult.setChannelId(null);
+    }
 
     //회원 존재여부 유효성 검사
     private void memberException(int memberId) {
