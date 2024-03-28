@@ -46,7 +46,6 @@ function Chatting() {
 
     const chatPrivateConnect = () => {
       const stomp = new Client({
-<<<<<<< HEAD
         brokerURL: 'ws://localhost:8000/api/chat',
         // brokerURL: 'https://mindtrip.site/api/chat',
 
@@ -54,10 +53,6 @@ function Chatting() {
           console.log(str)
         },
         reconnectDelay: 5000, //자동 재 연결
-=======
-        // brokerURL: 'ws://localhost:8000/api/chat'
-        brokerURL: 'ws://mindtrip.site/api/chat'
->>>>>>> 8c6531798a4be1c65e2e0291066921409b4f0734
       });
       
       setIsLoading(true);
