@@ -1,5 +1,7 @@
 package com.a303.consultms.domain.consult.service;
 
+import com.a303.consultms.domain.channel.dto.request.ChannelReq;
+import com.a303.consultms.domain.consult.dto.request.ConsultCloseReq;
 import com.a303.consultms.domain.consult.dto.request.ConsultRegisterReq;
 import com.a303.consultms.domain.consult.dto.response.ConsultCategoryListRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
@@ -14,17 +16,22 @@ public interface ConsultService {
 
     //고민상담소 등록
     int registerConsultingRoom(ConsultRegisterReq consultRegisterReq, int memberId)
-        throws BaseExceptionHandler, IOException;
+        throws BaseExceptionHandler;
+
+    //고민상담소에 채널 등록
+//    String registerChannel(ChannelReq channelReq, int consultId, int sender);
+    String registerChannel(int consultId, int sender);
 
     //고민상담소 개별 조회
     ConsultDetailRes getConsultingRoom(int consultId);
 
     //고민상담 종료
-    int closeConsultingRoom(int consultId)
+    int closeConsultingRoom(int consultId, ConsultCloseReq consultCloseReq, int memberId)
         throws BaseExceptionHandler;
 
     //고민상담소 카테고리 조회
     ConsultCategoryListRes getConsultCategoryList();
 
     void updateConsultChannel(int consultId, String channelId);
+
 }

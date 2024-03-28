@@ -43,7 +43,13 @@ public class Consult extends BaseEntity {
     private String content;
 
     @Column(name = "is_closed")
-    private boolean isClosed;
+    private boolean isClosed = false;
+
+    @Column(name = "is_shared")
+    private boolean isShared = false;
+
+    @Column(name = "can_like")
+    private boolean canLike = true;
 
     @Column(name = "channel_id") // 채널의 id를 저장할 필드 추가
     private String channelId;

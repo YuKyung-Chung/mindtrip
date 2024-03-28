@@ -78,8 +78,7 @@ public enum ErrorCode {
     NOT_FOUND_CONSULT_EXCEPTION(404, "B301", "존재하지 않는 고민상담소입니다."),
     ALREADY_CLOSED_EXCEPTION(403, "B302", "이미 닫힌 고민상담소입니다."),
     ALREADY_FULL_CONSULTROOM(403, "B303","이미 대화중인 고민상담소입니다."),
-
-
+    NOT_FOUND_CHANNEL_EXCEPTION(404, "B304","채널이 존재하지 않습니다."),
 
     // Transaction Update Error
     UPDATE_ERROR(200, "B300", "Update Transaction Error Exception"),

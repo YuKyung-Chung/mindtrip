@@ -5,8 +5,8 @@ import lombok.Builder;
 
 @Builder
 public record ChannelReq(
-    @NotBlank
-    int receiver
+    int receiver,
+    int sender
 ) {
 
 }

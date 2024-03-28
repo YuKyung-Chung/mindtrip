@@ -37,21 +37,23 @@ public class Channel extends MongoBaseEntity {
     private Map<String, String> sender;
 
     @Field(name = "is_closed")
-    private boolean isClosed = false; //기본값으로 false 설정
+    private boolean isClosed; //기본값 false
 
     @Field(name = "is_shared")
-    private boolean isShared = false; //기본값으로 false 설정
+    private boolean isShared; //기본값 false
 
     @DBRef
     private List<Message> messageList;
 
-    public static Channel createChannel(Map<String, String> receiver, Map<String, String> sender, List<Message> message) {
+    static public Channel createChannel(int consultId, Map<String, String> receiver, Map<String, String> sender, List<Message> message) {
         Channel channel = new Channel();
 
-//        channel.setCounsultId(consultId);
+        channel.setConsultId(consultId);
         channel.setReceiver(receiver);
         channel.setSender(sender);
         channel.setMessageList(message);
+
+        System.out.println("채널 생성");
 
         return channel;
     }

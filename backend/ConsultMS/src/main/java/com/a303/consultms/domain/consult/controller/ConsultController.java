@@ -1,5 +1,7 @@
 package com.a303.consultms.domain.consult.controller;
 
+import com.a303.consultms.domain.channel.service.ChannelService;
+import com.a303.consultms.domain.consult.dto.request.ConsultCloseReq;
 import com.a303.consultms.domain.consult.dto.request.ConsultRegisterReq;
 import com.a303.consultms.domain.consult.dto.response.ConsultCategoryListRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConsultController {
 
     private final ConsultService consultService;
+    private final ChannelService channelService;
 
     //고민상담소 등록
     @PostMapping
@@ -37,9 +41,7 @@ public class ConsultController {
         @Valid @RequestBody ConsultRegisterReq consultRegisterReq,
         @RequestHeader("x-member-id") int memberId
     ) throws IOException {
-
         int consultId = consultService.registerConsultingRoom(consultRegisterReq, memberId);
-
         return BaseResponse.success(SuccessCode.INSERT_SUCCESS, consultId);
     }
 
@@ -59,19 +61,19 @@ public class ConsultController {
         @RequestHeader("x-member-id") int memberId
     ) throws IOException {
         ConsultDetailRes consultDetailRes = consultService.getConsultingRoom(consultId);
-
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultDetailRes);
     }
 
     //고민상담소 고민해결 (isClosed = 'Y' 로 변경)
+    //현재 저장된 채널의 공유여부 저장하기 (@RequestParam isShared)
     @PutMapping("/close/{consultId}")
     @Transactional
     public ResponseEntity<BaseResponse<Integer>> closeConsult(
         @PathVariable int consultId,
+        @Valid @RequestBody ConsultCloseReq consultCloseReq,
         @RequestHeader("x-member-id") int memberId
     ) {
-        consultService.closeConsultingRoom(consultId);
-
+        consultService.closeConsultingRoom(consultId, consultCloseReq, memberId);
         return BaseResponse.success(SuccessCode.CLOSED_SUCCESS, consultId);
     }
 
@@ -79,7 +81,7 @@ public class ConsultController {
     @GetMapping("/category")
     public ResponseEntity<BaseResponse<ConsultCategoryListRes>> getConsultCategoryList(
         @RequestHeader("x-member-id") int memberId
-    ){
+    ) {
         ConsultCategoryListRes consultCategoryList = consultService.getConsultCategoryList();
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultCategoryList);
     }

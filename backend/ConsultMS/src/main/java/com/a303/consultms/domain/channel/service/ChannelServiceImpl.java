@@ -3,8 +3,10 @@ package com.a303.consultms.domain.channel.service;
 import com.a303.consultms.domain.channel.Channel;
 import com.a303.consultms.domain.channel.dto.response.ChannelRes;
 import com.a303.consultms.domain.channel.repository.ChannelRepository;
+import com.a303.consultms.domain.consult.repository.ConsultRepository;
 import com.a303.consultms.domain.member.dto.response.MemberBaseRes;
 import com.a303.consultms.global.client.MemberClient;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,31 +21,33 @@ import org.springframework.stereotype.Service;
 public class ChannelServiceImpl implements ChannelService {
 
     private final ChannelRepository channelRepository;
-    //    private final ConsultRepository consultRepository;
+    private final ConsultRepository consultRepository;
     private final MemberClient memberClient;
 
-    @Override
-    public String registerPersonalChat(int receiverId, int memberId) {
-        Map<String, String> receiver = new HashMap<>();
-        //receiver 정보 받아오기
-        MemberBaseRes receiverMember = memberClient.getMember(receiverId).getResult();
-
-        receiver.put("memberId", String.valueOf(receiverId));
-        receiver.put("nickname", receiverMember.nickname());
-
-        Map<String, String> sender = new HashMap<>();
-        //sender 정보 받아오기
-        MemberBaseRes senderMember = memberClient.getMember(memberId).getResult();
-
-        sender.put("memberId", String.valueOf(memberId));
-        sender.put("nickname", senderMember.nickname());
-
-        Channel channel = Channel.createChannel(receiver, sender, new ArrayList<>());
-
-        channelRepository.save(channel);
-
-        return channel.getChannelId();
-    }
+    //채팅방 등록
+//    @Override
+//    @Transactional
+//    public String registerPersonalChat(int receiverId, int memberId) {
+//        Map<String, String> receiver = new HashMap<>();
+//        //receiver 정보 받아오기
+//        System.out.println("채널 등록");
+//        MemberBaseRes receiverMember = memberClient.getMember(receiverId).getResult();
+//
+//        receiver.put("memberId", String.valueOf(receiverId));
+//        receiver.put("nickname", receiverMember.nickname());
+//
+//        Map<String, String> sender = new HashMap<>();
+//        //sender 정보 받아오기
+//        MemberBaseRes senderMember = memberClient.getMember(memberId).getResult();
+//
+//        sender.put("memberId", String.valueOf(memberId));
+//        sender.put("nickname", senderMember.nickname());
+//
+//        Channel channel = Channel.createChannel(consultId, receiver, sender, new ArrayList<>());
+//        channelRepository.save(channel);
+//
+//        return channel.getChannelId();
+//    }
 
     //참여중인 채팅방 목록 조회
     @Override
@@ -104,6 +108,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
 
+    //채팅방 입장 전 고민상담소 정보 조회
     @Override
     public Channel readPersonalChatByRecevier(int receiver, int memberId) {
         Channel channel = channelRepository.findBySenderOrReceiver(String.valueOf(receiver),
