@@ -13,7 +13,7 @@ import MyPostit from "../../../components/MyPostit/MyPostit";
 function MypageHistory() {
   return (
     <div className="bg-[#f4c2c2] flex justify-end flex-col h-[80vh] relative">
-      <div className="flex justify-center items-center h-[80vh]">
+      <div className="flex justify-center items-center w-[20vw] mx-auto h-[80vh]">
       <div>
         <MyPostit />
       </div>

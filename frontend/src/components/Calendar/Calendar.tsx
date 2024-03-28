@@ -3,10 +3,9 @@ import DatePicker from 'react-datepicker';
 import { getMonth, getYear } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 
-// import { LeftArrow, RightArrow } from '../../assets/svgs';
 import styles from './Calendar.module.css';
 
-interface Props {
+type Props = {
   selectedDate: Date | null;
   setSelectedDate: Dispatch<SetStateAction<Date | null>>;
 }

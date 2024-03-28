@@ -9,7 +9,6 @@ div.rgyPostIt {
   color: #555;
   word-break: break-all;
   background: #ffff88;
-  background: #ffff88; /* Old browsers */
   background: -moz-linear-gradient(-45deg, #ffff88 81%, #ffff88 82%, #ffff88 82%, #ffffc6 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, right bottom, color-stop(81%, #ffff88), color-stop(82%, #ffff88), color-stop(82%, #ffff88), color-stop(100%, #ffffc6)); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(-45deg, #ffff88 81%, #ffff88 82%, #ffff88 82%, #ffffc6 100%); /* Chrome10+,Safari5.1+ */
@@ -57,11 +56,11 @@ div.rgyPostIt > p {
 }
 
 div.rgyPostIt > p::before {
-  content:"\f198";
+  /* content:"\f198";
   margin-right: 7px;
   font-weight: normal;
-  font-size: 20px;
-  vertical-align: middle;
+  font-size: 20px;  
+  vertical-align: middle; */
 }
 
 div.rgyPostIt > p > a {

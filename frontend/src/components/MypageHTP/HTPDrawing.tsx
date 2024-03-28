@@ -1,18 +1,3 @@
-// // HTPDrawing.tsx
-// import React from 'react';
-
-// const HTPDrawing: React.FC = () => {
-//   return (
-//     <div className="mycard">
-//       <div className="bg"></div>
-//       <div className="blob"></div>
-//     </div>
-//   );
-// }
-
-// export default HTPDrawing;
-
-// HTPDrawing.tsx
 // HTPDrawing.tsx
 import React from 'react';
 

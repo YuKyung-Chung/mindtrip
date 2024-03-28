@@ -112,21 +112,9 @@ function Fixmission() {
   };
 
   return (
-    <div className="bg-[#fff7e0] px-2 py-8 h-screen">
-      <div className="mt-8 grid grid-cols-2 gap-8 flex items-center">
-        <div
-          className="allmission shadow-lg rounded-lg overflow-y-auto"
-          style={{ maxHeight: "70vh" }}
-        >
-          {missions.map((categoryMission, index) => (
-            <FixMissionBox
-              key={index}
-              category={categoryMission.category}
-              missions={categoryMission.missionBaseResList}
-              addMissionToToday={addMissionToToday}
-            />
-          ))}
-        </div>
+    <div className="bg-[#fff7e0] px-2 py-8 min-h-screen">
+      <div className="mt-8 grid gap-8 flex items-center">
+        
         <div className="bg-[#f4f4f4] p-4 rounded-lg mb-4 border-2 border-gray-500 shadow-lg min-h-560">
           <h2 className="text-xl font-semibold mb-4">오늘의 미션</h2>
           <div className="space-y-4">
@@ -147,6 +135,19 @@ function Fixmission() {
               </div>
             ))}
           </div>
+        </div>
+        <div
+          className="allmission shadow-lg rounded-lg overflow-y-auto"
+          style={{ maxHeight: "70vh" }}
+        >
+          {missions.map((categoryMission, index) => (
+            <FixMissionBox
+              key={index}
+              category={categoryMission.category}
+              missions={categoryMission.missionBaseResList}
+              addMissionToToday={addMissionToToday}
+            />
+          ))}
         </div>
       </div>
       <div className="mt-8 flex justify-center">

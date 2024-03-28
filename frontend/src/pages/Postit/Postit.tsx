@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Homebtn from "../../atoms/buttons/homebtn";
 import AlarmButton from '../../atoms/buttons/alambtn';
 import PostIt from '../../atoms/postit/postititem';
-import PostitModal from '../../components/MyPostit/PostitModal'; // 모달 컴포넌트를 import 해주세요
+import PostitModal from '../../components/MyPostit/PostitModal';
 import axios from 'axios';
 
 const PostitPage: React.FC = () => {
@@ -19,6 +19,7 @@ const PostitPage: React.FC = () => {
           "x-member-id": "4"
         }
       });
+      console.log(response.data)
       setPostits(response.data.result.postitResList);
       setTopic(response.data.result.topic);
       setTopicId(response.data.result.topicId);
@@ -47,8 +48,8 @@ const PostitPage: React.FC = () => {
         }
       );
       console.log("새 포스트잇:", response.data);
-      setIsModalOpen(false); // 새로운 포스트잇을 추가한 후에 모달을 닫습니다.
-      fetchData(); // 모달을 닫은 후에 포스트잇 목록을 다시 불러옵니다.
+      setIsModalOpen(false); // 새로운 포스트잇을 추가한 후에 모달을 닫기
+      fetchData(); // 모달을 닫은 후에 포스트잇 목록을 다시 불러오기
     } catch (error) {
       console.log("새 포스트잇 에러 :", error);
     }
@@ -74,7 +75,7 @@ const PostitPage: React.FC = () => {
         <h1 className="text-xl font-bold mt-20">{topic}</h1>
       </div>
       <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-4/5 mx-auto">
-        <div className="flex justify-center items-center flex-wrap ">
+        <div className="flex justify-center items-center flex-wrap list-none">
           <div className="m-2">
             <PostIt
               color={colors[Math.floor(Math.random() * colors.length)]}

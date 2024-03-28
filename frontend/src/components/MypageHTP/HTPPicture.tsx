@@ -1,21 +1,3 @@
-// import React from 'react';
-// import HTPDrawing from './HTPDrawing';
-
-// const HTPPicture: React.FC = () => {
-//   return (
-//     <div>
-//       <div>title</div>
-//       <div className="flex space-x-4 overflow-x-scroll">
-//         <HTPDrawing />
-//         <HTPDrawing />
-//         <HTPDrawing />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default HTPPicture;
-
 // HTPPicture.tsx
 import React from 'react';
 import HTPDrawing from './HTPDrawing';

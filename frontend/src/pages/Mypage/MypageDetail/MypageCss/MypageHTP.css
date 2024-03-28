@@ -26,7 +26,7 @@
   outline: 2px solid white;
 }
 
-.blob {
+/* .blob {
   position: absolute;
   z-index: 1;
   top: 50%;
@@ -38,7 +38,7 @@
   opacity: 1;
   filter: blur(12px);
   animation: blob-bounce 5s infinite ease;
-}
+} */
 
 @keyframes blob-bounce {
   0% {
