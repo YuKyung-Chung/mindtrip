@@ -2,9 +2,16 @@ import { Input, Card, CardBody, Button } from "@nextui-org/react";
 import { useState } from 'react';
 import kakao from './../assets/login/kakao.png'
 import google from './../assets/login/google.png'
-import { login } from "../api/member";
+import { loadUser, login } from "../api/member";
+import { useDispatch } from "react-redux";
+import { saveToken, saveUserInfo } from "../store/memberSlice";
+import { useNavigate } from "react-router-dom";
+import { memberType } from "../types/DataTypes";
 
 function Login() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   // 비밀번호 보이고 안보이고 제어
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -15,18 +22,36 @@ function Login() {
   // 비밀번호
   const [password, setPassword] = useState<string>('')
 
+  // 유저 정보 저장
+  const saveUser = async function(token:string) {
+    const userInfo:memberType|void = await loadUser(token)
+    if (userInfo) {
+      dispatch(saveUserInfo(userInfo))
+    }
+  }
+
+  // 로그인 로직
+  const handleLogin = async function() {
+    const token:string|void = await login(id, password)
+    if (typeof token == 'string') {
+      dispatch(saveToken(token))
+      saveUser(token)
+      navigate('/main')
+    }
+  }
+  
   return (
     <Card
-      className="h-[80vh] mt-[8vh] sm:h-[90vh] sm:mt-[5vh] mx-auto xs:w-full md:w-3/5 xl:w-1/3"
+      className="w-full h-[90vh] mt-[5vh] sm:h-[90vh] sm:mt-[5vh] mx-auto sm:w-3/5 xl:w-1/3"
     >
-      <CardBody className="flex-col content-center pt-20 sm:pt-12 pb-3 sm:pb-12">
+      <CardBody className="flex-col content-center py-[5vh]">
         <p className="text-center text-4xl mb-12">Login</p>
         {/* 아이디 입력 창 */}
         <Input 
           isClearable 
           value={id}
           onValueChange={setId}
-          className="w-96 mx-auto my-5" 
+          className="mx-auto my-5 w-[85%] md:w-[70%]" 
           variant="underlined" 
           label='아이디' 
           placeholder="아이디를 입력해주세요." 
@@ -48,14 +73,14 @@ function Login() {
             </button>
           }
           type={isVisible ? "text" : "password"}
-          className="w-96 mx-auto my-5"
+          className="mx-auto my-5 w-[85%] md:w-[70%]"
           
         />
         {/* 로그인 버튼 */}
         <Button 
-          onClick={() => {login(id, password)}}
+          onClick={handleLogin}
           size='lg'
-          className="w-96 mx-auto my-8 bg-[#eeeeee] shadow" 
+          className="w-[90%] mx-auto my-5 bg-[#eeeeee] shadow md:w-[80%]" 
         >로그인</Button>
         {/* Divider */}
         <div className="flex justify-center w-full items-center">
@@ -64,11 +89,11 @@ function Login() {
           <hr className="w-1/3"/>
         </div>
         {/* 소셜 로그인 버튼 */}
-        <Button className="w-96 mx-auto my-2 mt-4 bg-[#FEE500] pr-7 shadow" size='lg'>
+        <Button isDisabled className="w-[90%] mx-auto my-2 mt-4 bg-[#FEE500] pr-7 shadow md:w-[80%]" size='lg'>
           <img className='w-8 h-9 mb-1' src={kakao} alt="kakaoLogo" />
           <p>카카오로 로그인하기</p>
         </Button>
-        <Button className="w-96 mx-auto my-2 bg-[#ffffff] pr-7 shadow" size='lg'>
+        <Button isDisabled  className="w-[90%] mx-auto my-2 bg-[#ffffff] pr-7 shadow md:w-[80%]" size='lg'>
           <img className='w-6 h-6 mr-3' src={google} alt="googleLogo" />
           <p>구글로 로그인하기</p>
         </Button>

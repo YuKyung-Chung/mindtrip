@@ -11,6 +11,8 @@ import Chat from '../../components/Consult/Chat/Chat';
 import { consultType, categoryType } from '../../types/DataTypes';
 import { getConsults } from '../../api/consults';
 import CreateNewConsult from '../../components/Consult/CreateNewConsult';
+import { villageBackgroundColor, villageTextColor } from '../../atoms/color';
+import Header from '../../components/Header';
 
 // 모달 제어용 타입 지정
 type useDisclosureType = {
@@ -25,6 +27,9 @@ function ConsultOther() {
   // 카테고리 받기
   let category = useSelector((state: RootState) => state.consultSlice.category)
 
+  // 멤버정보
+  let member = useSelector((state: RootState) => state.member)
+  let accessToken = useSelector((state:RootState) => state.accessToken)
   // 선택된 카테고리
   const [selectedCategory, setSelectedCategory] = useState<categoryType | null>(null)
   const handleCategory = (e: any) => {
@@ -39,7 +44,7 @@ function ConsultOther() {
     // 전체 고민 가져오기
     const fetchConsult = async () => {
       try {
-        let tempOtherConsult: consultType[] = await getConsults()
+        let tempOtherConsult: consultType[] = await getConsults(accessToken)
         setOtherConsult(tempOtherConsult)
         console.log(tempOtherConsult)
       } catch (err) {
@@ -56,9 +61,10 @@ function ConsultOther() {
   const { isOpen, onOpen, onOpenChange }: useDisclosureType = useDisclosure();
 
   return (
-    <div className="w-full lg:w-3/4 mx-auto h-screen pt-5">
-      <div className="py-5 px-3 min-h-[40%]">
-        <p className="text-2xl hover:cursor-pointer">다른 사람들의 고민 보기<span className='text-sm'>(오늘 남은 횟수: 5)</span></p>
+    <div className="w-full lg:w-3/4 mx-auto h-screen">
+      <Header />
+      <div className="px-3 min-h-[40%]">
+        <p className="text-2xl hover:cursor-pointer mb-3">🙋‍♀️다른 사람들의 고민 보기</p>
         <div className="flex justify-between items-center mt-4 mb-2">
           {/* 카테고리들 */}
           <Select
@@ -66,10 +72,11 @@ function ConsultOther() {
             size='sm'
             onChange={handleCategory}
             className='w-[150px]'
+            style={{fontFamily:'JamsilThin'}}
           >
             {category.map((oneCategory: categoryType) => {
               return (
-                <SelectItem key={oneCategory.categoryId}>
+                <SelectItem key={oneCategory.categoryId} style={{fontFamily:'JamsilThin'}}>
                   {oneCategory.categoryName}
                 </SelectItem>
               )
@@ -82,10 +89,10 @@ function ConsultOther() {
             <Button isIconOnly variant='light' onPress={onOpen}><PencilIcon /></Button>
           </Tooltip>
         </div>
-        <div className='mt-2 flex-col'>
+        <div className='grid grid-cols-2'>
           {
-            otherConsults.map((consult, idx) => (
-              <div className="w-full p-2 h-44" key={idx}>
+            otherConsults?.map((consult, idx) => (
+              <div className="w-full p-2 h-[20vh]" key={idx}>
                 <OtherConsult consult={consult} />
               </div>
             ))
@@ -98,9 +105,9 @@ function ConsultOther() {
           isIconOnly
           size='lg'
           radius='full'
-          variant={chat.isOpen ? 'solid' : 'faded'}
+          variant={chat.isOpen ? 'solid' : 'flat'}
           onClick={() => dispatch(toggleOpen())}
-          className='fixed bottom-10 right-[4%] shadow-xl'
+          className={`${villageBackgroundColor[member.villageName]} ${villageTextColor[member.villageName]} fixed bottom-[3%] right-[4%] shadow-xl border-1 border-zinc-400 shadow`}
         >
           {chat.isOpen ? <XIcon /> : <ChatIcon />}
         </Button>
@@ -110,8 +117,8 @@ function ConsultOther() {
         style={{
           display: chat.isOpen ? 'block' : 'none',
         }}
-        className='fixed top-[23%] right-[5%] w-[80%] h-[70%]
-          sm:top-[20%] w-96 h-[65%] p-5'
+        className='fixed top-[20%] right-[2.5%] w-[80%] h-[70%]
+          sm:top-[20%] w-[95%] h-[65%] p-5 z-10'
       >
         <Chat />
       </Card>

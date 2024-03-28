@@ -10,7 +10,7 @@ type ConsultType = {
 const initialConsultState :ConsultType|null = {category : []}
 
 // 3. 슬라이스 정의
-let consultSlice = createSlice({
+const consultSlice = createSlice({
   name: 'consult',
   initialState: initialConsultState,
   reducers: {

@@ -9,7 +9,7 @@ import { villageBackgroundColor } from '../../../atoms/color'
 
 function ChatList() {
   // 상단 탭 제어용 true면 나의 고민
-  const [pickFirst, setpickFirst] = useState<boolean>(true)
+  const [pickFirst, setPickFirst] = useState<boolean>(true)
   // const [personalChatId, setPersonalChatId] = useState<string>("")
 
   let member = useSelector((state: RootState) => state.member)
@@ -17,8 +17,8 @@ function ChatList() {
   return (
     <div className="h-[70vh]">
       <div className="flex h-[8vh] justify-between items-center text-center">
-        <div className="w-1/2 hover:cursor-pointer" onClick={() => setpickFirst(true)}>나의 고민</div>
-        <div className="w-1/2 hover:cursor-pointer" onClick={() => setpickFirst(false)}>내가 들어준 고민</div>
+        <div className="w-1/2 hover:cursor-pointer" onClick={() => setPickFirst(true)}>나의 고민</div>
+        <div className="w-1/2 hover:cursor-pointer" onClick={() => setPickFirst(false)}>내가 들어준 고민</div>
       </div>
       <div
         className={`${villageBackgroundColor[member.villageName]} border-2 border-gray-200 w-1/2 h-1 rounded-md mb-2`}
@@ -49,10 +49,10 @@ function ChatList() {
 export default ChatList
 
 type propstype = {
-  title: string,
-  content: string,
-  alert: number,
-  channelId: string // channelId 추가
+  readonly title: string,
+  readonly content: string,
+  readonly alert: number,
+  readonly channelId: string // channelId 추가
 }
 
 function Chatting({title, content, alert, channelId} :propstype) {

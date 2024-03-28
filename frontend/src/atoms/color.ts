@@ -7,7 +7,8 @@ const villageBackgroundColor:villageType = {
   watermelon : 'bg-[#c2da92]',
   grape : 'bg-[#f1edf7]',
   peach : 'bg-[#f7dbdb]',
-  blueberry : 'bg-[#cbd7e5]'
+  blueberry : 'bg-[#cbd7e5]',
+  kakao : 'bg-[#e9dacc]'
 } 
 
 const villageTextColor:villageType = {
@@ -17,7 +18,8 @@ const villageTextColor:villageType = {
   watermelon : 'text-[#363630]',
   grape : 'text-[#5a74a0]',
   peach : 'text-[#e15951]',
-  blueberry : 'text-[#505f7e]'
+  blueberry : 'text-[#505f7e]',
+  kakao: 'text-[#4b3e36]'
 }
 
 export {villageBackgroundColor, villageTextColor}

@@ -1,9 +1,10 @@
 // 멤버에 들어갈 타입
 type memberType = {
+  memberId: number|null,
   nickname: string|null,
   socialId: string|null,
   villageId: number|null,
-  villageName: 'apple'|'orange'|'pineapple'|'watermelon'|'grape'|'peach'|'blueberry',
+  villageName: 'apple'|'orange'|'pineapple'|'watermelon'|'grape'|'peach'|'blueberry'|'kakao',
   level: number|null,
   missionCount: number|null,
   accessToken :string|null,
@@ -17,7 +18,8 @@ type villageType = {
   watermelon : string,
   grape : string,
   peach : string,
-  blueberry : string
+  blueberry : string,
+  kakao: string
 }
 
 

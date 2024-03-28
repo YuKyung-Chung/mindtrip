@@ -59,7 +59,11 @@ function Background() {
               requestAnimationFrame(update);
             } else {
               camera.position.copy(targetPosition);
-              if (callback) callback()
+              if (callback) {callback()} else {
+                animateCamera(new THREE.Vector3(10, 90, 200), new THREE.Vector3(20, 90, 150), 2000, () => {
+                  animateCamera(new THREE.Vector3(20, 90, 150), new THREE.Vector3(10, 90, 100), 2000, null)
+                })
+              }
             }
             renderer.render(scene, camera);
           }

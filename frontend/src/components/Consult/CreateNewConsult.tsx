@@ -27,8 +27,8 @@ function CreateNewConsult({ onClose, category }: propsType) {
     // 제출 전 유효성 검사
     if (title.length < 1) {
       setTitleErrorMessage('제목을 입력해주세요')
-    } else if (title.length > 20) {
-      setTitleErrorMessage('제목은 최대 20자입니다.')
+    } else if (title.length > 15) {
+      setTitleErrorMessage('제목은 최대 15자입니다.')
     } else if (content.length < 1) {
       setTitleErrorMessage('')
       setContentErrorMessage('내용을 입력해주세요')
@@ -45,7 +45,7 @@ function CreateNewConsult({ onClose, category }: propsType) {
     }
   }
   return (
-    <div className="flex-col h-[50vh] pt-3">
+    <div className="flex-col h-[60vh] pt-4">
       {/* 고민 제목 */}
       <Input
         isInvalid={titleErrorMessage == '' ? false : true}
@@ -67,16 +67,17 @@ function CreateNewConsult({ onClose, category }: propsType) {
         placeholder="고민 내용을 입력해주세요"
         value={content}
         onValueChange={setContent}
-        className="my-5"
+        className="my-6 mb-10"
       />
       {/* 카테고리들 */}
       {
             category != null ? (
               <Select
-                label='카테고리 선택'
-                size='sm'
+                label='카테고리'
+                labelPlacement='outside'
+                placeholder='카테고리를 선택해주세요'
                 onChange={handleCategory}
-                className='w-[170px] mr-7'
+                className='w-[50vw]'
               >
                 {
                   category.map((oneCategory: categoryType) => {

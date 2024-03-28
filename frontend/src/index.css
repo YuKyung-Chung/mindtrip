@@ -7,23 +7,34 @@
   font-weight: 700;
   font-style: normal;
 }
+
+@font-face {
+  font-family: "JamsilThin";
+  src: url("./fonts/JamsilThin.otf") format("truetype"); 
+}
+
+@font-face {
+  font-family: "JamsilRegular";
+  src: url("./fonts/JamsilRegular.otf") format("truetype"); 
+}
+
 body {
-  font-family: 'TheJamsil5Bold', sans-serif;
+  font-family: 'TheJamsil5Bold', sans-serif, "JamsilThin", "JamsilRegular" ;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 0.5rem;
+  width: 5px;
+  height: 0.3rem;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #d4d4d8;
+  background-color: #d8d8d880;
   border-radius: 1.5rem;
-  min-width: 50px;
+  min-width: 20px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #d4d4d8;
+  background-color: #d4d4d89a;
 }
 
 ::-webkit-scrollbar-track {

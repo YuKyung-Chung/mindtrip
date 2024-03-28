@@ -2,14 +2,16 @@ import axios from "axios";
 import { consultType, categoryType } from "../types/DataTypes";
 import Swal from "sweetalert2";
 
-// 전체 고민 목록 가져오기
-async function getConsults(): Promise<consultType[]> {
+// 입장가능한 고민 목록 가져오기
+async function getConsults(token:string): Promise<consultType[]> {
   try {
-    const res = await axios.get('https://mindtrip.site/api/consults/v1', {
+    const res = await axios.get('https://mindtrip.site/api/consults/v1/available', {
       headers: {
+        // Authorization: token
         'x-member-id': 1
       }
     });
+    console.log(token)
     return res.data.result.consultList;
   } catch (err) {
     console.log(err);
@@ -56,4 +58,23 @@ async function getCategory(): Promise<categoryType[]>{
   }
 }
 
-export {getConsults, uploadConsult, getCategory}
+
+// 공유된 고민 가져오기
+// 입장가능한 고민 목록 가져오기
+async function getSharedConsult(token:string): Promise<consultType[]> {
+  try {
+    const res = await axios.get('https://mindtrip.site/api/consults/v1/shared', {
+      headers: {
+        // Authorization: token
+        'x-member-id': 1
+      }
+    });
+    console.log(token)
+    return res.data.result.consultList;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+export {getConsults, uploadConsult, getCategory, getSharedConsult}

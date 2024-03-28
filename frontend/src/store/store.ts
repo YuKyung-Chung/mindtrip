@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import chatSlice from './chatSlice';
 import {consultSlice} from './consultSlice';
-import memberSlice from './memberSlice';
+import {memberSlice, accessToken} from './memberSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storageSession from 'redux-persist/lib/storage/session';
 
@@ -20,7 +20,8 @@ const persistedReducer = persistReducer(
   combineReducers({
     chat: chatSlice.reducer,
     consultSlice: consultSlice.reducer,
-    member: memberSlice.reducer
+    member: memberSlice.reducer,
+    accessToken: accessToken.reducer
   })
 )
 

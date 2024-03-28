@@ -1,31 +1,54 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { memberType } from '../types/DataTypes';
 // 회원용 변수들
 
-// 1. 타입정의 -> 타입 파일에
+// 토큰
+const initialToken:string = ''
 
+const accessToken = createSlice({
+  name: 'accessToken',
+  initialState: initialToken,
+  reducers: {
+    // 토큰 저장
+    saveToken(state, action:PayloadAction<string>) {
+      console.log(state)
+      return action.payload
+    }
+  }
+})
+export const {saveToken} = accessToken.actions;
+
+// 회원 정보
+// 1. 타입정의 -> 타입 파일에
 // 2. 초기 상태 정의
 const initialMemberState :memberType = {
+  memberId: null,
   nickname: null,
   socialId: null,
   villageId: null,
-  villageName: 'peach',
+  villageName: 'kakao',
   level: null,
   missionCount: null,
   accessToken: null
 }
 
 // 3. 슬라이스 정의
-let memberSlice = createSlice({
+const memberSlice = createSlice({
   name: 'member',
   initialState: initialMemberState,
   reducers: {
-    // 여기에 함수 정의
+    // 사용자 정보 저장
+    saveUserInfo(state, action: PayloadAction<memberType>) {
+      return({
+        ...state,
+        ...action.payload
+      })
+    },
   }
 })
 
 // 4. 함수들 내보내기
-export const {} = memberSlice.actions;
+export const {saveUserInfo} = memberSlice.actions;
 
 
-export default memberSlice
+export {memberSlice, accessToken}

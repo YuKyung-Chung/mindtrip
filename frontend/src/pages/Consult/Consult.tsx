@@ -3,7 +3,7 @@ import { Button, Input, Tooltip, Card, Select, SelectItem } from "@nextui-org/re
 import OtherConsult from '../../components/Consult/OtherConsult';
 import SharedConsult from '../../components/Consult/SharedConsult';
 import Chat from '../../components/Consult/Chat/Chat';
-import Homebtn from '../../atoms/buttons/homebtn'
+import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '../../atoms/Icons/SearchIcon';
 import ChatIcon from './../../atoms/Icons/ChatIcon'
@@ -13,7 +13,7 @@ import { toggleOpen } from '../../store/chatSlice';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from './../../store/store'
 import { getConsultCategory } from '../../store/consultSlice';
-import { getConsults, getCategory } from './../../api/consults'
+import { getConsults, getCategory, getSharedConsult } from './../../api/consults'
 import { consultType, categoryType } from '../../types/DataTypes';
 import { villageBackgroundColor, villageTextColor } from '../../atoms/color';
 
@@ -55,18 +55,16 @@ function Consult() {
   return (
     <div>
       {/* 전체페이지 */}
-      <div className="w-full md:w-4/5 mx-auto h-screen pt-5">
+      <div className="flex-col content-between w-full md:w-4/5 h-screen">
+        {/* 뒤로가기 버튼 */}
+        <Header />
         {
           category != null ? (
-            <div>
+            <div className='pt-3'>
               {/* 다른 사람의 고민 */}
               <Others />
               {/* 공유된 고민들 */}
               <Shared />
-              {/* 뒤로가기 버튼 */}
-              <div className='hidden md:block'>
-                <Homebtn />
-              </div>
             </div>
           ) : null
         }
@@ -79,7 +77,7 @@ function Consult() {
           radius='full'
           variant={chat.isOpen ? 'solid' : 'flat'}
           onClick={() => dispatch(toggleOpen())}
-          className={`${villageBackgroundColor[member.villageName]} ${villageTextColor[member.villageName]} fixed bottom-10 right-[4%] shadow-xl`}
+          className={`${villageBackgroundColor[member.villageName]} ${villageTextColor[member.villageName]} fixed bottom-[3%] right-[4%] shadow-xl border-1 border-zinc-400 shadow`}
         >
           {chat.isOpen ? <XIcon /> : <ChatIcon />}
         </Button>
@@ -89,8 +87,8 @@ function Consult() {
         style={{
           display: chat.isOpen ? 'block' : 'none',
         }}
-        className='fixed top-[23%] right-[5%] w-[80%] h-[70%]
-          sm:top-[20%] w-96 h-[65%] p-5 z-10'
+        className='fixed top-[20%] right-[2.5%] w-[80%] h-[70%]
+          sm:top-[20%] w-[95%] h-[65%] p-5 z-10'
       >
         <Chat />
       </Card>
@@ -103,6 +101,7 @@ export default Consult
 // 다른 사람들의 고민
 function Others() {
   const navigate = useNavigate()
+  let accessToken = useSelector((state: RootState) => state.accessToken)
 
   // 카테고리 받기
   let category = useSelector((state: RootState) => state.consultSlice.category)
@@ -121,7 +120,7 @@ function Others() {
     // 전체 고민 가져오기
     const fetchConsult = async () => {
       try {
-        let tempOtherConsult: consultType[] = await getConsults()
+        let tempOtherConsult: consultType[] = await getConsults(accessToken)
         setOtherConsult(tempOtherConsult)
         console.log(tempOtherConsult)
       } catch (err) {
@@ -133,36 +132,50 @@ function Others() {
 
 
   return (
-    <div className="py-5 px-3 min-h-[40%]">
-      <p className="text-2xl hover:cursor-pointer" onClick={() => navigate('/consult/other')}>다른 사람들의 고민 보기<span className='text-sm'>(오늘 남은 횟수: 5)</span></p>
-      <div className="sm:flex sm:justify-between mt-4 mb-2">
+    <div className="px-3 min-h-[40%]">
+      <p
+        className="text-2xl hover:cursor-pointer mb-3" 
+        onClick={() => navigate('/consult/other')}
+      >
+        🙋‍♀️다른 사람들의 고민 보기
+      </p>
+      <div className="flex justify-between mt-2">
         {/* 카테고리들 */}
         <Select
           label='카테고리 선택'
           size='sm'
           onChange={handleCategory}
           className='w-[150px]'
+          style={{fontFamily:"JamsilThin"}}
         >
           {category.map((oneCategory: categoryType) => {
             return (
-              <SelectItem key={oneCategory.categoryId}>
+              <SelectItem key={oneCategory.categoryId} style={{fontFamily:"JamsilThin"}}>
                 {oneCategory.categoryName}
               </SelectItem>
             )})
           }
         </Select>
         <p
-          className='underline underline-offset-4 hover:cursor-pointer hidden sm:block'
+          className='underline underline-offset-4 hover:cursor-pointer pt-3'
           onClick={() => navigate('/consult/other')}
-        >더보러가기</p>
+          style={{fontFamily:"JamsilThin"}}
+        >더보기</p>
       </div>
       <div className='mt-2 flex overflow-x-auto'>
         {
           otherConsults.map((consult, idx) => (
-            <div className="w-44 h-48 m-2 min-w-44" key={idx}>
+            <div className="w-44 h-[20vh] m-2 min-w-44" key={idx}>
               <OtherConsult consult={consult} />
             </div>
           ))
+        }
+        {
+          otherConsults.length === 0 ? (
+            <div className='h-[20vh] text-gray-400'>
+              아직 업로드된 고민이 없습니다!
+            </div>
+          ) : null
         }
       </div>
     </div>
@@ -176,6 +189,9 @@ function Shared() {
 
   // 카테고리 받기
   let category = useSelector((state: RootState) => state.consultSlice.category)
+  let accessToken = useSelector((state: RootState) => state.accessToken)
+
+  
   // 선택된 카테고리
   const [selectedCategory, setSelectedCategory] = useState<categoryType | null>(null)
   const handleCategory = (e: any) => {
@@ -183,22 +199,41 @@ function Shared() {
     console.log(selectedCategory)
   }
 
+  const [shared, setShared] = useState<consultType[]|null>(null)
+
+  useEffect(() => {
+    // 전체 고민 가져오기
+    const fetchConsult = async () => {
+      try {
+        let tempSharedConsult: consultType[] = await getSharedConsult(accessToken)
+        setShared(tempSharedConsult)
+        console.log(tempSharedConsult)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchConsult()
+  }, [])
+
+
+
   return (
-    <div className="px-3 min-h-[40%] mt-3">
-      <p className="text-2xl hover:cursor-pointer" onClick={() => navigate('/consult/shared')}>공유된 고민 상담들 둘러보기</p>
-      <div className="sm:flex sm:justify-between sm:items-center">
-        <div className="md:flex md:items-center w-5/6 mt-4 mb-2">
+    <div className="px-3 min-h-[40%] mt-10">
+      <p className="text-2xl hover:cursor-pointer" onClick={() => navigate('/consult/shared')}>🔍공유된 고민 상담들 둘러보기</p>
+      <div className="flex justify-between sm:items-center">
+        <div className="md:flex md:items-center w-5/6 mt-2">
           {/* 카테고리들 */}
           <Select
             label='카테고리 선택'
             size='sm'
             onChange={handleCategory}
             className='md:mr-5 max-w-[150px]'
+            style={{fontFamily:"JamsilThin"}}
           >
             {
               category.map((oneCategory: categoryType) => {
                 return (
-                  <SelectItem key={oneCategory.categoryId}>
+                  <SelectItem key={oneCategory.categoryId} style={{fontFamily:"JamsilThin"}}>
                     {oneCategory.categoryName}
                   </SelectItem>
                 )
@@ -213,37 +248,28 @@ function Shared() {
             startContent={
               <SearchIcon />
             }
-            className='mt-5 md:mt-0 w-48'
+            className='mt-5 md:mt-0 w-48 hidden md:block'
           />
         </div>
         <p
-          className='underline underline-offset-4 hover:cursor-pointer hidden sm:block'
+          className='underline pt-3 underline-offset-4 hover:cursor-pointer block'
           onClick={() => navigate('/consult/shared')}
-        >더보러가기</p>
+          style={{fontFamily:"JamsilThin"}}
+        >더보기</p>
       </div>
       <div className='mt-2 flex overflow-x-auto'>
-        <div className="w-44 m-2 min-w-44 h-44">
-          <SharedConsult />
-        </div>
-        <div className="w-44 m-2 min-w-44">
-          <SharedConsult />
-        </div>
-        <div className="w-44 m-2 min-w-44">
-          <SharedConsult />
-        </div>
-        <div className="w-44 m-2 min-w-44">
-          <SharedConsult />
-        </div>
-        <div className="w-44 m-2 min-w-44">
-          <SharedConsult />
-        </div>
-        <div className="w-44 m-2 min-w-44">
-          <SharedConsult />
-        </div>
-        <div className="w-44 m-2 min-w-44">
-          <SharedConsult />
-        </div>
-
+        {
+          shared?.map((consult, idx) => {
+            return(
+                <div className="w-44 m-2 min-w-44" key={idx}>
+                  <SharedConsult consult={consult}/>
+                </div>
+            )
+          })
+        }
+        {
+          shared?.length === 0 ? (<div>아직 공유된 고민이 없습니다</div>) : null
+        }
       </div>
     </div>
   )

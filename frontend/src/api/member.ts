@@ -1,31 +1,41 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+import { memberType } from "../types/DataTypes";
 
 // 로그인하기
 
-async function login(id :string, password :string): Promise<void> {
+async function login(id :string, password :string): Promise<string|void> {
   try {
     const res = await axios.post('https://mindtrip.site/api/members/v1/login', {
       'id' : id,
       'password' : password
     });
-    // 여기에서 accessToken을 저장하자
-    console.log(res.data)
-    Swal.fire({
-      icon:'success',
-      title:'로그인 완료!'
-    }).then(() =>{
-      // 메인화면으로 보내주기
-      location.href = '/main'
-    })
+    return res.data.result
   } catch (err) {
     console.log(err);
   }
 }
 
 
+
+// 유저정보 로딩하기
+async function loadUser(token:string): Promise<memberType|void> {
+  try{
+    const res = await axios.get('https://mindtrip.site/api/members/v1/1',{
+      headers: {
+        Authorization: token
+      }
+    })
+    console.log(res.data.result)
+    return res.data.result
+    // 여기서 멤버 정보를 return 해줘야함
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+
 // 회원가입하기
-async function signup(id :string, password :string, nickname:string): Promise<void> {
+async function signup(id :string, password :string, nickname:string): Promise<boolean> {
   try {
     const res = await axios.post('https://mindtrip.site/api/members/v1/register', {
       'id' : id,
@@ -34,17 +44,11 @@ async function signup(id :string, password :string, nickname:string): Promise<vo
     });
     // 여기에서 accessToken을 저장하자
     console.log(res.data)
-    Swal.fire({
-      icon:'success',
-      title:'회원가입 완료!'
-    }).then(()=> {
-      // 결과화면으로 보내주기 -> 이후, 결과 페이지에서 로그인 여부에 따라 마을 정보 보여주기
-      location.href = '/htp/result'
-    })
-    
+    return true
   } catch (err) {
     console.log(err);
+    return false
   }
 }
 
-export {login, signup}
+export {login, signup, loadUser}

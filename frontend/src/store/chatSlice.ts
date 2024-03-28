@@ -16,7 +16,7 @@ const initialChatState :ChatState = {
 }
 
 // 3. 슬라이스 정의
-let chatSlice = createSlice({
+const chatSlice = createSlice({
   name: 'chat',
   initialState: initialChatState,
   reducers: {
