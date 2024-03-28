@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -115,17 +116,18 @@ public class MemberController {
 		);
 	}
 
-	@GetMapping("/v1/availability/nickname")
-	public ResponseEntity<BaseResponse<String>> checkNicknameAvailability(
-		@RequestParam
-		String nickname
+	@PutMapping("/v1/mission-count")
+	public ResponseEntity<BaseResponse<String>> increaseMissionCount(
+		@RequestParam("memberId") int memberId
 	) {
-		memberService.checkNicknameDuplication(nickname);
+		memberService.increaseMissionCountByMemberId(memberId);
 
 		return BaseResponse.success(
-			SuccessCode.AVAILABLE_NICKNAME,
-			"사용 가능한 닉네임입니다."
+			SuccessCode.UPDATE_SUCCESS,
+			"증가 완료"
 		);
 	}
+
+
 }
 

@@ -1,6 +1,7 @@
 package com.a303.memberms.domain.member.dto.response;
 
 import com.a303.memberms.domain.member.Role;
+import com.a303.memberms.domain.village.dto.response.VillageBaseRes;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,7 +17,7 @@ public record MemberBaseRes(
 	String password,
 	String socialId,
 	String nickname,
-	Integer villageId,
+	VillageBaseRes village,
 	int level,
 	int missionCount,
 	int reportCount,

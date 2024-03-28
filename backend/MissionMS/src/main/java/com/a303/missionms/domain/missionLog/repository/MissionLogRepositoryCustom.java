@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface MissionLogRepositoryCustom {
 
 	List<MissionLogBaseRes> getMyReport(int memberId, int year, int month);
+//	List<MissionLogBaseRes> getMyDailMissionForReport(int memberId);
+
 
 }

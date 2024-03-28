@@ -17,6 +17,8 @@ public interface DailyMissionRepository extends JpaRepository<DailyMission, Inte
 
 	Optional<DailyMission> findByMemberIdAndMission_MissionId(int memberId, int missionId);
 
+	Long countByMemberIdAndIsFinishIsTrue(int memberId);
+
 
 
 }

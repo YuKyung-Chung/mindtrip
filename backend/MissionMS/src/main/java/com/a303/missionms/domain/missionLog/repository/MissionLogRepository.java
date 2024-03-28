@@ -14,4 +14,6 @@ public interface MissionLogRepository extends JpaRepository<MissionLog, Integer>
 		@Param("memberId") int memberId, @Param("year") int year, @Param("month") int month
 	);
 
+	Long countByMemberIdAndIsFinishIsTrue(int memberId);
+
 }

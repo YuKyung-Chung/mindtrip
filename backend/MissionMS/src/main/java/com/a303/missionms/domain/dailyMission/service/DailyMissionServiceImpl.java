@@ -10,9 +10,11 @@ import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
 import com.a303.missionms.domain.missionLog.MissionLog;
 import com.a303.missionms.domain.missionLog.repository.MissionLogRepository;
+import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.client.MemberClient;
 import com.a303.missionms.global.exception.BaseExceptionHandler;
 import com.a303.missionms.global.exception.code.ErrorCode;
+import com.a303.missionms.global.exception.code.SuccessCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -173,6 +175,9 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		log.debug("completeMission method memberId:{} missionId:{} success.", memberId, missionId);
 
 		dailyMission.setFinish(true);
+
+		// 수행한 미션 개수 하나 up
+		BaseResponse response = memberClient.increaseMissionCount(memberId);
 
 		return dailyMission.getDailyMissionId();
 	}

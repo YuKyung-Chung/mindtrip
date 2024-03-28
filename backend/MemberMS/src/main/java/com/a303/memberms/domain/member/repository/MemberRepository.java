@@ -8,17 +8,18 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface MemberRepository extends JpaRepository<Member, Integer> {
+public interface MemberRepository extends JpaRepository<Member, Integer>, MemberRepositoryCustom {
 
-    Optional<Member> findByMemberId(int memberId);
+	Optional<Member> findByMemberId(int memberId);
 
-    @Query("SELECT DISTINCT m.memberId FROM Member m")
-    List<Integer> findDistinctMemberId();
+	@Query("SELECT DISTINCT m.memberId FROM Member m")
+	List<Integer> findDistinctMemberId();
 
-    Optional<Member> findById(@Nonnull String id);
+	Optional<Member> findById(@Nonnull String id);
 
-    boolean existsById(@Nonnull String id);
+	boolean existsById(@Nonnull String id);
 
-    boolean existsByNickname(@Nonnull String nickname);
+	boolean existsByNickname(@Nonnull String nickname);
+
 }
 

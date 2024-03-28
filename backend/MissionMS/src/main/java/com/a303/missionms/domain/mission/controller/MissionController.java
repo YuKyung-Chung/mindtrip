@@ -1,7 +1,5 @@
 package com.a303.missionms.domain.mission.controller;
 
-import com.a303.missionms.domain.BaseEntity;
-import com.a303.missionms.domain.dailyMission.dto.NotificationEventDto;
 import com.a303.missionms.domain.dailyMission.service.DailyMissionService;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
 import com.a303.missionms.domain.mission.dto.response.MissionListRes;
@@ -129,9 +127,20 @@ public class MissionController {
 		@RequestParam("year") int year,
 		@RequestParam("month") int month
 	) throws IOException {
-		MissionReportRes missionReportRes = missionLogService.getMissionReport(memberId, year, month);
+		MissionReportRes missionReportRes = missionLogService.getMissionReport(memberId, year,
+			month);
 
 		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, missionReportRes);
+	}
+
+	@GetMapping("/v1/count")
+	public ResponseEntity<BaseResponse<Long>> getMyMonthlyReport(
+		@RequestHeader("x-member-id") int memberId
+	) throws IOException {
+
+		long cnt = missionLogService.getCompletedMissionCount(memberId);
+
+		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, cnt);
 	}
 
 	//	---------------------------------------- Method -------------------------------------------

@@ -119,6 +119,10 @@ public class NotificationServiceImpl implements NotificationService {
 		if (type.equals("DailyMissionSchedule")) {
 			dailyMissionScheduleEventHandler();
 		}
+
+
+
+
 	}
 
 
