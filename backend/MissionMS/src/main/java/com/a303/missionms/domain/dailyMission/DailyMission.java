@@ -1,6 +1,7 @@
 package com.a303.missionms.domain.dailyMission;
 
 
+import com.a303.missionms.domain.BaseEntity;
 import com.a303.missionms.domain.mission.Mission;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DailyMission {
+public class DailyMission extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.a303.memberms.domain.member;
 
+import com.a303.memberms.domain.BaseEntity;
 import com.a303.memberms.domain.member.dto.request.MemberStandardRegisterReq;
 import com.a303.memberms.domain.reportMember.ReportMember;
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseEntity {
 
 	public static Member createMember(String id, String password, String nickname) {
 		Member member = new Member();
