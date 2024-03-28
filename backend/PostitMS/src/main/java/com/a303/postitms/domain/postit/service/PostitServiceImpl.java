@@ -1,5 +1,7 @@
 package com.a303.postitms.domain.postit.service;
 
+import com.a303.postitms.domain.likePostit.LikePostit;
+import com.a303.postitms.domain.likePostit.repository.LikePostitRepository;
 import com.a303.postitms.domain.postit.Postit;
 import com.a303.postitms.domain.postit.dto.reponse.MyPostitRes;
 import com.a303.postitms.domain.postit.dto.reponse.PostitRes;
@@ -9,18 +11,22 @@ import com.a303.postitms.domain.postit.repository.PostitRepository;
 import com.a303.postitms.domain.postitTopic.PostitTopic;
 import com.a303.postitms.domain.postitTopic.dto.reponse.PostitTopicRes;
 import com.a303.postitms.domain.postitTopic.repository.PostitTopicRepository;
+import com.a303.postitms.domain.reportPostit.ReportPostit;
+import com.a303.postitms.domain.reportPostit.repository.ReportPostitRepository;
 import com.a303.postitms.global.api.response.BaseResponse;
 import com.a303.postitms.global.client.MemberClient;
 import com.a303.postitms.domain.member.Role;
 import com.a303.postitms.domain.member.dto.response.MemberBaseRes;
 import com.a303.postitms.global.exception.BaseExceptionHandler;
 import com.a303.postitms.global.exception.code.ErrorCode;
-import java.lang.reflect.Member;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +38,9 @@ public class PostitServiceImpl implements PostitService {
     private final PostitTopicRepository postitTopicRepository;
     private final PostitRepository postitRepository;
     private final MemberClient memberClient;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final LikePostitRepository likePostitRepository;
+    private final ReportPostitRepository reportPostitRepository;
 
     @Override
     public PostitTopicListRes readPostitList(String date, String order, int village,
@@ -46,9 +55,19 @@ public class PostitServiceImpl implements PostitService {
             throw new BaseExceptionHandler(ErrorCode.NOT_FOUND_POSTIT_TOPIC_EXCEPTION);
         }
 
-        List<PostitRes> postitResList = postitRepository.findByPostitTopicIdAndVillageOrder(
+        List<Postit> postitList = postitRepository.findByPostitTopicIdAndVillageOrder(
             postitTopic.getId(),
             order, village, pageable);
+
+        List<PostitRes> postitResList = postitList.stream()
+            .map(postit -> PostitRes.builder()
+                .id(postit.getId())
+                .content(postit.getContent())
+                .reportCount(postit.getReportCount())
+                .likeCount(postit.getLikeCount())
+                .village(postit.getVillage())
+                .build()
+            ).collect(Collectors.toList());
 
         return PostitTopicListRes.builder()
             .topicId(postitTopic.getId())
@@ -83,7 +102,8 @@ public class PostitServiceImpl implements PostitService {
 
     @Override
     @Transactional
-    public String registerPostit(PostitRegistReq postitRegistReq, int memberId) throws BaseExceptionHandler  {
+    public String registerPostit(PostitRegistReq postitRegistReq, int memberId)
+        throws BaseExceptionHandler {
 
         BaseResponse<MemberBaseRes> memberRes = memberClient.getMember(memberId);
 
@@ -126,7 +146,8 @@ public class PostitServiceImpl implements PostitService {
 
     @Override
     @Transactional
-    public void deletePostit(String postitId, String date, int memberId) throws BaseExceptionHandler {
+    public void deletePostit(String postitId, String date, int memberId)
+        throws BaseExceptionHandler {
         Postit postit = postitRepository.findPostitById(postitId);
 
         if (postit == null) {
@@ -158,4 +179,125 @@ public class PostitServiceImpl implements PostitService {
 
         log.debug("deletePostit method postitId:{} success", postitId);
     }
+
+    @Transactional
+    @Override
+    public void addLikesToRedis(String postitId, int memberId) throws BaseExceptionHandler {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        String key = "likePostitId::" + postitId;
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            LikePostit likePostit = likePostitRepository.findByPostitIdAndMemberId(postitId,
+                memberId);
+
+            if (likePostit != null) {
+                log.error("addLikesToRedis method postitId: {}, memberId: {}, POSTIT_ALREADY_LIKE",
+                    postitId, memberId);
+                throw new BaseExceptionHandler(ErrorCode.POSTIT_ALREADY_LIKE);
+            }
+            hashOperations.put(key, field, String.valueOf(1));
+        } else {
+            log.error("addLikesToRedis method postitId: {}, memberId: {}, POSTIT_ALREADY_LIKE",
+                postitId, memberId);
+            throw new BaseExceptionHandler(ErrorCode.POSTIT_ALREADY_LIKE);
+        }
+
+        log.debug("addLikesToRedis method postitId: {} memberId:{} success ", postitId, memberId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteLikePostit(String postitId, int memberId) throws BaseExceptionHandler {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+
+        String key = "likePostitId::" + postitId;
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            LikePostit likePostit = likePostitRepository.findByPostitIdAndMemberId(postitId,
+                memberId);
+
+            if (likePostit == null) {
+                log.error(
+                    "deleteLikePostits method postitId: {}, memberId: {}, NOT_FOUND_POSTIT_LIKE",
+                    postitId, memberId);
+                throw new BaseExceptionHandler(ErrorCode.NOT_FOUND_POSTIT_LIKE);
+            } else {
+                likePostitRepository.delete(likePostit);
+                Postit postit = postitRepository.findPostitById(postitId);
+                int cnt = postit.getLikeCount() - 1;
+                postit.setLikeCount(Math.max(cnt, 0));
+                postitRepository.save(postit);
+            }
+        } else {
+            hashOperations.delete(key, field);
+        }
+
+        log.debug("deleteLikePostits method postitId: {} memberId:{} success ", postitId, memberId);
+    }
+
+    @Transactional
+    @Override
+    public void addReportToRedis(String postitId, int memberId) throws BaseExceptionHandler {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        String key = "reportPostitId::" + postitId;
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            ReportPostit reportPostit = reportPostitRepository.findByPostitIdAndMemberId(postitId,
+                memberId);
+
+            if (reportPostit != null) {
+                log.error(
+                    "addReportToRedis method postitId: {}, memberId: {}, POSTIT_ALREADY_REPORT",
+                    postitId, memberId);
+                throw new BaseExceptionHandler(ErrorCode.POSTIT_ALREADY_REPORT);
+            }
+            hashOperations.put(key, field, String.valueOf(1));
+        } else {
+            log.error("addReportToRedis method postitId: {}, memberId: {}, POSTIT_ALREADY_REPORT",
+                postitId, memberId);
+            throw new BaseExceptionHandler(ErrorCode.POSTIT_ALREADY_REPORT);
+        }
+
+        log.debug("addReportToRedis method postitId: {} memberId:{} success ", postitId, memberId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteReportPostit(String postitId, int memberId) throws BaseExceptionHandler {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+
+        String key = "reportPostitId::" + postitId;
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            ReportPostit reportPostit = reportPostitRepository.findByPostitIdAndMemberId(postitId,
+                memberId);
+
+            if (reportPostit == null) {
+                log.error(
+                    "deleteReportPostits method postitId: {}, memberId: {}, NOT_FOUND_POSTIT_REPORT",
+                    postitId, memberId);
+                throw new BaseExceptionHandler(ErrorCode.NOT_FOUND_POSTIT_REPORT);
+            } else {
+                reportPostitRepository.delete(reportPostit);
+                Postit postit = postitRepository.findPostitById(postitId);
+                int cnt = postit.getReportCount() - 1;
+                postit.setReportCount(Math.max(cnt, 0));
+                postitRepository.save(postit);
+            }
+        } else {
+            hashOperations.delete(key, field);
+        }
+
+        log.debug("deleteReportPostits method postitId: {} memberId:{} success ", postitId,
+            memberId);
+    }
+
 }

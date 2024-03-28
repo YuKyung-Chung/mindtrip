@@ -26,9 +26,9 @@ public class LikePostit extends BaseEntity {
     private int memberId;
 
     @Column(name = "postit_id")
-    private int postitId;
+    private String postitId;
 
-    public static LikePostit createLikePostit(int postitId, int memberId) {
+    public static LikePostit createLikePostit(String postitId, int memberId) {
         LikePostit likePostit = new LikePostit();
 
         likePostit.setPostitId(postitId);

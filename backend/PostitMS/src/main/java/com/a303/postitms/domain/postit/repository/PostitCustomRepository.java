@@ -10,7 +10,7 @@ public interface PostitCustomRepository {
 
     Postit findByPostitTopicId(String postitTopicId, int memberId);
 
-    List<PostitRes> findByPostitTopicIdAndVillageOrder(String postitTopicId, String order, int village, Pageable pageable);
+    List<Postit> findByPostitTopicIdAndVillageOrder(String postitTopicId, String order, int village, Pageable pageable);
 
     List<Postit> findByMemberId(int memberId);
 }

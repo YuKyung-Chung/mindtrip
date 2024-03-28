@@ -1,6 +1,7 @@
 package com.a303.postitms.domain.reportPostit;
 
 import com.a303.postitms.domain.BaseEntity;
+import com.a303.postitms.domain.likePostit.LikePostit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +27,13 @@ public class ReportPostit extends BaseEntity {
     private int memberId;
 
     @Column(name = "postit_id")
-    private int postitId;
+    private String postitId;
+    public static ReportPostit createReportPostit(String postitId, int memberId) {
+        ReportPostit reportPostit = new ReportPostit();
 
+        reportPostit.setPostitId(postitId);
+        reportPostit.setMemberId(memberId);
+
+        return reportPostit;
+    }
 }

@@ -86,6 +86,12 @@ public enum ErrorCode {
     // 이미 포스트잇을 등록하였습니다.
     POSTIT_ALREADY_EXISTS(404, "B302", "이미 포스트잇을 등록하였습니다."),
 
+    POSTIT_ALREADY_LIKE(404, "B303", "이미 좋아요를 등록하였습니다."),
+    NOT_FOUND_POSTIT_LIKE(404, "B304", "좋아요 하지 않은 포스티잇입니다."),
+
+    POSTIT_ALREADY_REPORT(404, "B305", "이미 신고한 포스트잇입니다."),
+    NOT_FOUND_POSTIT_REPORT(404, "B306", "신고하지 않은 포스트잇입니다."),
+
     // Transaction Update Error
     UPDATE_ERROR(200, "B400", "Update Transaction Error Exception"),
 

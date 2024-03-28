@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.HashOperations;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -41,49 +42,26 @@ public class PostitRepositoryImpl implements PostitCustomRepository {
     }
 
     @Override
-    public List<PostitRes> findByPostitTopicIdAndVillageOrder(String postitTopicId, String order,
+    public List<Postit> findByPostitTopicIdAndVillageOrder(String postitTopicId, String order,
         int village, Pageable pageable) {
 
         // $match 스테이지: 필요한 조건으로 데이터 필터링
         Criteria criteria = Criteria.where("postit_topic.$id").is(new ObjectId(postitTopicId));
+
         if (village != 0) {
             criteria.and("village").is(village);
         }
-
-        MatchOperation matchOperation = Aggregation.match(criteria);
-
-        // $project 스테이지: 필요한 필드로 데이터 구조 변환
-        ProjectionOperation projectionOperation = Aggregation.project()
-            .andExpression("_id").as("id")
-            .andExpression("content").as("content")
-            .andExpression("report_count").as("reportCount")
-            .andExpression("like_count").as("likeCount")
-            .andExpression("village").as("village")
-            .andExpression("create_time").as("createTime");
-
-        SortOperation sortOperation;
+        Query query = new Query(criteria);
 
         if (order.equals("like")) {
-            sortOperation = Aggregation.sort(
-                Sort.by(Sort.Direction.DESC, "likeCount", "createTime")
-            );
+            query.with(Sort.by(Sort.Direction.DESC, "like_count", "create_time"));
         } else {
-            sortOperation = Aggregation.sort(
-                Sort.by(Sort.Direction.DESC, "createTime")
-            );
+            query.with(Sort.by(Sort.Direction.DESC, "create_time"));
         }
 
-        // Aggregation 파이프라인 생성
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation,
-            sortOperation, skip((long) pageable.getPageNumber() * pageable.getPageSize()),
-            limit(pageable.getPageSize()));
+        query.with(pageable);
 
-        // Aggregation 실행 및 결과 매핑
-        AggregationResults<PostitRes> results = mongoTemplate.aggregate(aggregation, "postit",
-            PostitRes.class);
-        List<PostitRes> postitResList = results.getMappedResults();
-
-        return postitResList;
+        return mongoTemplate.find(query, Postit.class);
     }
 
     @Override

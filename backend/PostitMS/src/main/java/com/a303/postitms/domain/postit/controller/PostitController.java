@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,7 +40,8 @@ public class PostitController {
         Pageable pageable,
         @RequestHeader("x-member-id") int memberId) {
 
-        PostitTopicListRes postitTopicListRes = postitService.readPostitList(date, order, village, pageable);
+        PostitTopicListRes postitTopicListRes = postitService.readPostitList(date, order, village,
+            pageable);
 
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, postitTopicListRes);
     }
@@ -83,6 +85,56 @@ public class PostitController {
 
         log.debug("postits/v1?postitId={}&date={} DELETE api succeed");
 
+        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, postitId);
+    }
+
+    @PostMapping("/v1/like/{postitId}")
+    public ResponseEntity<BaseResponse<String>> likePostit(
+        @PathVariable String postitId,
+        @RequestHeader("x-member-id") int memberId) {
+
+        log.debug("postits/v1/like/{} POST api accepted", postitId);
+        postitService.addLikesToRedis(postitId, memberId);
+        log.debug("postits/v1/like/{} POST api succeed", postitId);
+
+        return BaseResponse.success(SuccessCode.INSERT_SUCCESS, postitId);
+    }
+
+    @DeleteMapping("/v1/like/{postitId}")
+    public ResponseEntity<BaseResponse<String>> deleteLikePostit(
+        @PathVariable String postitId,
+        @RequestHeader("x-member-id") int memberId) {
+
+        log.debug("postits/v1/like/{} DELETE api accepted", postitId);
+
+        postitService.deleteLikePostit(postitId, memberId);
+
+        log.debug("postits/v1/like/{} DELETE api succeed", postitId);
+        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, postitId);
+    }
+
+    @PostMapping("/v1/report/{postitId}")
+    public ResponseEntity<BaseResponse<String>> reportPostit(
+        @PathVariable String postitId,
+        @RequestHeader("x-member-id") int memberId) {
+
+        log.debug("postits/v1/report/{} POST api accepted", postitId);
+        postitService.addReportToRedis(postitId, memberId);
+        log.debug("postits/v1/report/{} POST api succeed", postitId);
+
+        return BaseResponse.success(SuccessCode.INSERT_SUCCESS, postitId);
+    }
+
+    @DeleteMapping("/v1/report/{postitId}")
+    public ResponseEntity<BaseResponse<String>> deleteReportPostit(
+        @PathVariable String postitId,
+        @RequestHeader("x-member-id") int memberId) {
+
+        log.debug("postits/v1/report/{} DELETE api accepted", postitId);
+
+        postitService.deleteReportPostit(postitId, memberId);
+
+        log.debug("postits/v1/report/{} DELETE api succeed", postitId);
         return BaseResponse.success(SuccessCode.DELETE_SUCCESS, postitId);
     }
 }
