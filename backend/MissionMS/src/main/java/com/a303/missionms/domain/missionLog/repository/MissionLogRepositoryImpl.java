@@ -37,6 +37,7 @@ public class MissionLogRepositoryImpl implements MissionLogRepositoryCustom {
 			)
 			.from(missionLog)
 			.join(mission).on(mission.missionId.eq(missionLog.mission.missionId))
+			.where(missionLog.memberId.eq(memberId))
 			.fetch();
 	}
 }
