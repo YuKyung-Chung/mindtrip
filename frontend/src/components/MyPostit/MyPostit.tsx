@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import moment from "moment";
-import "react-calendar/dist/Calendar.css";
+import Calendar from "react-calendar";
 import "./MyPostit.css";
 
 function MyPostit() {
@@ -47,7 +47,7 @@ function MyPostit() {
         </div>
         </div>
         <div className="w-full h-full items-center justify-center flex uppercase">
-          hover me
+          
         </div>
       </div>
     </div>
