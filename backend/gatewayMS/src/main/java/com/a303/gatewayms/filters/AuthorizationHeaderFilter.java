@@ -64,7 +64,7 @@ public class AuthorizationHeaderFilter extends
 
             log.info("[GatewayFilter] JWT VALID");
 
-            int memberId = Integer.parseInt(claims.get("userId", String.class));
+            int memberId = Integer.parseInt(claims.get("memberId", String.class));
 
             // 멤버 ID를 다른 서비스로 전달
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
