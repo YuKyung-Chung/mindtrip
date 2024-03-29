@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Homebtn from "../../atoms/buttons/homebtn";
-import AlarmButton from '../../atoms/buttons/alambtn';
 import PostIt from '../../atoms/postit/postititem';
 import PostitModal from '../../components/MyPostit/PostitModal';
 import axios from 'axios';
+import Header from '../../components/Header';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import Swal from 'sweetalert2';
 
 const PostitPage: React.FC = () => {
   const colors = ['#ffff88', '#ffcc00', '#ff9999', '#99ccff'];
@@ -16,10 +18,12 @@ const PostitPage: React.FC = () => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1; // 월은 0부터 시작해서 1 더해야함
   const day = currentDate.getDate();
-
+  
+  
   const formattedDate = `${year}-0${month}-${day}`;
   console.log(formattedDate)
-
+  
+  let member = useSelector((state:RootState) => state.member)
 
   const fetchData = async () => {
     try {
@@ -48,7 +52,8 @@ const PostitPage: React.FC = () => {
         {
           topicId: topicId,
           postitDate: formattedDate,
-          content: content
+          content: content,
+          viliage: member.villageName,
         },
         {
           headers: {
@@ -60,6 +65,10 @@ const PostitPage: React.FC = () => {
       setIsModalOpen(false); // 새로운 포스트잇을 추가한 후에 모달을 닫기
       fetchData(); // 모달을 닫은 후에 포스트잇 목록을 다시 불러오기
     } catch (error) {
+      Swal.fire({
+        text: "이미 오늘의 답변을 등록했어요",
+        icon: "warning"
+      });
       console.log("새 포스트잇 에러 :", error);
     }
   };
@@ -77,11 +86,10 @@ const PostitPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#fff7e0] px-2 py-8">
+    <div className="bg-[#fff7e0] px-2 min-h-screen">
+        <Header />
       <div className="flex flex-col justify-center items-center mb-6">
-        <Homebtn />
-        <AlarmButton />
-        <h1 className="text-xl font-bold mt-20">{topic}</h1>
+        <h1 className="text-xl font-bold mt-20 w-4/5">{topic}</h1>
       </div>
       <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-4/5 mx-auto">
         <div className="flex justify-center items-center flex-wrap list-none">

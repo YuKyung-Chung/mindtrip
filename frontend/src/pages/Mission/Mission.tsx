@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Successbtn from '../../atoms/buttons/successbtn';
 import Homebtn from "../../atoms/buttons/homebtn";
 import MissionTree from "../../components/Loading/MissionTree";
+import Header from "../../components/Header";
 
 
 // 미션 타입 정의
@@ -85,7 +86,7 @@ function Mission() {
 
   return (
     <div className="bg-[#fff7e0] px-2 py-8 h-screen ">
-      <Homebtn />
+      <Header />
       <div className="flex flex-col justify-center items-center mb-6">
         <h1 className="text-5xl font-bold mt-20">오늘의 미션</h1>
       </div>

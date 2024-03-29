@@ -13,7 +13,7 @@ const customModalStyles: Styles = {
   },
   content: {
     width: "360px",
-    height: "180px",
+    height: "210px",
     zIndex: 150,
     position: "absolute",
     top: "50%",
