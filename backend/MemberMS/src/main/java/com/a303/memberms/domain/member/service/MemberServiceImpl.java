@@ -45,6 +45,7 @@ public class MemberServiceImpl implements MemberService {
             () -> new BaseExceptionHandler(
                 ErrorCode.NOT_FOUND_USER_EXCEPTION
             )
+        );
 
 		VillageBaseRes villageBaseRes;
 		if (member.getVillageId() == null) {
