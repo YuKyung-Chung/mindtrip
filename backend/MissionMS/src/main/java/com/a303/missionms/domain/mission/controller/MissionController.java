@@ -133,15 +133,15 @@ public class MissionController {
 		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, missionReportRes);
 	}
 
-	@GetMapping("/v1/count")
-	public ResponseEntity<BaseResponse<Long>> getMyMonthlyReport(
-		@RequestHeader("x-member-id") int memberId
-	) throws IOException {
-
-		long cnt = missionLogService.getCompletedMissionCount(memberId);
-
-		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, cnt);
-	}
+//	@GetMapping("/v1/count")
+//	public ResponseEntity<BaseResponse<Long>> getMyMonthlyReport(
+//		@RequestHeader("x-member-id") int memberId
+//	) throws IOException {
+//
+//		long cnt = missionLogService.getCompletedMissionCount(memberId);
+//
+//		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, cnt);
+//	}
 
 	//	---------------------------------------- Method -------------------------------------------
 
