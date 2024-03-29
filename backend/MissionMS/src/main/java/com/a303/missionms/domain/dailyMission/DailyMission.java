@@ -32,7 +32,7 @@ public class DailyMission extends BaseEntity {
 	@Column(name = "daily_mission_id")
 	private int dailyMissionId;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = false)
 	@JoinColumn(name = "mission_id")
 	private Mission mission;
 

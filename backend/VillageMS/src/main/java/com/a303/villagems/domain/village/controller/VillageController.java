@@ -23,14 +23,6 @@ public class VillageController {
 
 	private final VillageService villageService;
 
-	@GetMapping("/welcome")
-	public ResponseEntity<BaseResponse<String>> welcome() throws IOException {
-
-//		log.info("리뷰 답글 알림 전송. userId : {}, message : {}",userId, message);
-
-		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its missionms");
-	}
-
 	@GetMapping("/v0")
 	public ResponseEntity<BaseResponse<VillageBaseRes>> getVillage(
 		@RequestParam int villageId

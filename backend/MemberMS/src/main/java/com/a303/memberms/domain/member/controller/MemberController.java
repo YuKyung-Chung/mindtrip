@@ -33,24 +33,17 @@ public class MemberController {
 	private final MemberService memberService;
 
 	//    @Operation(summary = "health check")
-	@GetMapping("/welcome")
-	public ResponseEntity<BaseResponse<String>> welcome() throws IOException {
 
-		log.info("Entering the member-controller  ");
-
-		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its memberms");
-	}
-
-	@GetMapping("/v0/mission-count")
+	@GetMapping("/v1/mission-count")
 	public ResponseEntity<BaseResponse<Integer>> getMissionCount(
 		@RequestHeader("x-member-id") int memberId
 	) throws IOException {
 
-		log.debug("members/v0/mission-count GET api accepted with memberId:{}", memberId);
+		log.debug("members/v1/mission-count GET api accepted with memberId:{}", memberId);
 
 		int count = memberService.getMissionCount(memberId);
 
-		log.debug("members/v0/mission-count GET api successed with memberId:{}", memberId);
+		log.debug("members/v1/mission-count GET api successed with memberId:{}", memberId);
 
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, count);
 	}
@@ -58,7 +51,7 @@ public class MemberController {
 
 	//------------------------- 다른 msa와 통신 -------------------------------
 	//    @Operation(summary = "멤버아이디로 멤버 조회")
-	@GetMapping("/v1/{memberId}")
+	@GetMapping("/v0/{memberId}")
 	public ResponseEntity<BaseResponse<MemberBaseRes>> getMemberDtoByMemberId(
 		@PathVariable("memberId") int memberId
 	) throws IOException {
@@ -134,7 +127,7 @@ public class MemberController {
 	}
 
 
-	@PutMapping("/v1/mission-count")
+	@PutMapping("/v0/mission-count")
 	public ResponseEntity<BaseResponse<String>> increaseMissionCount(
 		@RequestParam("memberId") int memberId
 

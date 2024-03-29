@@ -38,25 +38,15 @@ public class MissionController {
 	private final DailyMissionService dailyMissionService;
 	private final MissionLogService missionLogService;
 
-
-	//    @Operation(summary = "health check")
-	@GetMapping("/welcome")
-	public ResponseEntity<BaseResponse<String>> welcome() throws IOException {
-
-//		log.info("리뷰 답글 알림 전송. userId : {}, message : {}",userId, message);
-
-		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its missionms");
-	}
-
 	//    @Operation(summary = "미션리스트조회")
-	@GetMapping("/v1")
+	@GetMapping("/v0")
 	public ResponseEntity<BaseResponse<MissionListRes>> getMissionList() throws IOException {
 
-		log.debug("missions/v1 GET api accepted");
+		log.debug("missions/v0 GET api accepted");
 
 		MissionListRes missionListRes = missionService.getMissionList();
 
-		log.debug("missions/v1 GET api succeed");
+		log.debug("missions/v0 GET api succeed");
 
 		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, missionListRes);
 	}
@@ -69,9 +59,9 @@ public class MissionController {
 
 		log.debug("missions/v1/mytable PUT api accepted with memberId:{}", memberId);
 
-		for (Entry<Integer, MyTableMissionDTO> m : myTableMissionDTOMap.entrySet()) {
-			System.out.println(m);
-		}
+//		for (Entry<Integer, MyTableMissionDTO> m : myTableMissionDTOMap.entrySet()) {
+//			System.out.println(m);
+//		}
 
 		List<MyTableMissionRes> myTableMissionDTOList = dailyMissionService.putMyTableMissions(
 			memberId, myTableMissionDTOMap);
@@ -113,7 +103,7 @@ public class MissionController {
 		return BaseResponse.success(SuccessCode.UPDATE_SUCCESS, dailyMissionId);
 	}
 
-	@GetMapping("/v1/schedule")
+	@GetMapping("/v0/schedule")
 	public ResponseEntity<BaseResponse<Integer>> completeMission() throws IOException {
 
 		dailyMissionService.dailyMissionRecommend();

@@ -32,7 +32,7 @@ public class MissionLog extends BaseEntity {
 	@Column(name = "mission_log_id")
 	private int missionLogId;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = false)
 	@JoinColumn(name = "mission_id")
 	private Mission mission;
 

@@ -5,22 +5,22 @@ import com.a303.missionms.domain.dailyMission.dto.NotificationEventDto;
 import com.a303.missionms.domain.dailyMission.repository.DailyMissionRepository;
 import com.a303.missionms.domain.mission.Mission;
 import com.a303.missionms.domain.mission.dto.request.MyTableMissionDTO;
-import com.a303.missionms.domain.mission.dto.response.MissionReportRes;
+import com.a303.missionms.domain.mission.dto.response.DailyMissionBaseRes;
+import com.a303.missionms.domain.mission.dto.response.MissionLogRes;
 import com.a303.missionms.domain.mission.dto.response.MyTableMissionRes;
+import com.a303.missionms.domain.mission.repository.MissionBulkRepository;
 import com.a303.missionms.domain.mission.repository.MissionRepository;
-import com.a303.missionms.domain.missionLog.MissionLog;
 import com.a303.missionms.domain.missionLog.repository.MissionLogRepository;
 import com.a303.missionms.global.api.response.BaseResponse;
 import com.a303.missionms.global.client.MemberClient;
 import com.a303.missionms.global.exception.BaseExceptionHandler;
 import com.a303.missionms.global.exception.code.ErrorCode;
-import com.a303.missionms.global.exception.code.SuccessCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +50,7 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	private final DailyMissionRepository dailyMissionRepository;
 	private final MissionLogRepository missionLogRepository;
 	private final MissionRepository missionRepository;
+	private final MissionBulkRepository missionBulkRepository;
 	private final MemberClient memberClient;
 
 
@@ -67,9 +68,10 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 				ErrorCode.INVALID_REQUEST_TIME_EXCEPTION);
 		}
 
-		// 기존 저장된 유저의 마이테이블 미션들을 엔티티 형태로 가져온다.
+		// 기존 저장된 유저의 마이테이블 미션들을 엔티티 형태로 가져온다. -> n+1 해결
 		List<DailyMission> dailyMissions = dailyMissionRepository.findByMemberId(
 			memberId);
+
 
 		// 기존 마이테이블 미션들 중에 수행된것 제외, 넣으려는 것과 동일한 것 제외하고 남은 애들은 이번에 교체되는 애들
 		// 따라서 해당 엔티티는 삭제한다.
@@ -86,9 +88,10 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 		// 남은 애들은 이번에 교체되는 애들. 따라서 해당 엔티티는 삭제한다.
 		if (dailyMissions.size() != 0) {
-			dailyMissionRepository.deleteAll(dailyMissions); // TODO deleteAll 최적화 필요
+			dailyMissionRepository.deleteAll(dailyMissions);
 		}
 		// 남은 애들은 이번에 들어가는 애들이다. 따라서 해당 객체는 엔티티화한다.
+		List<DailyMissionBaseRes> missionsToInsert = new ArrayList<>();
 		if (myTableMissionDTOMap.size() != 0) {
 			List<Integer> missionIdList = new ArrayList<>(myTableMissionDTOMap.keySet());
 			List<Mission> missions = missionRepository.getMissionsByMissionIdIn(
@@ -101,11 +104,16 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 			for (Entry<Integer, MyTableMissionDTO> entry : myTableMissionDTOMap.entrySet()) {
 				Mission mission = missionHashMap.get(entry.getKey());
 
-				DailyMission dailyMission = DailyMission.createDailyMission(mission, memberId);
-				dailyMission.setFinish(entry.getValue().isFinish());
-				dailyMissionRepository.save(dailyMission); // TODO batch insert 최적화 필요
+				DailyMissionBaseRes dailyMissionBaseRes = DailyMissionBaseRes.builder()
+					.missionId(mission.getMissionId())
+					.memberId(memberId)
+					.isFinish(entry.getValue().isFinish())
+					.build();
+
+				missionsToInsert.add(dailyMissionBaseRes);
 			}
 		}
+		missionBulkRepository.saveAllDailyMission(missionsToInsert);
 
 		// 반환값은 업데이트 이후 마이테이블
 		dailyMissions = dailyMissionRepository.findByMemberId(
@@ -183,37 +191,25 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 	}
 
 
-	// TODO 멤버의 마을을 고려한 추천이 이루어져야할 것 + 삽입 최적화 필요
+	// TODO 최적화 완료
 	@Override
-	public MissionReportRes dailyMissionRecommend() throws BaseExceptionHandler {
+	public void dailyMissionRecommend() throws BaseExceptionHandler {
 		// daily_mission테이블 missionlog에 append
-		List<MissionLog> missionLogList = new ArrayList<>();
-		LocalDate yesterday = LocalDate.now().minusDays(1);
+		List<MissionLogRes> missionLogList = dailyMissionRepository.findAllToMissionLogRes();
 
-		List<DailyMission> yesterdayList = dailyMissionRepository.findAll();
-		for (DailyMission dailyMission : yesterdayList) {
-			MissionLog missionLog = MissionLog.createMissionLog(
-				dailyMission.getMission(),
-				dailyMission.getMemberId(),
-				yesterday,
-				dailyMission.isFinish()
-			);
-
-			missionLogList.add(missionLog);
-		}
-
-		missionLogRepository.saveAll(missionLogList);
-		em.createQuery("DELETE FROM DailyMission where 1=1").executeUpdate();
+		// jdbctemplate으로 교체(삭제와 삽입)
+		missionBulkRepository.saveAllMissionLog(missionLogList);
+		missionBulkRepository.deleteAllDailyMission();
 
 		// 새로운 미션 3개씩 선정해서 넣기
 		List<Integer> memberIdList = memberClient.getMemberIdList().getResult();
 		if (memberIdList.size() == 0) {
-			return null;
+			return;
 		}
 
 		List<Mission> missionList = missionRepository.getMissionList();
 
-		List<DailyMission> scheduledList = new ArrayList<>();
+		List<DailyMissionBaseRes> scheduledList = new ArrayList<>();
 
 		Random random = new Random();
 		Set<Integer> pickedSet = new HashSet();
@@ -229,18 +225,21 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 					continue;
 				}
 				// 넣어도 됨
-				DailyMission dailyMission = DailyMission.createDailyMission(
-					missionList.get(index),
-					memberId
-				);
+				DailyMissionBaseRes dailyMission = DailyMissionBaseRes.builder()
+					.missionId(missionList.get(index).getMissionId())
+					.memberId(memberId)
+					.isFinish(false)
+					.build();
 				scheduledList.add(dailyMission);
 				pickedSet.add(index);
 				cnt++;
 			}
 		}
 
+		// template으로 교체
 		if (scheduledList.size() != 0) {
-			dailyMissionRepository.saveAll(scheduledList);
+
+			missionBulkRepository.saveAllDailyMission(scheduledList);
 		}
 
 		// 알림 전송 kafka(notification에서는 알림테이블에 저장 + 실시간 알림 전송)
@@ -261,9 +260,8 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 			e.printStackTrace();
 		}
 
-//		log.info("리뷰 답글 알림 전송. userId : {}, message : {}",userId, message);
+		log.info("스케쥴링 완료 알림 전송. userId : 전체, message : {}", eventDto);
 
-		return null;
 	}
 
 
