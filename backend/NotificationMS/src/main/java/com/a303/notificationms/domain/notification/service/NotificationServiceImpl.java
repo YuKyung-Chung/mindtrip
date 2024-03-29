@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public SseEmitter subscribe(int memberId) {
 
 		// 1. 현재 클라이언트를 위한 sseEmitter 객체 생성
-		SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
+		SseEmitter sseEmitter = new SseEmitter((long)(60 * 1000));
 
 		// 2. 연결
 		try {

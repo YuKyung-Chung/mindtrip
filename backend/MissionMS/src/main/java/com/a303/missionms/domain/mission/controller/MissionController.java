@@ -86,7 +86,7 @@ public class MissionController {
 		return BaseResponse.success(SuccessCode.SELECT_SUCCESS, myTableMissionDTOList);
 	}
 
-	//    @Operation(summary = "미션완료변경") TODO 캐시 및 배치 업데이트로 최적화 필요
+	//    @Operation(summary = "미션완료변경") TODO 최적화 완료, redis 필요
 	@PostMapping("/v1/mytable/{missionId}")
 	public ResponseEntity<BaseResponse<Integer>> completeMission(
 		@RequestHeader("x-member-id") int memberId,
