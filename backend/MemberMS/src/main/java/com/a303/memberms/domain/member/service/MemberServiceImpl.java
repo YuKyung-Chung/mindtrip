@@ -5,7 +5,7 @@ import com.a303.memberms.domain.member.dto.request.AuthTokenReq;
 import com.a303.memberms.domain.member.dto.request.MemberStandardLoginReq;
 import com.a303.memberms.domain.member.dto.request.MemberStandardRegisterReq;
 import com.a303.memberms.domain.member.dto.response.MemberBaseRes;
-import com.a303.memberms.domain.member.mapper.DtoToEntityMapper;
+
 import com.a303.memberms.domain.member.repository.MemberRepository;
 import com.a303.memberms.domain.village.dto.response.VillageBaseRes;
 import com.a303.memberms.global.api.response.BaseResponse;
