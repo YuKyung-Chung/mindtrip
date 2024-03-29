@@ -2,6 +2,8 @@ import { Button, Input, Textarea, Select, SelectItem } from "@nextui-org/react";
 import { useState } from 'react'
 import { uploadConsult } from "../../api/consults";
 import { categoryType } from "../../types/DataTypes";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 type propsType = {
   onClose: () => void
@@ -9,6 +11,9 @@ type propsType = {
 }
 
 function CreateNewConsult({ onClose, category }: propsType) {
+
+  let accessToken = useSelector((state:RootState) => state.accessToken)
+
   // 제목, 내용, 카테고리
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
@@ -40,7 +45,7 @@ function CreateNewConsult({ onClose, category }: propsType) {
       //여기에 axios 통신
       let temp :number|string|categoryType = selectedCategory ? selectedCategory : 0
       
-      uploadConsult(title, content, temp)
+      uploadConsult(accessToken, title, content, temp)
       onClose()
     }
   }

@@ -36,23 +36,36 @@ function House() {
     setIsSurvey(true)
   }
 
-  //
-  const [surveyList, setSurveyList] = useState<survey[]|null>(null)
-
   // 처음에 질문 불러오기
+  const [surveyList, setSurveyList] = useState<survey[]|null>(null)
+  async function loadSurvey(): Promise<survey[]|null>{
+    try{
+      const res = await axios.get('http://j10a303.p.ssafy.io:54353/api/htp/question/house')
+      return res.data
+    } catch(err) {
+      console.log(err)
+      return null
+    }
+  }
+
   useEffect(() => {
-    axios.get('https:/mindtrip.site/api/htp/question/house')
-    .then((res) => {
-      setSurveyList(res.data)
-    })
-    .catch((err) => console.log(err))
+    const fetchSurvey = async () => {
+      try {
+        let tempSurveys :survey[]|null = await loadSurvey() 
+        tempSurveys ? setSurveyList(tempSurveys) : console.log('데이터가 없습니다!')
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchSurvey()
   } ,[])
 
 
   return (
     <div className=''>
       {
-        isSurvey === true ? (<div>{
+        isSurvey === true ? (<div>
+        {
           surveyList?.map((survey, idx) => {
             if (order === idx) {
               if (idx === surveyList.length - 1) {
@@ -62,8 +75,11 @@ function House() {
               }
             }
           })
-
-        }</div>) : (<HouseDraw goSurvey={goSurvey} />)
+        }
+        {
+          surveyList === null && <p>로딩중</p>
+        }
+        </div>) : (<HouseDraw goSurvey={goSurvey} />)
       }
     </div>
   )

@@ -12,7 +12,7 @@ const persistConfig = {
   key: 'root',
   storage: storageSession,
   // 로컬에 저장하고 싶은 애만 빼주기
-  whitelist: ['chat', 'member']
+  whitelist: ['chat', 'member', 'accessToken', 'consultSlice']
 }
 
 const persistedReducer = persistReducer(

@@ -16,11 +16,25 @@ import { getConsultCategory } from '../../store/consultSlice';
 import { getConsults, getCategory, getSharedConsult } from './../../api/consults'
 import { consultType, categoryType } from '../../types/DataTypes';
 import { villageBackgroundColor, villageTextColor } from '../../atoms/color';
-
+import Swal from 'sweetalert2';
 
 // 고민상담소 첫 페이지
-
 function Consult() {
+  const navigate = useNavigate()
+
+  // 로그인 안하면 막기
+  useEffect(() => {
+    if (accessToken === '') {
+      Swal.fire({
+        text:'로그인이 필요합니다.'
+      }).then(() => {
+        navigate('/login')
+      })
+    }
+  }, [])
+
+
+
   const dispatch = useDispatch()
 
   // 채팅창 관련 가져오기
@@ -28,6 +42,7 @@ function Consult() {
 
   // 회원 정보
   let member = useSelector((state: RootState) => state.member)
+  let accessToken = useSelector((state:RootState) => state.accessToken)
 
   // 카테고리 받기
   let category = useSelector((state: RootState) => state.consultSlice.category)
@@ -41,7 +56,7 @@ function Consult() {
     // 처음 들어올 때 카테고리 목록 가져오기
     const fetchCategory = async () => {
       try {
-        let tempCategory: categoryType[] = await getCategory()
+        let tempCategory: categoryType[] = await getCategory(accessToken)
         dispatch(getConsultCategory(tempCategory))
       } catch (err) {
         console.log(err)

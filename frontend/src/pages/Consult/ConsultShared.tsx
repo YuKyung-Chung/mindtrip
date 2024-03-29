@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from './../../store/store'
 import Header from '../../components/Header';
 import { getSharedConsult } from '../../api/consults';
+import Swal from 'sweetalert2';
 
 function ConsultShared() {
   const navigate = useNavigate()
@@ -27,6 +28,20 @@ function ConsultShared() {
   }
 
   useEffect(() => {
+
+    const navigate = useNavigate()
+
+    // 로그인 안하면 막기
+    useEffect(() => {
+      if (accessToken === '') {
+        Swal.fire({
+          text:'로그인이 필요합니다.'
+        }).then(() => {
+          navigate('/login')
+        })
+      }
+    }, [])
+
     // 전체 고민 가져오기
     const fetchConsult = async () => {
       try {

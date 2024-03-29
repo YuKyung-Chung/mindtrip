@@ -6,11 +6,13 @@ import google from './../assets/login/google.png'
 import { memberType } from "../types/DataTypes";
 import { saveToken, saveUserInfo } from "../store/memberSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // 회원가입 페이지
 
 function Signup () {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // 아이디
   const [id, setId] = useState<string>('')
@@ -38,6 +40,14 @@ function Signup () {
   // 비밀번호 보이고 안보이고 제어
   const [isVisible2, setIsVisible2] = useState(false);
   const toggleVisibility2 = () => setIsVisible2(!isVisible2);
+
+  //처음에 들어오면 초기화
+  useEffect(() => {
+    setId('')
+    setNickname('')
+    setPassword1('')
+    setPassword2('')
+  }, [])
 
 
   // 비밀번호 일치 확인
@@ -75,8 +85,8 @@ function Signup () {
   }
 
   // 회원가입....
-  const handleSignup =async() => {
-      const successSignup:boolean = await signup(id, password1, password2) 
+  const handleSignup = async() => {
+      const successSignup:boolean = await signup(id, password1, nickname) 
       // 회원가입에 성공했다면, 로그인해주고, 토큰따오고 유저정보 가져오기
       if (successSignup === true) {
         handleLogin()
@@ -85,8 +95,8 @@ function Signup () {
   
 
   // 유저 정보 저장
-  const saveUser = async function(token:string) {
-    const userInfo:memberType|void = await loadUser(token)
+  const saveUser = async function() {
+    const userInfo:memberType|void = await loadUser()
     if (userInfo) {
       dispatch(saveUserInfo(userInfo))
     }
@@ -97,8 +107,8 @@ function Signup () {
     const token:string|void = await login(id, password1)
     if (typeof token == 'string') {
       dispatch(saveToken(token))
-      saveUser(token)
-      // navigate('/htp/result')
+      saveUser()
+      navigate('/htp/result')
     }
   }
   
@@ -107,7 +117,7 @@ function Signup () {
       className="w-full h-[95vh] mt-[2.5vh] mx-auto sm:w-3/5 xl:w-1/3"
     >
       <CardBody className="flex-col content-center py-[5vh]">
-        <p className="text-center text-4xl mb-2">Sign Up</p>
+        <p className="text-center text-4xl mb-2">회원가입</p>
         {/* 아이디 입력 창 */}
         <div className="mx-auto mt-4 my-1 w-[95%] md:w-[70%] flex items-center">
           <Input 
