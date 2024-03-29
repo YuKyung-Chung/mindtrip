@@ -83,12 +83,12 @@ public class ConsultController {
     }
 
     //고민상담소 개별 정보 조회
-    @GetMapping("/detail/{consultId}")
+    @GetMapping("/detail/{channelId}")
     public ResponseEntity<BaseResponse<ConsultDetailRes>> getConsultDetail(
-        @PathVariable int consultId,
+        @PathVariable String channelId,
         @RequestHeader("x-member-id") int memberId
     ) throws IOException {
-        ConsultDetailRes consultDetailRes = consultService.getConsultingRoom(consultId);
+        ConsultDetailRes consultDetailRes = consultService.getConsultingRoom(channelId);
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultDetailRes);
     }
 

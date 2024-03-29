@@ -179,15 +179,15 @@ public class ConsultServiceImpl implements ConsultService {
 
     //고민상담소 개별 조회
     @Override
-    public ConsultDetailRes getConsultingRoom(int consultId) {
+    public ConsultDetailRes getConsultingRoom(String channelId) {
 
-        Consult consult = consultRepository.findById(consultId).get();
+        Consult consult = consultRepository.findAllByChannelIdOrderByCreateTimeDesc(channelId).get(0);
 
-        return ConsultDetailRes.builder().consultId(consultId).memberId(consult.getMemberId())
+        return ConsultDetailRes.builder().consultId(consult.getConsultId()).memberId(consult.getMemberId())
             .nickname(consult.getNickname()).title(consult.getTitle()).content(consult.getContent())
             .categoryId(consult.getCategoryId()).isClosed(consult.isClosed())
             .isShared(consult.isShared()).canLike(consult.isCanLike())
-            .channelId(consult.getChannelId()).build();
+            .channelId(channelId).build();
     }
 
     //고민상담소 종료

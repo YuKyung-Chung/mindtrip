@@ -24,7 +24,7 @@ public interface ConsultService {
     String registerChannel(int consultId, int sender);
 
     //고민상담소 개별 조회
-    ConsultDetailRes getConsultingRoom(int consultId);
+    ConsultDetailRes getConsultingRoom(String channelId);
 
     //고민상담 종료
     int closeConsultingRoom(int consultId, ConsultCloseReq consultCloseReq, int memberId)
