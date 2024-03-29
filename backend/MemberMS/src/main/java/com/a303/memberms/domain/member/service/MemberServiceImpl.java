@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,16 +38,13 @@ public class MemberServiceImpl implements MemberService {
 	private final AuthClient authClient;
 	private final VillageClient villageClient;
 
-
     @Override
     public MemberBaseRes getMemberByMemberId(int memberId)
         throws BaseExceptionHandler, IOException {
-
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(
             () -> new BaseExceptionHandler(
                 ErrorCode.NOT_FOUND_USER_EXCEPTION
             )
-        );
 
 		VillageBaseRes villageBaseRes;
 		if (member.getVillageId() == null) {
@@ -78,6 +76,7 @@ public class MemberServiceImpl implements MemberService {
         return memberIdList;
     }
 
+
     @Override
     public String standardLogin(MemberStandardLoginReq memberStandardLoginReq) {
         //ID로 존재 여부 확인(사실상 일치 여부도 확인됨)
@@ -100,7 +99,6 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-
         //FeignClient로 토큰 발급
         ResponseEntity<BaseResponse<String>> response = authClient.token(
             AuthTokenReq.builder()
@@ -111,6 +109,7 @@ public class MemberServiceImpl implements MemberService {
 
 		return response.getBody().getResult();
 	}
+
 
     @Override
     @Transactional
@@ -123,8 +122,7 @@ public class MemberServiceImpl implements MemberService {
         String nickname = memberStandardRegisterReq.nickname();
         checkNicknameDuplication(nickname);
 
-        //패스워드 인코딩
-        //DB에 넣기
+        //패스워드 인코딩 + DB에 넣기
         Member member = Member.createMember(
             memberStandardRegisterReq.id(),
             passwordEncoder.encode(memberStandardRegisterReq.password()),
@@ -154,6 +152,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+
 	@Override
 	public void increaseMissionCountByMemberId(int memberId) {
 
@@ -167,12 +166,11 @@ public class MemberServiceImpl implements MemberService {
 		member.setMissionCount(newMissionCount);
 		// 만약 임계치 넘었다면 레벨 업 시켜야함.
 		memberRepository.increaseLevel(member, newMissionCount);
-
 	}
+
 
 	@Override
 	public int getMissionCount(int memberId) {
-
 		return memberRepository.findMissionCountByMemberId(memberId);
 	}
 

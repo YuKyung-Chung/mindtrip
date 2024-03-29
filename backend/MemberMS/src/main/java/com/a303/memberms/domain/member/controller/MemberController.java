@@ -76,7 +76,7 @@ public class MemberController {
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, memberIdList);
 	}
 
-	@PostMapping("/v1/login")
+	@PostMapping("/v0/login")
 	public ResponseEntity<BaseResponse<String>> login(
 		@RequestBody
 		MemberStandardLoginReq memberStandardLoginReq,
@@ -93,7 +93,7 @@ public class MemberController {
 		);
 	}
 
-	@PostMapping("/v1/register")
+	@PostMapping("/v0/register")
 	public ResponseEntity<BaseResponse<String>> register(
 		@RequestBody
 		MemberStandardRegisterReq memberStandardRegisterReq
@@ -106,7 +106,7 @@ public class MemberController {
 		);
 	}
 
-	@GetMapping("/v1/availability/id")
+	@GetMapping("/v0/availability/id")
 	public ResponseEntity<BaseResponse<String>> checkIdAvailability(
 		@RequestParam
 		String id
@@ -119,9 +119,25 @@ public class MemberController {
 		);
 	}
 
+
+	@GetMapping("/v0/availability/nickname")
+	public ResponseEntity<BaseResponse<String>> checkNicknameAvailability(
+		@RequestParam
+		String nickname
+	) {
+		memberService.checkNicknameDuplication(nickname);
+
+		return BaseResponse.success(
+			SuccessCode.AVAILABLE_NICKNAME,
+			"사용 가능한 닉네임입니다."
+		);
+	}
+
+
 	@PutMapping("/v1/mission-count")
 	public ResponseEntity<BaseResponse<String>> increaseMissionCount(
 		@RequestParam("memberId") int memberId
+
 	) {
 		memberService.increaseMissionCountByMemberId(memberId);
 
@@ -130,7 +146,6 @@ public class MemberController {
 			"증가 완료"
 		);
 	}
-
 
 }
 
