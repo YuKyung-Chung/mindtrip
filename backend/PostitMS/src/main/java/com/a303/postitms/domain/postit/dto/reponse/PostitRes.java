@@ -15,7 +15,11 @@ public record PostitRes(
     int reportCount,
 
     int likeCount,
-    int village
+    String village,
+
+    boolean isLike,
+
+    boolean isReport
 ) {
 
 }

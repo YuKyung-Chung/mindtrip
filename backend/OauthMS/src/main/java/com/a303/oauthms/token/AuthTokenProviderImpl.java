@@ -35,7 +35,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
 			.header()
 				.add("typ", "JWT")
 			.and()
-			.claim("userId", Integer.toString(memberId))
+			.claim("memberId", Integer.toString(memberId))
 			.claim("role", role)
 			.issuedAt(currentDate)
 			.expiration(expiration)

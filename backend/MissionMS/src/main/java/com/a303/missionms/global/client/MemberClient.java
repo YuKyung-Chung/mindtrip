@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "memberms")
 public interface MemberClient {
 
-	@GetMapping("api/members/v1/{memberId}")
+	@GetMapping("api/members/v0/{memberId}")
 	BaseResponse<MemberBaseRes> getMemberDtoByMemberId(@PathVariable int memberId);
 
 	@GetMapping("api/members/v0/id-list")
 	BaseResponse<List<Integer>> getMemberIdList();
 
-	@PutMapping("api/members/v1/mission-count")
+	@PutMapping("api/members/v0/mission-count")
 	BaseResponse<Void> increaseMissionCount(@RequestParam int memberId);
 
 }

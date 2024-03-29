@@ -19,6 +19,7 @@ import com.a303.postitms.domain.member.Role;
 import com.a303.postitms.domain.member.dto.response.MemberBaseRes;
 import com.a303.postitms.global.exception.BaseExceptionHandler;
 import com.a303.postitms.global.exception.code.ErrorCode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +44,8 @@ public class PostitServiceImpl implements PostitService {
     private final ReportPostitRepository reportPostitRepository;
 
     @Override
-    public PostitTopicListRes readPostitList(String date, String order, int village,
-        Pageable pageable) throws BaseExceptionHandler {
+    public PostitTopicListRes readPostitList(String date, String order, String village,
+        Pageable pageable, int memberId) throws BaseExceptionHandler {
 
         PostitTopic postitTopic = postitTopicRepository.findPostitTopicByPostitDate(date);
 
@@ -59,15 +60,22 @@ public class PostitServiceImpl implements PostitService {
             postitTopic.getId(),
             order, village, pageable);
 
-        List<PostitRes> postitResList = postitList.stream()
-            .map(postit -> PostitRes.builder()
+        List<PostitRes> postitResList = new ArrayList<>();
+
+        for (Postit postit : postitList) {
+
+            PostitRes postitRes = PostitRes.builder()
                 .id(postit.getId())
                 .content(postit.getContent())
                 .reportCount(postit.getReportCount())
                 .likeCount(postit.getLikeCount())
                 .village(postit.getVillage())
-                .build()
-            ).collect(Collectors.toList());
+                .isLike(isLike(postit.getId(), memberId))
+                .isReport(isReport(postit.getId(), memberId))
+                .build();
+
+            postitResList.add(postitRes);
+        }
 
         return PostitTopicListRes.builder()
             .topicId(postitTopic.getId())
@@ -105,8 +113,6 @@ public class PostitServiceImpl implements PostitService {
     public String registerPostit(PostitRegistReq postitRegistReq, int memberId)
         throws BaseExceptionHandler {
 
-        BaseResponse<MemberBaseRes> memberRes = memberClient.getMember(memberId);
-
         PostitTopic postitTopic = postitTopicRepository.getPostitTopicById(
             postitRegistReq.topicId());
 
@@ -126,7 +132,7 @@ public class PostitServiceImpl implements PostitService {
         }
 
         Postit postit = Postit.createPostit(postitRegistReq.content(), postitTopic, memberId,
-            memberRes.getResult().villageId());
+            postitRegistReq.village());
 
         if (postitRepository.findByPostitTopicId(postitTopic.getId(), memberId) != null) {
 
@@ -300,4 +306,31 @@ public class PostitServiceImpl implements PostitService {
             memberId);
     }
 
+    private boolean isLike(String postitId, int memberId) {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+
+        String key = "likePostitId::" + postitId;
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            return likePostitRepository.findByPostitIdAndMemberId(postitId, memberId) != null;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean isReport(String postitId, int memberId) {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+
+        String key = "reportPostitId::" + postitId;
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            return reportPostitRepository.findByPostitIdAndMemberId(postitId, memberId) != null;
+        } else {
+            return true;
+        }
+    }
 }

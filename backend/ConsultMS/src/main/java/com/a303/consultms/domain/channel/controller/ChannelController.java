@@ -53,7 +53,7 @@ public class ChannelController {
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, channelResList);
     }
 
-    //개인 채팅 조회
+    //채널 정보 조회
     @GetMapping("/{channelId}")
     public ResponseEntity<BaseResponse<Channel>> getPersonalChat(
         @PathVariable String channelId,

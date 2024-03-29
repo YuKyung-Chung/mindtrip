@@ -16,7 +16,10 @@ public record PostitRegistReq(
     String content,
 
     @NotBlank(message = "날짜는 필수 입니다.")
-    String postitDate
+    String postitDate,
+
+    @NotBlank(message = "마을은 필수 입니다.")
+    String village
 
 ) {
 

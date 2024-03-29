@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 public interface PostitService {
 
 
-    PostitTopicListRes readPostitList(String date, String order, int village, Pageable pageable) throws BaseExceptionHandler;
+    PostitTopicListRes readPostitList(String date, String order, String village, Pageable pageable, int memberId) throws BaseExceptionHandler;
 
     List<MyPostitRes> readMyPostitList(int memberId) throws BaseExceptionHandler;
 

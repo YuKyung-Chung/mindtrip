@@ -1,24 +1,24 @@
 package com.a303.missionms.domain.dailyMission.repository;
 
 import com.a303.missionms.domain.dailyMission.DailyMission;
-import com.a303.missionms.domain.mission.Mission;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.text.html.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface DailyMissionRepository extends JpaRepository<DailyMission, Integer> {
-//	List<DailyMission> findByMemberIdAndIsFinish(int memberId, boolean isFinish);
+public interface DailyMissionRepository extends JpaRepository<DailyMission, Integer>,
+	DailyMissionRepositoryCustom {
+
+	//	List<DailyMission> findByMemberIdAndIsFinish(int memberId, boolean isFinish);
 	List<DailyMission> findAll();
 
-	List<DailyMission> findByMemberId(int memberId);
+	@Query("select dm from DailyMission dm join fetch dm.mission where dm.memberId=:memberId")
+	List<DailyMission> findByMemberId(@Param("memberId") int memberId);
 
 	Optional<DailyMission> findByMemberIdAndMission_MissionId(int memberId, int missionId);
 
 	Long countByMemberIdAndIsFinishIsTrue(int memberId);
-
 
 
 }

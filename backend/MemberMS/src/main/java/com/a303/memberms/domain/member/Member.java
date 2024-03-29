@@ -34,6 +34,7 @@ public class Member extends BaseEntity {
 		member.setId(id);
 		member.setPassword(password);
 		member.setNickname(nickname);
+		member.setLevel(1);
         member.setRole(Role.USER);
 
 		return member;
