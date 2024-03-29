@@ -5,6 +5,7 @@ import com.a303.memberms.domain.member.dto.request.AuthTokenReq;
 import com.a303.memberms.domain.member.dto.request.MemberStandardLoginReq;
 import com.a303.memberms.domain.member.dto.request.MemberStandardRegisterReq;
 import com.a303.memberms.domain.member.dto.response.MemberBaseRes;
+import com.a303.memberms.domain.member.mapper.DtoToEntityMapper;
 import com.a303.memberms.domain.member.repository.MemberRepository;
 import com.a303.memberms.domain.village.dto.response.VillageBaseRes;
 import com.a303.memberms.global.api.response.BaseResponse;
@@ -77,27 +78,27 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public String standardLogin(MemberStandardLoginReq memberStandardLoginReq) {
-		//1. ID로 존재 여부 확인(사실상 일치 여부도 확인됨)
-		Member target = memberRepository.findById(memberStandardLoginReq.id())
-			.orElseThrow(
-				() -> new BaseExceptionHandler(
-					"ID 없어잉",
-					ErrorCode.NOT_FOUND_USER_EXCEPTION
-				)
-			);
+    public String standardLogin(MemberStandardLoginReq memberStandardLoginReq) {
+        //1. ID로 존재 여부 확인(사실상 일치 여부도 확인됨)
+        Member target = memberRepository.findById(memberStandardLoginReq.id())
+            .orElseThrow(
+                () -> new BaseExceptionHandler(
+                    "아이디를 확인해주세요.",
+                    ErrorCode.NOT_FOUND_USER_EXCEPTION
+                )
+            );
 
-		//2. 패스워드 일치 확인
-//        if (!passwordEncoder.matches(
-//            memberStandardLoginReq.password(),
-//            target.getPassword()
-//        )) {
-		if (!memberStandardLoginReq.password().equals(target.getPassword())) {
-			throw new BaseExceptionHandler(
-				"PW 이상행",
-				ErrorCode.NOT_FOUND_USER_EXCEPTION
-			);
-		}
+        //2. 패스워드 일치 확인
+        if (!passwordEncoder.matches(
+            memberStandardLoginReq.password(),
+            target.getPassword()
+        )) {
+//        if(!memberStandardLoginReq.password().equals(target.getPassword())) {
+            throw new BaseExceptionHandler(
+                "패스워드를 확인해주세요.",
+                ErrorCode.NOT_FOUND_USER_EXCEPTION
+            );
+        }
 
 		//3. FeignClient로 토큰 발급
 		ResponseEntity<BaseResponse<String>> response = authClient.token(
@@ -129,13 +130,11 @@ public class MemberServiceImpl implements MemberService {
 		String nickname = memberStandardRegisterReq.nickname();
 		checkNicknameDuplication(nickname);
 
-		//6. 패스워드 인코딩
-		//...은 나중에
-
+        //6. 패스워드 인코딩
 		//7. DB에 넣기
 		Member member = Member.createMember(
 			memberStandardRegisterReq.id(),
-			memberStandardRegisterReq.password(),
+            passwordEncoder.encode(memberStandardRegisterReq.password()),
 			memberStandardRegisterReq.nickname()
 		);
 		memberRepository.save(member);
