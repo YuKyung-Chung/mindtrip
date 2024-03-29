@@ -14,6 +14,7 @@ public record ConsultDetailRes(
     boolean isClosed,
     boolean isShared,
     boolean canLike,
+    int likeCount,
     String channelId
 ) {
 

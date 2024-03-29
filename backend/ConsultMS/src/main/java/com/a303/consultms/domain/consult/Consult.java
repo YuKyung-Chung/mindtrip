@@ -51,6 +51,9 @@ public class Consult extends BaseEntity {
     @Column(name = "can_like")
     private boolean canLike = true;
 
+    @Column(name = "like_count")
+    private int likeCount = 0;
+
     @Column(name = "channel_id") // 채널의 id를 저장할 필드 추가
     private String channelId;
 
