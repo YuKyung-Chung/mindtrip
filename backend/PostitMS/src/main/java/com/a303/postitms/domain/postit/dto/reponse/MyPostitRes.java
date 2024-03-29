@@ -14,7 +14,7 @@ public record MyPostitRes(
     int reportCount,
 
     int likeCount,
-    int village
+    String village
 ) {
 
 }

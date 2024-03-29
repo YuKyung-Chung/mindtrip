@@ -36,12 +36,12 @@ public class PostitController {
     public ResponseEntity<BaseResponse<PostitTopicListRes>> readPostitList(
         @RequestParam String date,
         @RequestParam String order,
-        @RequestParam int village,
+        @RequestParam String village,
         Pageable pageable,
         @RequestHeader("x-member-id") int memberId) {
 
         PostitTopicListRes postitTopicListRes = postitService.readPostitList(date, order, village,
-            pageable);
+            pageable, memberId);
 
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, postitTopicListRes);
     }

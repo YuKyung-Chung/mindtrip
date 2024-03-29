@@ -26,7 +26,7 @@ public class Postit extends MongoBaseEntity {
     private int memberId;
 
     @Field(name="village")
-    private int village;
+    private String village;
 
     @DBRef
     @Field(name="postit_topic")
@@ -38,7 +38,7 @@ public class Postit extends MongoBaseEntity {
     @Field(name="like_count")
     private int likeCount;
 
-    public static Postit createPostit(String content, PostitTopic postitTopic, int memberId, int village) {
+    public static Postit createPostit(String content, PostitTopic postitTopic, int memberId, String village) {
         Postit postit = new Postit();
 
         postit.setContent(content);
