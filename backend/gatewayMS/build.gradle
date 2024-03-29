@@ -40,6 +40,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    //JWT
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'io.jsonwebtoken:jjwt:0.12.5'
+
 }
 
 dependencyManagement {
