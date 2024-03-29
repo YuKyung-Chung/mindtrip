@@ -48,7 +48,7 @@ public class PostitRepositoryImpl implements PostitCustomRepository {
         // $match 스테이지: 필요한 조건으로 데이터 필터링
         Criteria criteria = Criteria.where("postit_topic.$id").is(new ObjectId(postitTopicId));
 
-        if ("".equals(village)) {
+        if (!village.equals("all")) {
             criteria.and("village").is(village);
         }
         Query query = new Query(criteria);
