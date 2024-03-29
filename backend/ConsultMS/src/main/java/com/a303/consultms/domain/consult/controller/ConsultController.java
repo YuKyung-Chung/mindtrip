@@ -16,6 +16,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,7 +77,8 @@ public class ConsultController {
     public ResponseEntity<BaseResponse<ConsultChattingListRes>> getOthersChattingList(
         @RequestHeader("x-member-id") int memberId
     ) {
-        ConsultChattingListRes consultChattingListRes = consultService.getOthersChattingRooms(memberId);
+        ConsultChattingListRes consultChattingListRes = consultService.getOthersChattingRooms(
+            memberId);
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultChattingListRes);
     }
 
@@ -123,9 +125,26 @@ public class ConsultController {
 
     //카테고리로 고민상담소 필터링
 
-
-
     //제목+내용으로 고민상담소 검색
 
 
+    //공유된 고민내역 좋아요 등록
+    @PostMapping("/like/{consultId}")
+    public ResponseEntity<BaseResponse<Integer>> likeConsult(
+        @PathVariable int consultId,
+        @RequestHeader("x-member-id") int memberId
+    ) throws IOException {
+        consultService.addLikesToRedis(consultId, memberId);
+        return BaseResponse.success(SuccessCode.INSERT_SUCCESS, consultId);
+    }
+
+    //공유된 고민내역 좋아요 취소
+    @DeleteMapping("/like/{consultId}")
+    public ResponseEntity<BaseResponse<Integer>> deleteLikeConsult(
+        @PathVariable int consultId,
+        @RequestHeader("x-member-id") int memberId
+    ) throws IOException {
+        consultService.deleteLikePostit(consultId, memberId);
+        return BaseResponse.success(SuccessCode.DELETE_SUCCESS, consultId);
+    }
 }

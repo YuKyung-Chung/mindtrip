@@ -80,6 +80,9 @@ public enum ErrorCode {
     ALREADY_FULL_CONSULTROOM(403, "B303","이미 대화중인 고민상담소입니다."),
     NOT_FOUND_CHANNEL_EXCEPTION(404, "B304","채널이 존재하지 않습니다."),
     CHANNEL_NOT_FOUND_EXCEPTION(404, "B305","채널을 찾을 수 없습니다."),
+    ALREADY_CONSULT_LIKE_EXISTS(403,"B306","이미 좋아요 등록을 하셨습니다."),
+    NOT_FOUND_CONSULT_LIKE_EXISTS(404,"B307","삭제할 좋아요를 찾을 수 없습니다."),
+
     // Transaction Update Error
     UPDATE_ERROR(200, "B300", "Update Transaction Error Exception"),
 

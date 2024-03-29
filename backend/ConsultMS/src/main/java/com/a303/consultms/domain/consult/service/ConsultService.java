@@ -33,8 +33,6 @@ public interface ConsultService {
     //고민상담소 카테고리 조회
     ConsultCategoryListRes getConsultCategoryList();
 
-//    void updateConsultChannel(int consultId, String channelId);
-
     //공유된 고민 리스트 조회
     ConsultListRes getSharedConsultingRooms();
 
@@ -52,4 +50,10 @@ public interface ConsultService {
 
     //대화중인 채팅방 목록(다른 사람 고민)
     ConsultChattingListRes getOthersChattingRooms(int memberId);
+
+    //공유된 고민 내용에 좋아요 등록
+    void addLikesToRedis(int consultId, int memberId);
+
+    //공유된 고민 내용에 좋아요 삭제
+    void deleteLikePostit(int consultId, int memberId);
 }

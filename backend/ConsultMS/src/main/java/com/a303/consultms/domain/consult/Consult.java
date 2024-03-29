@@ -1,13 +1,12 @@
 package com.a303.consultms.domain.consult;
 
 import com.a303.consultms.domain.BaseEntity;
-import com.a303.consultms.domain.channel.Channel;
-import com.a303.consultms.domain.message.Message;
+import com.a303.consultms.domain.consultLike.LikeConsult;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 
 @Getter
@@ -57,9 +56,12 @@ public class Consult extends BaseEntity {
     @Column(name = "channel_id") // 채널의 id를 저장할 필드 추가
     private String channelId;
 
+    @OneToMany(mappedBy = "consult", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<LikeConsult> consultLikeSet = new HashSet<>();
 
     //생성 메서드
-    public static Consult createConsult(int memberId, String nickname, String title, String content, int categoryId) {
+    public static Consult createConsult(int memberId, String nickname, String title, String content,
+        int categoryId) {
         Consult consult = new Consult();
 
         consult.setMemberId(memberId);

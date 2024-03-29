@@ -1,10 +1,12 @@
 package com.a303.consultms.domain.consult.service;
 
 import static com.a303.consultms.global.exception.code.ErrorCode.ALREADY_CLOSED_EXCEPTION;
+import static com.a303.consultms.global.exception.code.ErrorCode.ALREADY_CONSULT_LIKE_EXISTS;
 import static com.a303.consultms.global.exception.code.ErrorCode.ALREADY_FULL_CONSULTROOM;
 import static com.a303.consultms.global.exception.code.ErrorCode.CHANNEL_NOT_FOUND_EXCEPTION;
 import static com.a303.consultms.global.exception.code.ErrorCode.NOT_FOUND_CHANNEL_EXCEPTION;
 import static com.a303.consultms.global.exception.code.ErrorCode.NOT_FOUND_CONSULT_EXCEPTION;
+import static com.a303.consultms.global.exception.code.ErrorCode.NOT_FOUND_CONSULT_LIKE_EXISTS;
 import static com.a303.consultms.global.exception.code.ErrorCode.UNAUTHORIZED_USER_EXCEPTION;
 
 import com.a303.consultms.domain.channel.Channel;
@@ -21,6 +23,8 @@ import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultListRes;
 import com.a303.consultms.domain.consult.repository.ConsultCategoryRepository;
 import com.a303.consultms.domain.consult.repository.ConsultRepository;
+import com.a303.consultms.domain.consultLike.LikeConsult;
+import com.a303.consultms.domain.consultLike.repository.LikeConsultRepository;
 import com.a303.consultms.domain.member.dto.response.MemberBaseRes;
 import com.a303.consultms.domain.message.Message;
 import com.a303.consultms.global.api.response.BaseResponse;
@@ -28,13 +32,14 @@ import com.a303.consultms.global.client.MemberClient;
 import com.a303.consultms.global.exception.BaseExceptionHandler;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Log4j2
@@ -46,6 +51,8 @@ public class ConsultServiceImpl implements ConsultService {
     private final ConsultCategoryRepository consultCategoryRepository;
     private final MemberClient memberClient;
     private final ChannelRepository channelRepository;
+    private final LikeConsultRepository likeConsultRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     //고민상담소 전체 조회
     @Override
@@ -123,7 +130,7 @@ public class ConsultServiceImpl implements ConsultService {
     @Override
     @Transactional
 //    public String registerChannel(ChannelReq channelReq, int consultId, int senderId) {
-    public String registerChannel(int consultId, int senderId) {
+    public String registerChannel(int consultId, int senderId) throws BaseExceptionHandler {
         //senderId는 입장하는 사람 ID
         //고민상담소에 기존 채널 등록되어 있는지 확인
         Consult consult = consultRepository.findById(consultId).get();
@@ -285,7 +292,7 @@ public class ConsultServiceImpl implements ConsultService {
 
     //참여자 강제로 추방시키기
     @Override
-    public void expelConsultingRoom(int consultId, int sender) {
+    public void expelConsultingRoom(int consultId, int sender) throws BaseExceptionHandler {
         //consultId 기반으로 현재 Consult 조회
         Consult consult = consultRepository.findById(consultId)
             .orElseThrow(() -> new BaseExceptionHandler(NOT_FOUND_CONSULT_EXCEPTION));
@@ -426,9 +433,56 @@ public class ConsultServiceImpl implements ConsultService {
             .build();
     }
 
-    //회원 존재여부 유효성 검사
-    private void memberException(int memberId) {
-        //멤버 존재하는지 유효성 검사 추가하기
+    //공유된 고민상담 내용에 좋아요 등록
+    @Override
+    @Transactional
+    public void addLikesToRedis(int consultId, int memberId) throws BaseExceptionHandler {
 
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        String key = "likeConsultId::" + String.valueOf(consultId);
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            LikeConsult likeConsult = likeConsultRepository.findByConsultIdAndMemberId(consultId,
+                memberId);
+
+            //이미 좋아요 등록이 되어 있는 경우
+            if (likeConsult != null) {
+                throw new BaseExceptionHandler(ALREADY_CONSULT_LIKE_EXISTS);
+            }
+            hashOperations.put(key, field, String.valueOf(1));
+        } else {
+            throw new BaseExceptionHandler(ALREADY_CONSULT_LIKE_EXISTS);
+        }
+
+
+    }
+
+    //공유된 고민상담 내용에 좋아요 등록 취소
+    @Override
+    @Transactional
+    public void deleteLikePostit(int consultId, int memberId) {
+
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        String key = "likeConsultId::" + String.valueOf(consultId);
+        String field = String.valueOf(memberId);
+
+        if (hashOperations.get(key, field) == null) {
+            LikeConsult likeConsult = likeConsultRepository.findByConsultIdAndMemberId(consultId,
+                memberId);
+
+            //좋아요가 등록이 안되어 있는 경우
+            if (likeConsult == null) {
+                throw new BaseExceptionHandler(NOT_FOUND_CONSULT_LIKE_EXISTS);
+            } else{
+                likeConsultRepository.delete(likeConsult);
+                Consult consult = consultRepository.findById(consultId).get();
+                int likeCount = consult.getLikeCount() - 1;
+                consult.setLikeCount(Math.max(likeCount, 0));
+                consultRepository.save(consult);
+            }
+        } else {
+            hashOperations.delete(key, field);
+        }
     }
 }
