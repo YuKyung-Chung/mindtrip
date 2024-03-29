@@ -5,6 +5,8 @@ import Successbtn from '../../atoms/buttons/successbtn';
 import Homebtn from "../../atoms/buttons/homebtn";
 import MissionTree from "../../components/Loading/MissionTree";
 import Header from "../../components/Header";
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 
 // 미션 타입 정의
@@ -19,6 +21,7 @@ function Mission() {
   const [missions, setMissions] = useState<Mission[]>([]); // 미션 타입을 명시
 
   const [isMidnight, setIsMidnight] = useState<boolean>(false) 
+  let accessToken = useSelector((state:RootState) => state.accessToken)
   
  
 
@@ -29,7 +32,7 @@ function Mission() {
         // 미션 데이터를 가져오는 GET 요청
         const response = await axios.get("https://mindtrip.site/api/missions/v1/mytable", {
           headers: {
-            "x-member-id": "1"
+            Authorization: accessToken
           }
         });
         console.log(response.data)
@@ -66,7 +69,7 @@ function Mission() {
         {},
         {
           headers: {
-            "x-member-id": "1"
+            Authorization: accessToken
           }
         }
       );
