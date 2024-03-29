@@ -11,12 +11,21 @@ const PostitPage: React.FC = () => {
   const [topic, setTopic] = useState<string>("");
   const [topicId, setTopicId] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // 월은 0부터 시작해서 1 더해야함
+  const day = currentDate.getDate();
+
+  const formattedDate = `${year}-0${month}-${day}`;
+  console.log(formattedDate)
+
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://mindtrip.site/api/postits/v1?date=2024-03-21&order=like&village=1", {
+      const response = await axios.get(`https://mindtrip.site/api/postits/v1?date=${formattedDate}&order=like&village=1`, {
         headers: {
-          "x-member-id": "4"
+          "x-member-id": "0"
         }
       });
       console.log(response.data)
@@ -38,12 +47,12 @@ const PostitPage: React.FC = () => {
         "https://mindtrip.site/api/postits/v1",
         {
           topicId: topicId,
-          postitDate: "2024-03-21",
+          postitDate: formattedDate,
           content: content
         },
         {
           headers: {
-            "x-member-id": "4"
+            "x-member-id": "1"
           }
         }
       );
@@ -78,11 +87,11 @@ const PostitPage: React.FC = () => {
         <div className="flex justify-center items-center flex-wrap list-none">
           <div className="m-2">
             <PostIt
-              color={colors[Math.floor(Math.random() * colors.length)]}
+              color={colors[2]}
               onClick={handleFirstPostitClick}
               style={{ transition: "transform 0.3s ease-in-out" }}
             >
-              추가하기
+              눌러서 대답하기
             </PostIt>
           </div>
           {postits.map((postit) => (
