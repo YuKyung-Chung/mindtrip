@@ -55,10 +55,7 @@ public class Consult extends BaseEntity {
 
     @Column(name = "channel_id") // 채널의 id를 저장할 필드 추가
     private String channelId;
-
-    @OneToMany(mappedBy = "consult", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<LikeConsult> consultLikeSet = new HashSet<>();
-
+    
     //생성 메서드
     public static Consult createConsult(int memberId, String nickname, String title, String content,
         int categoryId) {
