@@ -6,7 +6,6 @@ import com.a303.memberms.domain.member.dto.response.MemberBaseRes;
 import com.a303.memberms.domain.member.service.MemberService;
 import com.a303.memberms.global.api.response.BaseResponse;
 import com.a303.memberms.global.exception.code.SuccessCode;
-import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -23,17 +22,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.a303.memberms.domain.member.dto.request.MemberStandardLoginReq;
-import com.a303.memberms.domain.member.dto.request.MemberStandardRegisterReq;
-import com.a303.memberms.domain.member.dto.response.MemberBaseRes;
-import com.a303.memberms.domain.member.service.MemberService;
-import com.a303.memberms.global.api.response.BaseResponse;
-import com.a303.memberms.global.exception.code.SuccessCode;
-
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/members")

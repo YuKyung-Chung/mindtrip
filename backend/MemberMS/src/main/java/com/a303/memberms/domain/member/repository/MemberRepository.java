@@ -2,7 +2,6 @@ package com.a303.memberms.domain.member.repository;
 
 import com.a303.memberms.domain.member.Member;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
