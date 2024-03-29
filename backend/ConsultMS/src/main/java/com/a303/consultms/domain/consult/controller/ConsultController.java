@@ -4,6 +4,7 @@ import com.a303.consultms.domain.channel.service.ChannelService;
 import com.a303.consultms.domain.consult.dto.request.ConsultCloseReq;
 import com.a303.consultms.domain.consult.dto.request.ConsultRegisterReq;
 import com.a303.consultms.domain.consult.dto.response.ConsultCategoryListRes;
+import com.a303.consultms.domain.consult.dto.response.ConsultChattingListRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultListRes;
 import com.a303.consultms.domain.consult.service.ConsultService;
@@ -22,9 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import zipkin2.Call.Base;
 
 @RestController
 @RequestMapping("/api/consults/v1")
@@ -33,7 +32,6 @@ import zipkin2.Call.Base;
 public class ConsultController {
 
     private final ConsultService consultService;
-    private final ChannelService channelService;
 
     //고민상담소 등록
     @PostMapping
@@ -59,9 +57,27 @@ public class ConsultController {
     @GetMapping("/available")
     public ResponseEntity<BaseResponse<ConsultListRes>> getAvailableConsultList(
         @RequestHeader("x-member-id") int memberId
-    ){
+    ) {
         ConsultListRes consultListRes = consultService.getAvailableConsultingRooms();
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultListRes);
+    }
+
+    //대화중인 채팅방 목록(나의 고민)
+    @GetMapping("/mine")
+    public ResponseEntity<BaseResponse<ConsultChattingListRes>> getMyChattingList(
+        @RequestHeader("x-member-id") int memberId
+    ) {
+        ConsultChattingListRes consultChattingListRes = consultService.getMyChattingRooms(memberId);
+        return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultChattingListRes);
+    }
+
+    //대화중인 채팅방 목록 조회(내가 들어주는 다른사람 고민)
+    @GetMapping("/others")
+    public ResponseEntity<BaseResponse<ConsultChattingListRes>> getOthersChattingList(
+        @RequestHeader("x-member-id") int memberId
+    ) {
+        ConsultChattingListRes consultChattingListRes = consultService.getOthersChattingRooms(memberId);
+        return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultChattingListRes);
     }
 
     //고민상담소 개별 정보 조회
@@ -104,6 +120,12 @@ public class ConsultController {
         ConsultListRes consultListRes = consultService.getSharedConsultingRooms();
         return BaseResponse.success(SuccessCode.SELECT_SUCCESS, consultListRes);
     }
+
+    //카테고리로 고민상담소 필터링
+
+
+
+    //제목+내용으로 고민상담소 검색
 
 
 }

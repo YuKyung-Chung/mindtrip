@@ -15,16 +15,20 @@ import com.a303.consultms.domain.consult.dto.request.ConsultCloseReq;
 import com.a303.consultms.domain.consult.dto.request.ConsultRegisterReq;
 import com.a303.consultms.domain.consult.dto.response.ConsultCategoryListRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultCategoryRes;
+import com.a303.consultms.domain.consult.dto.response.ConsultChattingListRes;
+import com.a303.consultms.domain.consult.dto.response.ConsultChattingRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultListRes;
 import com.a303.consultms.domain.consult.repository.ConsultCategoryRepository;
 import com.a303.consultms.domain.consult.repository.ConsultRepository;
 import com.a303.consultms.domain.member.dto.response.MemberBaseRes;
+import com.a303.consultms.domain.message.Message;
 import com.a303.consultms.global.api.response.BaseResponse;
 import com.a303.consultms.global.client.MemberClient;
 import com.a303.consultms.global.exception.BaseExceptionHandler;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,14 +55,13 @@ public class ConsultServiceImpl implements ConsultService {
 
         // Consult 객체의 리스트를 ConsultDetailRes 객체의 리스트로 변환
         List<ConsultDetailRes> consultDetailResList = consultList.stream().map(
-            consult -> ConsultDetailRes.builder()
-                .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+            consult -> ConsultDetailRes.builder().consultId(consult.getConsultId())
+                .memberId(consult.getMemberId())
                 .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
                 .title(consult.getTitle()).content(consult.getContent())
                 .categoryId(consult.getCategoryId()).isClosed(consult.isClosed())
                 .isShared(consult.isShared()).canLike(consult.isCanLike())
-                .channelId(consult.getChannelId())
-                .build()).collect(Collectors.toList());
+                .channelId(consult.getChannelId()).build()).collect(Collectors.toList());
 
         // TODO: 전체 페이지 수를 계산하는 로직 추가 필요
 //        int totalPages = 1;
@@ -76,14 +79,13 @@ public class ConsultServiceImpl implements ConsultService {
 
         // Consult 객체의 리스트를 ConsultDetailRes 객체의 리스트로 변환
         List<ConsultDetailRes> consultDetailResList = consultList.stream().map(
-            consult -> ConsultDetailRes.builder()
-                .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+            consult -> ConsultDetailRes.builder().consultId(consult.getConsultId())
+                .memberId(consult.getMemberId())
                 .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
                 .title(consult.getTitle()).content(consult.getContent())
                 .categoryId(consult.getCategoryId()).isClosed(consult.isClosed())
                 .isShared(consult.isShared()).canLike(consult.isCanLike())
-                .channelId(consult.getChannelId())
-                .build()).collect(Collectors.toList());
+                .channelId(consult.getChannelId()).build()).collect(Collectors.toList());
 
         // TODO: 전체 페이지 수를 계산하는 로직 추가 필요
 //        int totalPages = 1;
@@ -127,12 +129,12 @@ public class ConsultServiceImpl implements ConsultService {
         Consult consult = consultRepository.findById(consultId).get();
 
         //고민상담소가 닫혀 있는지 확인 -> 닫혀있으면 에러 처리
-        if(consult.isClosed()){
+        if (consult.isClosed()) {
             throw new BaseExceptionHandler(ALREADY_CLOSED_EXCEPTION);
         }
 
         //고민상담소 만든 사람이 자기 자신인 경우 에러 처리
-        if(consult.getMemberId() == senderId){
+        if (consult.getMemberId() == senderId) {
             throw new BaseExceptionHandler(UNAUTHORIZED_USER_EXCEPTION);
         }
 
@@ -174,13 +176,11 @@ public class ConsultServiceImpl implements ConsultService {
 
         Consult consult = consultRepository.findById(consultId).get();
 
-        return ConsultDetailRes.builder()
-            .consultId(consultId).memberId(consult.getMemberId())
-            .nickname(consult.getNickname()).title(consult.getTitle())
-            .content(consult.getContent()).categoryId(consult.getCategoryId())
-            .isClosed(consult.isClosed()).isShared(consult.isShared())
-            .canLike(consult.isCanLike()).channelId(consult.getChannelId())
-            .build();
+        return ConsultDetailRes.builder().consultId(consultId).memberId(consult.getMemberId())
+            .nickname(consult.getNickname()).title(consult.getTitle()).content(consult.getContent())
+            .categoryId(consult.getCategoryId()).isClosed(consult.isClosed())
+            .isShared(consult.isShared()).canLike(consult.isCanLike())
+            .channelId(consult.getChannelId()).build();
     }
 
     //고민상담소 종료
@@ -239,14 +239,13 @@ public class ConsultServiceImpl implements ConsultService {
 
         // Consult 객체의 리스트를 ConsultDetailRes 객체의 리스트로 변환
         List<ConsultDetailRes> consultDetailResList = consultList.stream().map(
-            consult -> ConsultDetailRes.builder()
-                .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+            consult -> ConsultDetailRes.builder().consultId(consult.getConsultId())
+                .memberId(consult.getMemberId())
                 .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
                 .title(consult.getTitle()).content(consult.getContent())
                 .categoryId(consult.getCategoryId()).isClosed(consult.isClosed())
                 .isShared(consult.isShared()).canLike(consult.isCanLike())
-                .channelId(consult.getChannelId())
-                .build()).collect(Collectors.toList());
+                .channelId(consult.getChannelId()).build()).collect(Collectors.toList());
 
         // TODO: 전체 페이지 수를 계산하는 로직 추가 필요
 
@@ -257,8 +256,7 @@ public class ConsultServiceImpl implements ConsultService {
 
     //고민상담소 나가기(퇴장)
     @Override
-    public void exitConsultingRoom(int consultId, int sender)
-        throws BaseExceptionHandler {
+    public void exitConsultingRoom(int consultId, int sender) throws BaseExceptionHandler {
 
         //consultId 기반으로 현재 Consult 조회
         Consult consult = consultRepository.findById(consultId)
@@ -271,13 +269,13 @@ public class ConsultServiceImpl implements ConsultService {
         }
 
         //고민상담소가 닫혀있는지 확인 -> 이미 닫힌 고민상담소는 나가기 불가
-        if(consult.isClosed()) {
+        if (consult.isClosed()) {
             throw new BaseExceptionHandler(ALREADY_CLOSED_EXCEPTION);
         }
 
         //나가려는 사람이 상담소를 연 사람인지 확인 -> 그렇다면 예외 처리
         //상담소를 연 사람은 상담 자체를 종료하거나 참여자를 내보내기만 할 수 있음
-        if(consult.getMemberId() == sender){
+        if (consult.getMemberId() == sender) {
             throw new BaseExceptionHandler(UNAUTHORIZED_USER_EXCEPTION);
         }
 
@@ -299,17 +297,133 @@ public class ConsultServiceImpl implements ConsultService {
         }
 
         //고민상담소가 닫혀있는지 확인 -> 이미 닫힌 고민상담소는 퇴장 불가
-        if(consult.isClosed()) {
+        if (consult.isClosed()) {
             throw new BaseExceptionHandler(ALREADY_CLOSED_EXCEPTION);
         }
 
         //퇴장시키려는 사람이 상담소를 열지 않은 사람인지 확인 -> 그렇다면 예외 처리
-        if(consult.getMemberId() != sender){
+        if (consult.getMemberId() != sender) {
             throw new BaseExceptionHandler(UNAUTHORIZED_USER_EXCEPTION);
         }
 
         //channelId가 있다면 삭제
         consult.setChannelId(null);
+    }
+
+    //대화중인 채팅방 목록(나의 고민)
+    @Override
+    public ConsultChattingListRes getMyChattingRooms(int memberId) {
+
+        //내가 참여중인 consult 정보 가져오기
+        List<Consult> consultList = consultRepository.findAllByMemberIdOrderByUpdateTimeDesc(
+            memberId);
+
+        // 없으면 null 출력
+        if (consultList == null || consultList.isEmpty()) {
+            return null;
+        }
+
+        // channelId가 null이 아닌 값들만 필터링
+        List<Consult> filteredConsultList = consultList.stream()
+            .filter(consult -> consult.getChannelId() != null).collect(Collectors.toList());
+
+        // ConsultChattingRes 객체의 리스트를 저장할 변수 선언
+        List<ConsultChattingRes> consultChattingResList = new ArrayList<>();
+
+        //channel에 대한 정보 가져오기 -> 없으면 에러처리
+        for (Consult consult : filteredConsultList) {
+            //채널 정보 가져오기
+            Channel channel = channelRepository.findById(consult.getChannelId()).get();
+
+            if (!channel.getMessageList().isEmpty()) {
+                //가장 최근 메세지 한개 가져오기
+                Message latestMessage = channel.getMessageList().get(0);
+
+                // ConsultChattingRes 객체 생성 및 최근 메시지 설정
+                ConsultChattingRes consultChattingRes = ConsultChattingRes.builder()
+                    .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+                    .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
+                    .title(consult.getTitle()).channelId(consult.getChannelId())
+                    .text(latestMessage.getText()) // 최근 메시지의 텍스트 설정
+                    .build();
+
+                // ConsultChattingRes 객체를 리스트에 추가
+                consultChattingResList.add(consultChattingRes);
+            } else {
+                // ConsultChattingRes 객체 생성 및 최근 메시지 설정
+                ConsultChattingRes consultChattingRes = ConsultChattingRes.builder()
+                    .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+                    .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
+                    .title(consult.getTitle()).channelId(consult.getChannelId())
+                    .text(null) // 최근 메시지의 텍스트 설정
+                    .build();
+
+                // ConsultChattingRes 객체를 리스트에 추가
+                consultChattingResList.add(consultChattingRes);
+            }
+        }
+
+        return ConsultChattingListRes.builder()
+            .consultChattingRes(consultChattingResList)
+            .build();
+    }
+
+    //대화중인 채팅방 목록(다른사람 고민)
+    @Override
+    public ConsultChattingListRes getOthersChattingRooms(int memberId) {
+
+        // 내가 들어주는 고민이 아닌 consult 정보 가져오기
+        List<Consult> consultList = consultRepository.findAllByMemberIdNotOrderByUpdateTimeDesc(
+            memberId);
+
+        // 없으면 null 출력
+        if (consultList == null || consultList.isEmpty()) {
+            return null;
+        }
+
+        // channelId가 null이 아닌 값들만 필터링
+        List<Consult> filteredConsultList = consultList.stream()
+            .filter(consult -> consult.getChannelId() != null).collect(Collectors.toList());
+
+        // ConsultChattingRes 객체의 리스트를 저장할 변수 선언
+        List<ConsultChattingRes> consultChattingResList = new ArrayList<>();
+
+        //channel에 대한 정보 가져오기 -> 없으면 에러처리
+        for (Consult consult : filteredConsultList) {
+            //채널 정보 가져오기
+            Channel channel = channelRepository.findById(consult.getChannelId()).get();
+
+            if (!channel.getMessageList().isEmpty()) {
+                //가장 최근 메세지 한개 가져오기
+                Message latestMessage = channel.getMessageList().get(0);
+
+                // ConsultChattingRes 객체 생성 및 최근 메시지 설정
+                ConsultChattingRes consultChattingRes = ConsultChattingRes.builder()
+                    .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+                    .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
+                    .title(consult.getTitle()).channelId(consult.getChannelId())
+                    .text(latestMessage.getText()) // 최근 메시지의 텍스트 설정
+                    .build();
+
+                // ConsultChattingRes 객체를 리스트에 추가
+                consultChattingResList.add(consultChattingRes);
+            } else {
+                // ConsultChattingRes 객체 생성 및 최근 메시지 설정
+                ConsultChattingRes consultChattingRes = ConsultChattingRes.builder()
+                    .consultId(consult.getConsultId()).memberId(consult.getMemberId())
+                    .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
+                    .title(consult.getTitle()).channelId(consult.getChannelId())
+                    .text(null) // 최근 메시지의 텍스트 설정
+                    .build();
+
+                // ConsultChattingRes 객체를 리스트에 추가
+                consultChattingResList.add(consultChattingRes);
+            }
+        }
+
+        return ConsultChattingListRes.builder()
+            .consultChattingRes(consultChattingResList)
+            .build();
     }
 
     //회원 존재여부 유효성 검사
