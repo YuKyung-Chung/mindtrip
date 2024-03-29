@@ -4,6 +4,7 @@ import com.a303.consultms.domain.channel.dto.request.ChannelReq;
 import com.a303.consultms.domain.consult.dto.request.ConsultCloseReq;
 import com.a303.consultms.domain.consult.dto.request.ConsultRegisterReq;
 import com.a303.consultms.domain.consult.dto.response.ConsultCategoryListRes;
+import com.a303.consultms.domain.consult.dto.response.ConsultChattingListRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultDetailRes;
 import com.a303.consultms.domain.consult.dto.response.ConsultListRes;
 import com.a303.consultms.global.exception.BaseExceptionHandler;
@@ -45,4 +46,10 @@ public interface ConsultService {
 
     //참여자 강제로 추방시키기
     void expelConsultingRoom(int consultId, int sender);
+
+    //대화중인 채팅방 목록(나의 고민)
+    ConsultChattingListRes getMyChattingRooms(int memberId);
+
+    //대화중인 채팅방 목록(다른 사람 고민)
+    ConsultChattingListRes getOthersChattingRooms(int memberId);
 }
