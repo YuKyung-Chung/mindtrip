@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import moment from "moment";
 import Calendar from "react-calendar";
 import "./MyPostit.css";
+import { px } from "framer-motion";
 
 function MyPostit() {
   const [selectedDate, setSelectedDate] = useState(moment()); // 선택된 날짜 상태
@@ -12,7 +13,11 @@ function MyPostit() {
     "2024-03-18": "인생이 힘들다.",
     // 임시 메모 데이터
   });
-  const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 여부 상태
+  const [showCalendar, setShowCalendar] = useState(false);
+  const calendarStyle = {
+    width: '20px',
+    height: '20px',
+  }; // 달력 표시 여부 상태
 
 
   // 달력 토글 함수
@@ -30,9 +35,12 @@ function MyPostit() {
 
   return (
     <div className="my-postit-container">
-      <h1 className="postit-date" onClick={toggleCalendar}>
-        {selectedDate.format("YYYY년 MM월 DD일")}
-      </h1>
+      {/* <div style={{ width: '30px', height: '30px' }}> */}
+        <h1 className="postit-date" onClick={toggleCalendar}>
+          {selectedDate.format("YYYY년 MM월 DD일")}
+          {showCalendar&&<Calendar />}
+        </h1>
+      {/* </div>        */}
       <div className="mt-6">그날의 질문</div>
       {showCalendar && (
         <div className="calendar-wrapper">

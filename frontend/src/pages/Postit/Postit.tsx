@@ -6,6 +6,7 @@ import Header from '../../components/Header';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import Swal from 'sweetalert2';
+import { accessToken } from '../../store/memberSlice';
 
 const PostitPage: React.FC = () => {
   const colors = ['#ffff88', '#ffcc00', '#ff9999', '#99ccff'];
@@ -24,12 +25,13 @@ const PostitPage: React.FC = () => {
   console.log(formattedDate)
   
   let member = useSelector((state:RootState) => state.member)
+  let accessToken = useSelector((state:RootState) => state.accessToken)
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`https://mindtrip.site/api/postits/v1?date=${formattedDate}&order=like&village=1`, {
+      const response = await axios.get(`https://mindtrip.site/api/postits/v1?date=${formattedDate}&order=like&village=0&page=0&size=5`, {
         headers: {
-          "x-member-id": "0"
+          Authorization: accessToken
         }
       });
       console.log(response.data)
@@ -57,7 +59,7 @@ const PostitPage: React.FC = () => {
         },
         {
           headers: {
-            "x-member-id": "1"
+            Authorization: accessToken
           }
         }
       );
