@@ -23,4 +23,6 @@ public interface MemberService {
 	void checkNicknameDuplication(String nickname);
 
 	void increaseMissionCountByMemberId(int memberId);
+
+	int getMissionCount(int memberId);
 }

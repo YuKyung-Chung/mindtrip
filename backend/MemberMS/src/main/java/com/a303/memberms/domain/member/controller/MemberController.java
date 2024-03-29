@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,20 @@ public class MemberController {
 		log.info("Entering the member-controller  ");
 
 		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, "its memberms");
+	}
+
+	@GetMapping("/v0/mission-count")
+	public ResponseEntity<BaseResponse<Integer>> getMissionCount(
+		@RequestHeader("x-member-id") int memberId
+	) throws IOException {
+
+		log.debug("members/v0/mission-count GET api accepted with memberId:{}", memberId);
+
+		int count = memberService.getMissionCount(memberId);
+
+		log.debug("members/v0/mission-count GET api successed with memberId:{}", memberId);
+
+		return BaseResponse.success(SuccessCode.CHECK_SUCCESS, count);
 	}
 
 

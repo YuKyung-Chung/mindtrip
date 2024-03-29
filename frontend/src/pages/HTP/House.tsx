@@ -3,16 +3,25 @@ import { Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Draw from "../../components/HTP/Draw";
-
+import axios from 'axios'
 
 // props의 타입을 지정해주자
-type propsType = {
-  goNext: () => void
-  qna: { q: string, ans: string[] }
-  isLast: boolean
-}
+
 type propsType1 = {
   goSurvey: () => void
+}
+type survey = {
+  question_id:number,
+  content:string,
+  choices:{
+    choices_id:number,
+    content:string
+  }[]
+}
+type propsType = {
+  goNext: () => void
+  survey: survey
+  isLast: boolean
 }
 
 // 집 그림 그리고, 설문조사가 나오는 페이지
@@ -27,20 +36,35 @@ function House() {
     setIsSurvey(true)
   }
 
-  // 질문과 선택지
-  const survey: { q: string, ans: string[] }[] = [
-    { q: '이 집에는 누가 살고 있나요?', ans: ['내가 혼자 살고 있어요', '나와 가족이 같이 살고 있어요', '아무도 살고 있지 않아요'] },
-    { q: '이 집안의 분위기는 어떤가요?', ans: ['화목해요', '쓸쓸해요', '밝아요'] },
-    { q: '앞으로 이 집은 어떻게 될 것 같나요?', ans: ['그대로에요', '더 좋아져요', '나빠져요'] }
-  ]
+  //
+  const [surveyList, setSurveyList] = useState<survey[]|null>(null)
+
+  // 처음에 질문 불러오기
+  useEffect(() => {
+    axios.get('https:/mindtrip.site/api/htp/question/house')
+    .then((res) => {
+      setSurveyList(res.data)
+    })
+    .catch((err) => console.log(err))
+  } ,[])
 
 
   return (
     <div className=''>
-      {isSurvey === false && <HouseDraw goSurvey={goSurvey} />}
-      {(isSurvey === true && order === 0) && <HouseSurvey goNext={goNext} qna={survey[0]} isLast={false} />}
-      {(isSurvey === true && order === 1) && <HouseSurvey goNext={goNext} qna={survey[1]} isLast={false} />}
-      {(isSurvey === true && order === 2) && <HouseSurvey goNext={goNext} qna={survey[2]} isLast={true} />}
+      {
+        isSurvey === true ? (<div>{
+          surveyList?.map((survey, idx) => {
+            if (order === idx) {
+              if (idx === surveyList.length - 1) {
+                return (<HouseSurvey goNext={goNext} survey={survey} isLast={true} key={idx}/>)
+              } else {
+                return (<HouseSurvey goNext={goNext} survey={survey} isLast={false} key={idx} />)
+              }
+            }
+          })
+
+        }</div>) : (<HouseDraw goSurvey={goSurvey} />)
+      }
     </div>
   )
 }
@@ -96,22 +120,22 @@ function HouseDraw({ goSurvey }: propsType1) {
   )
 }
 
-function HouseSurvey({ goNext, qna, isLast }: propsType) {
+function HouseSurvey({ goNext, survey, isLast }: propsType) {
   const navigate = useNavigate()
 
   return (
     <div className="flex h-svh w-svh justify-center items-center flex-col">
-      <p className="text-center mb-10 font-bold text-3xl">{qna.q}</p>
+      <p className="text-center mb-5 font-bold text-2xl">{survey.content}</p>
       {
-        qna.ans.map((item, idx) => {
+        survey.choices.map((choice, idx) => {
           return (
             <Button
               key={idx}
               variant="bordered"
-              className='w-4/5 lg:w-3/5 m-3 h-16 text-xl bg-white hover:bg-sky-800 hover:text-white shadow'
+              className='w-[90vw] lg:w-3/5 m-3 h-[10vh] px-3 text-md bg-white hover:bg-sky-800 hover:text-white shadow'
               onClick={() => { isLast ? navigate('/htp/tree') : goNext() }}
             >
-              {item}
+              {choice.content}
             </Button>
             )
         })

@@ -48,8 +48,11 @@ public class MemberServiceImpl implements MemberService {
 		);
 
 		VillageBaseRes villageBaseRes;
-		if (member.getVillageId()==null) villageBaseRes = VillageBaseRes.builder().build();
-		else villageBaseRes = villageClient.getVillage(member.getVillageId()).getResult();
+		if (member.getVillageId() == null) {
+			villageBaseRes = VillageBaseRes.builder().build();
+		} else {
+			villageBaseRes = villageClient.getVillage(member.getVillageId()).getResult();
+		}
 
 		return MemberBaseRes.builder()
 			.memberId(memberId)
@@ -172,6 +175,12 @@ public class MemberServiceImpl implements MemberService {
 		// 만약 임계치 넘었다면 레벨 업 시켜야함.
 		memberRepository.increaseLevel(member, newMissionCount);
 
+	}
+
+	@Override
+	public int getMissionCount(int memberId) {
+
+		return memberRepository.findMissionCountByMemberId(memberId);
 	}
 
 
