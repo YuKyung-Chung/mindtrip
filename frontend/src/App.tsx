@@ -41,7 +41,8 @@ function App() {
         <Route path='/fixmission' Component={Fixmission}/>
         <Route path='/postit' Component={Postit}/>
         <Route path='/mypage' Component={Mypage}>
-          <Route index path='htp' Component={MypageHTP}/>
+          <Route index Component={MypageHTP}/>
+          <Route path='htp' Component={MypageHTP}/>
           <Route path='history' Component={MypageHistory}/>
           <Route path='progress' Component={MypageProgress}/>
           <Route path='fix' Component={MypageFix}/>

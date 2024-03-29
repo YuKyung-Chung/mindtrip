@@ -14,10 +14,6 @@ function Chat() {
   // redux에서 변수 가져오기
   let chat = useSelector((state:RootState)=> state.chat)
 
-
-  
-
-
   // 처음 열면 무조건 리스트부터보이게 하자
   useEffect(() => {
     dispatch(changeList(true))

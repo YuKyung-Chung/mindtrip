@@ -1,12 +1,15 @@
 import * as THREE from 'three'
 import { useRef, useEffect } from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { useNavigate } from 'react-router-dom'
 
 type propsType = {
     go:string|null
 }
 
 function MainBackground({go} :propsType) {
+  const navigate = useNavigate()
+
   // 3d 모델
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const loader = new GLTFLoader()
@@ -62,7 +65,7 @@ function MainBackground({go} :propsType) {
             } else {
               camera.position.copy(targetPosition);
               if (callback) {callback()} else {
-                console.log('도착?')
+                navigate(`/${go}`)
               }
             }
             renderer.render(scene, camera);
@@ -71,12 +74,21 @@ function MainBackground({go} :propsType) {
         }
         
         if (go === 'mission') {
-            animateCamera(new THREE.Vector3(5, 45, 150), new THREE.Vector3(3, 25, 80), 2000, () => {
-              animateCamera(new THREE.Vector3(3, 25, 80), new THREE.Vector3(3, 24, 80), 2000, null)})
+          animateCamera(new THREE.Vector3(5, 45, 150), new THREE.Vector3(3, 25, 80), 500, () => {
+          animateCamera(new THREE.Vector3(3, 25, 80), new THREE.Vector3(2.5, 14, 50), 500, null)})
         }
-        
-        
-        
+        if (go === 'consult') {
+          animateCamera(new THREE.Vector3(5, 45, 150), new THREE.Vector3(2, 25, 80), 500, () => {
+          animateCamera(new THREE.Vector3(2, 25, 80), new THREE.Vector3(0.7, 17, 45), 500, null)})
+        }
+        if (go === 'postit') {
+          animateCamera(new THREE.Vector3(5, 45, 150), new THREE.Vector3(3, 25, 80), 500, () => {
+          animateCamera(new THREE.Vector3(3, 25, 80), new THREE.Vector3(5, 17, 50), 500, null)})
+        }
+        if (go === 'mypage') {
+          animateCamera(new THREE.Vector3(5, 45, 150), new THREE.Vector3(5, 25, 80), 500, () => {
+          animateCamera(new THREE.Vector3(5, 25, 80), new THREE.Vector3(8, 17, 60), 500, null)})
+        }
       }, undefined, function (err: any) {
         console.log(err)
       })

@@ -29,7 +29,7 @@ const chatSlice = createSlice({
       state.isList = action.payload
     },
     // 채팅방 아이디 넣으면 바꿔주는 함수
-    changeSelectedId(state, action: PayloadAction<string | null>) {
+    changeSelectedId(state, action: PayloadAction<string| null>) {
       state.selectedId = action.payload
     }
   }

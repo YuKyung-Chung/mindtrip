@@ -1,9 +1,10 @@
 import { Card, CardBody, Button, Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from "@nextui-org/react";
-import { toggleOpen, changeList } from "./../../store/chatSlice";
+import { toggleOpen, changeList, changeSelectedId } from "./../../store/chatSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from './../../store/store'
 import { consultType } from "../../types/DataTypes";
 import { villageBackgroundColor, villageTextColor } from "../../atoms/color";
+import { enterRoom } from "../../api/consults";
 // 다른 사람의 고민 하나의 컴포넌트
 // 고민 제목과 내용, 그리고 상담하기 버튼이 들어감
 // 상담하기 버튼을 누르면 전체 내용, 참여 여부를 확인하는 모달이 뜨고
@@ -31,8 +32,26 @@ function OtherConsult({consult} : propsType) {
   const dispatch = useDispatch()
 
   let member = useSelector((state:RootState)=> state.member)
+  let accessToken = useSelector((state:RootState) => state.accessToken)
+  const handleEnter = async (consultId:number) => {
+    try {
+      const tempChannelId = await enterRoom(accessToken, consultId)
+      // 이거 저장
+      console.log(tempChannelId)
+      if (typeof tempChannelId == 'string') {
+        dispatch(changeSelectedId(tempChannelId))
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   // 고민방 참여
   const enterChat = function() {
+    // 채널에 참여하는걸 알려주고
+    if (consult.consultId != null) {
+      handleEnter(consult.consultId)
+    }
     // 만약 채팅창이 닫혀있는 상태라면 열어주고
     if (chat.isOpen === false) {
       dispatch(toggleOpen())

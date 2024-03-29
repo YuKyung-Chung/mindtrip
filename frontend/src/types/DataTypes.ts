@@ -30,7 +30,9 @@ type consultType = {
   memberId : number,
   title : string,
   content : string,
-  categoryId : number
+  categoryId : number,
+  canLike: boolean,
+  channelId: string|null
 }
 
 // 고민 카테고리 타입
@@ -39,6 +41,15 @@ type categoryType = {
   categoryName : string
 }
 
+// 채팅방 타입
+type chattingRoom = {
+  consultId: number,
+  memberId: number,
+  nickname: string,
+  title:string,
+  channelId: string,
+  text: string
+}
 
 
-export type {consultType, categoryType, memberType, villageType}
+export type {consultType, categoryType, memberType, villageType, chattingRoom}

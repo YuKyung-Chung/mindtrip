@@ -36,16 +36,29 @@ function Person() {
     setIsSurvey(true)
   }
 
-  //
-  const [surveyList, setSurveyList] = useState<survey[]|null>(null)
-
   // 처음에 질문 불러오기
+  const [surveyList, setSurveyList] = useState<survey[]|null>(null)
+  async function loadSurvey(): Promise<survey[]|null>{
+    try{
+      const res = await axios.get('http://j10a303.p.ssafy.io:54353/api/htp/question/person')
+      return res.data
+    } catch(err) {
+      console.log(err)
+      return null
+    }
+  }
+
+  
   useEffect(() => {
-    axios.get('https:/mindtrip.site/api/htp/question/personm')
-    .then((res) => {
-      setSurveyList(res.data)
-    })
-    .catch((err) => console.log(err))
+    const fetchSurvey = async () => {
+      try {
+        let tempSurveys :survey[]|null = await loadSurvey() 
+        tempSurveys ? setSurveyList(tempSurveys) : console.log('데이터가 없습니다!')
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchSurvey()
   } ,[])
 
 
@@ -62,8 +75,11 @@ function Person() {
               }
             }
           })
-
-        }</div>) : (<PersonDraw goSurvey={goSurvey} />)
+        }
+        {
+          surveyList === null && <p>로딩중</p>
+        }
+        </div>) : (<PersonDraw goSurvey={goSurvey} />)
       }
     </div>
   )

@@ -1,17 +1,15 @@
 import axios from "axios";
-import { consultType, categoryType } from "../types/DataTypes";
+import { consultType, categoryType, chattingRoom } from "../types/DataTypes";
 import Swal from "sweetalert2";
 
 // 입장가능한 고민 목록 가져오기
-async function getConsults(token:string): Promise<consultType[]> {
+async function getConsults(token: string): Promise<consultType[]> {
   try {
     const res = await axios.get('https://mindtrip.site/api/consults/v1/available', {
       headers: {
-        // Authorization: token
-        'x-member-id': 1
+        Authorization: token
       }
     });
-    console.log(token)
     return res.data.result.consultList;
   } catch (err) {
     console.log(err);
@@ -21,15 +19,15 @@ async function getConsults(token:string): Promise<consultType[]> {
 
 
 // 고민 등록하기
-async function uploadConsult(title :string, content :string, categoryId: number|string|categoryType) :Promise<void> {
-  try{
+async function uploadConsult(token:string, title: string, content: string, categoryId: number | string | categoryType): Promise<void> {
+  try {
     await axios.post('https://mindtrip.site/api/consults/v1', {
-      'title' : title,
-      'content' : content,
-      'categoryId' : categoryId
+      'title': title,
+      'content': content,
+      'categoryId': categoryId
     }, {
       headers: {
-        'x-member-id': 1
+        Authorization: token
       }
     })
     Swal.fire({
@@ -38,21 +36,21 @@ async function uploadConsult(title :string, content :string, categoryId: number|
     }).then(() => {
       location.reload()
     })
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
 
 // 카테고리 가져오기
-async function getCategory(): Promise<categoryType[]>{
-  try{
+async function getCategory(token:string): Promise<categoryType[]> {
+  try {
     const res = await axios.get('https://mindtrip.site/api/consults/v1/category', {
       headers: {
-        'x-member-id': 1
+        Authorization: token
       }
     })
     return res.data.result.consultCategoryList
-  } catch(err) {
+  } catch (err) {
     console.log(err)
     return []
   }
@@ -61,15 +59,13 @@ async function getCategory(): Promise<categoryType[]>{
 
 // 공유된 고민 가져오기
 // 입장가능한 고민 목록 가져오기
-async function getSharedConsult(token:string): Promise<consultType[]> {
+async function getSharedConsult(token: string): Promise<consultType[]> {
   try {
     const res = await axios.get('https://mindtrip.site/api/consults/v1/shared', {
       headers: {
-        // Authorization: token
-        'x-member-id': 1
+        Authorization: token
       }
     });
-    console.log(token)
     return res.data.result.consultList;
   } catch (err) {
     console.log(err);
@@ -77,4 +73,52 @@ async function getSharedConsult(token:string): Promise<consultType[]> {
   }
 }
 
-export {getConsults, uploadConsult, getCategory, getSharedConsult}
+// 채팅방에 입장하기
+async function enterRoom(token: string, consultId: number): Promise<string|void> {
+  try {
+    const res =await axios.post(`https://mindtrip.site/api/channels/v1/enter/${consultId}`, null, {
+      headers: {
+        Authorization: token
+      }
+    })
+    return res.data.result
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+
+// 대화중인 채팅 목록 불러오기(내꺼)
+async function loadChattingMine(token:string) :Promise<chattingRoom[]|null>{
+  try{
+    const res = await axios.get('https://mindtrip.site/api/consults/v1/mine',{
+      headers: {
+        Authorization: token
+      }
+    })
+    console.log(token)
+    return res.data.result.consultChattingRes
+  } catch (err) {
+    console.log(err)
+    return null
+  }
+}
+
+
+// 대화중인 채팅 목록 불러오기(다른사람꺼)
+async function loadChattingOthers(token:string) :Promise<chattingRoom[]|null>{
+  try{
+    const res = await axios.get('https://mindtrip.site/api/consults/v1/others',{
+      headers: {
+        Authorization: token
+      }
+    })
+    console.log(token)
+    return res.data.result.consultChattingRes
+  } catch (err) {
+    console.log(err)
+    return null
+  }
+}
+
+export { getConsults, uploadConsult, getCategory, getSharedConsult, enterRoom, loadChattingMine, loadChattingOthers }

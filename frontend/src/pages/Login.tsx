@@ -23,8 +23,8 @@ function Login() {
   const [password, setPassword] = useState<string>('')
 
   // 유저 정보 저장
-  const saveUser = async function(token:string) {
-    const userInfo:memberType|void = await loadUser(token)
+  const saveUser = async function() {
+    const userInfo:memberType|void = await loadUser()
     if (userInfo) {
       dispatch(saveUserInfo(userInfo))
     }
@@ -35,7 +35,7 @@ function Login() {
     const token:string|void = await login(id, password)
     if (typeof token == 'string') {
       dispatch(saveToken(token))
-      saveUser(token)
+      saveUser()
       navigate('/main')
     }
   }
@@ -45,7 +45,7 @@ function Login() {
       className="w-full h-[90vh] mt-[5vh] sm:h-[90vh] sm:mt-[5vh] mx-auto sm:w-3/5 xl:w-1/3"
     >
       <CardBody className="flex-col content-center py-[5vh]">
-        <p className="text-center text-4xl mb-12">Login</p>
+        <p className="text-center text-4xl mb-12">로그인</p>
         {/* 아이디 입력 창 */}
         <Input 
           isClearable 
