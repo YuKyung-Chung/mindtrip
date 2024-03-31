@@ -7,6 +7,7 @@ import com.a303.notificationms.domain.notification.Notification;
 import com.a303.notificationms.domain.notification.dto.NotificationEventDto;
 import com.a303.notificationms.domain.notification.dto.response.CountNotificationMessageRes;
 import com.a303.notificationms.domain.notification.dto.response.NotificationMessageRes;
+import com.a303.notificationms.domain.notification.repository.NotificationBulkRepository;
 import com.a303.notificationms.domain.notification.repository.NotificationRepository;
 import com.a303.notificationms.global.client.MemberClient;
 import com.a303.notificationms.global.exception.BaseExceptionHandler;
@@ -23,6 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -40,6 +43,8 @@ public class NotificationServiceImpl implements NotificationService {
 	private final NotificationRepository notificationRepository;
 	private final DomainRepository domainRepository;
 	private final MemberClient memberClient;
+
+	private final NotificationBulkRepository notificationBulkRepository;
 
 
 	// 메시지 알림
@@ -95,6 +100,36 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 	}
 
+	@Override
+	public List<NotificationMessageRes> findNotificationsByMemberId(int memberId) {
+
+		Pageable pageable = PageRequest.of(0, 10);
+		List<Notification> notifications = notificationRepository.findByMemberId(memberId, pageable);
+
+		List<NotificationMessageRes> notificationMessageResList = new ArrayList<>();
+		for (Notification noti:notifications
+		) {
+			NotificationMessageRes res = NotificationMessageRes.builder()
+					.type("NOTIFICATION")
+					.message(noti.getContent())
+					.isWritten(noti.isWritten())
+					.build();
+			notificationMessageResList.add(res);
+		}
+
+		return notificationMessageResList;
+	}
+
+	@Override
+	public List<NotificationMessageRes> setIsWrittenTrue(int memberId) {
+
+		List<NotificationMessageRes> notificationMessageResList = findNotificationsByMemberId(memberId);
+
+		notificationBulkRepository.updateIsWrittenTrue(memberId);
+
+		return notificationMessageResList;
+	}
+
 	//	--------------------- kafka listener ------------------------
 
 	@KafkaListener(topics = "notification-topic", groupId = "group_1")
@@ -120,12 +155,9 @@ public class NotificationServiceImpl implements NotificationService {
 			dailyMissionScheduleEventHandler();
 		}
 
-
-
-
 	}
 
-
+	@Override
 	public void dailyMissionScheduleEventHandler() {
 		// Notification 저장
 		Domain domain = domainRepository.findByName("공지");
@@ -156,6 +188,7 @@ public class NotificationServiceImpl implements NotificationService {
 				NotificationMessageRes messageRes = NotificationMessageRes.builder()
 					.type("NOTIFICATION")
 					.message(now + " 날짜의 미션이 추가되었습니다. :)")
+					.isWritten(false)
 					.build();
 				sseEmitterReceiver.send(SseEmitter.event().name("message").data(messageRes));
 
@@ -163,6 +196,37 @@ public class NotificationServiceImpl implements NotificationService {
 				emitterRepository.removeByMemberId(entry.getKey());
 			}
 		}
+	}
+
+	@Override
+	public void makeNotification(int memberId) {
+		// Notification 저장
+		Domain domain = domainRepository.findByName("임시");
+		LocalDate now = LocalDate.now();
+
+
+		Notification notification = Notification.createNotification(
+				memberId,
+				domain,
+				false,
+				now + " 임시 알림 발송!"
+		);
+
+		notificationRepository.save(notification);
+
+		// 실시간 알람
+		try {
+			SseEmitter sseEmitter = emitterRepository.findByMemberId(memberId);
+			NotificationMessageRes messageRes = NotificationMessageRes.builder()
+					.type("NOTIFICATION")
+					.message(notification.getContent())
+					.isWritten(notification.isWritten())
+					.build();
+			sseEmitter.send(SseEmitter.event().name("message").data(messageRes));
+		} catch (Exception e) {
+			emitterRepository.removeByMemberId(memberId);
+		}
+
 	}
 
 }
