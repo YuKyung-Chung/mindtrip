@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { villageBackgroundColor } from "../atoms/color";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 
 type notificationType = {
@@ -20,15 +21,24 @@ function Header() {
   const [notifications, setnotifications] = useState<notificationType[]|null>(null)
 
   useEffect(() => {
+    // 처음엔 메세지창 닫아주고
     setOpenMessage(false)
+    // 서버 ON
     fetchSSE()
   }, [])
 
   let accessToken = useSelector((state:RootState) => state.accessToken)
   let member = useSelector((state:RootState) => state.member)
+  
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position:'top',
+    timer: 1000
+  })
   // 알림 서버 연결 및 데이터 가져오기
   const fetchSSE = () => {
+    let lastHeartbeat = Date.now()
     const eventSource = new EventSource('https://mindtrip.site/api/notifications/v1/subscribe', {
       headers: {
         Authorization: accessToken
@@ -43,17 +53,24 @@ function Header() {
       if (e.data) {
         const parsedData = JSON.parse(e.data)
         console.log(parsedData)
+        // 처음에 count갯수가 오면 바로 보여주고
         if (parsedData.type === 'COUNT') {
           setAlarmCount(parsedData.count)
         }
+        // 알림이 온다면 +1해주기
         else if (parsedData.type === 'NOTIFICATION') {
           setAlarmCount(alarmCount + 1)
+        }
+        // heartbeat를 수신하면 시간 업데이트
+        else if (parsedData.type === 'HEARTBEAT') {
+          lastHeartbeat = Date.now()
         }
       }
     })
 
     eventSource.addEventListener('error', (err) => {
       console.log(err)
+      fetchSSE()
     })
   }
 
