@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 
 function MyPostit() {
-  let accessToken = useSelector((state: RootState) => state.accessToken);
+  let accessToken = useSelector((state: RootState) => state.accessToken.value);
 
   const [selectedDate, setSelectedDate] = useState(moment()); // 선택된 날짜 상태
   const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 여부 상태

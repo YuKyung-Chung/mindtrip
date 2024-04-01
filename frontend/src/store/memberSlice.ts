@@ -3,15 +3,24 @@ import { memberType } from '../types/DataTypes';
 // 회원용 변수들
 
 // 토큰
-const initialToken:string = ''
+type tokenType = {
+  value:string
+}
+
+const initialToken:tokenType = {
+  value: ''
+}
 
 const accessToken = createSlice({
   name: 'accessToken',
   initialState: initialToken,
   reducers: {
     // 토큰 저장
-    saveToken(_state, action:PayloadAction<string>) {
-      return action.payload
+    saveToken(state, action:PayloadAction<string>) {
+      return {
+        ...state,
+        value: action.payload
+      }
     }
   }
 })
@@ -43,11 +52,17 @@ const memberSlice = createSlice({
         ...action.payload
       })
     },
+    saveVillage(state, action: PayloadAction<'apple'|'orange'|'pineapple'|'watermelon'|'grape'|'peach'|'blueberry'|'kakao'>) {
+      return({
+        ...state,
+        villageName: action.payload
+      })
+    }
   }
 })
 
 // 4. 함수들 내보내기
-export const {saveUserInfo} = memberSlice.actions;
+export const {saveUserInfo, saveVillage} = memberSlice.actions;
 
 
 export {memberSlice, accessToken}
