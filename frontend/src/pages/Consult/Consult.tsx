@@ -16,24 +16,10 @@ import { getConsultCategory } from '../../store/consultSlice';
 import { getConsults, getCategory, getSharedConsult } from './../../api/consults'
 import { consultType, categoryType } from '../../types/DataTypes';
 import { villageBackgroundColor, villageTextColor } from '../../atoms/color';
-import Swal from 'sweetalert2';
 import axios from 'axios';
 
 // 고민상담소 첫 페이지
 function Consult() {
-  const navigate = useNavigate()
-
-  // 로그인 안하면 막기
-  useEffect(() => {
-    if (accessToken === '') {
-      Swal.fire({
-        text:'로그인이 필요합니다.'
-      }).then(() => {
-        navigate('/login')
-      })
-    }
-  }, [])
-
   const dispatch = useDispatch()
 
   // 채팅창 관련 가져오기
@@ -186,7 +172,7 @@ function Others() {
         {
           otherConsults?.map((consult, idx) => (
             <div className="w-44 h-[20vh] m-2 min-w-44" key={idx}>
-              {consult.closed === false && <OtherConsult consult={consult} />}
+              {consult.isClosed === false && <OtherConsult consult={consult} />}
             </div>
           ))
         }
@@ -211,7 +197,7 @@ function Shared() {
   let category = useSelector((state: RootState) => state.consultSlice.category)
   let accessToken = useSelector((state: RootState) => state.accessToken)
 
-  const [shared, setShared] = useState<consultType[]|null>(null)
+  const [shared, setShared] = useState<consultType[]>([])
 
   // 선택된 카테고리
   const [selectedCategory, setSelectedCategory] = useState<categoryType | null>(null)
@@ -223,6 +209,7 @@ function Shared() {
         Authorization: accessToken
       }
     }).then((res) => {
+      console.log(res)
       setShared(res.data.result)
     }) .catch((err) => console.log(err))
   }
@@ -234,6 +221,7 @@ function Shared() {
     const fetchConsult = async () => {
       try {
         let tempSharedConsult: consultType[] = await getSharedConsult(accessToken)
+        console.log(tempSharedConsult)
         setShared(tempSharedConsult)
       } catch (err) {
         console.log(err)
@@ -286,7 +274,7 @@ function Shared() {
       </div>
       <div className='mt-2 flex overflow-x-auto'>
         {
-          shared?.map((consult, idx) => {
+          shared.map((consult, idx) => {
             return(
                 <div className="w-44 m-2 min-w-44" key={idx}>
                   <SharedConsult consult={consult}/>
