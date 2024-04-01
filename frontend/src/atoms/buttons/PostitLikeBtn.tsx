@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { useState } from 'react';
 import './PostitLikeBtn.css'
 
 // 좋아요 버튼 컴포넌트
@@ -10,7 +10,7 @@ const PostitLikeBtn: React.FC = () => {
   //   event.stopPropagation(); // 이벤트 버블링을 막음
   //   setIsChecked(!isChecked); // 현재 상태의 반대로 변경
   // };
-  const a =(e: MouseEvent<HTMLDivElement>) =>{    
+  const a =() =>{    
       setIsChecked(!isChecked)
   }
 
