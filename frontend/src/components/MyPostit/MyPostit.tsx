@@ -14,6 +14,7 @@ function MyPostit() {
   const [todayPostit, setTodayPostit] = useState("");
   const [todayAnswer, setTodayAnswer] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
+  const [postitList,setPostitList] = useState([])
 
   // 달력 토글 함수
   const toggleCalendar = () => {
@@ -30,7 +31,7 @@ function MyPostit() {
           },
         }
       );
-
+      setPostitList(response.data.result)
       setTodayPostit(`${response.data.result[0].postitTopicRes.topic}`);
       setTodayAnswer(`${response.data.result[0].content}`);
     } catch (e) {
@@ -46,7 +47,16 @@ function MyPostit() {
       setSelectedDate(moment(date));
       toggleCalendar(); // 날짜를 선택하면 달력 숨기기
 
-      getTodayTopic(date);
+      const todayQuestion = postitList.find(item => item.postitTopicRes.postitDate === moment(date).format("YYYY-MM-DD"))
+      
+      if (todayQuestion) {
+        setTodayPostit(`${todayQuestion.postitTopicRes.topic}`)
+        setTodayAnswer(`${todayQuestion.content}`);
+      } else {
+        setTodayPostit(`${moment(date).format("YYYY-MM-DD")}에\n질문이 없습니다`);
+        setTodayAnswer("");
+
+      }
     }
   };
 
@@ -70,12 +80,9 @@ function MyPostit() {
             <h1 className="postit-date" onClick={toggleCalendar}>
               {selectedDate.format("YYYY년 MM월 DD일")}
             </h1>
-            <div>그날의 질문</div>
+            <div>{todayPostit === "" ? "그날의 질문" : todayPostit}</div>
             <div className="relative overflow-hidden w-72 h-80 rounded-3xl cursor-pointer text-2xl font-bold bg-purple-400">
               <div className="w-full h-full flex flex-col items-center justify-center uppercase text-lg whitespace-pre-line">
-                <div>
-                  {todayPostit === "" ? "오늘의 질문이 없습니다" : todayPostit}
-                </div>
                 <div className="text-sm font-normal">
                   {todayAnswer !== "" && todayAnswer}
                 </div>

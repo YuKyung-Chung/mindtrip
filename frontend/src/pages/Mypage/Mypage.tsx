@@ -18,7 +18,7 @@ function Mypage() {
 
   return (
     <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md ">
-      <Header />
+      {/* <Header /> */}
       <div className="p-6 flex justify-between h-[10vh] items-center">
         <div className="flex space-x-4 items-center">
           <Avatar />
