@@ -35,7 +35,7 @@ function Mission() {
             Authorization: accessToken
           }
         });
-        console.log(response.data)
+        console.log('미션',response.data)
         // 가져온 미션 데이터를 상태에 설정
         setMissions(response.data.result);
       } catch (error) {
@@ -73,14 +73,27 @@ function Mission() {
           }
         }
       );
-      console.log("Success:", response.data);
       
+      const successCount = await axios.get('https://mindtrip.site/api/members/v1/mission-count',
+        {
+          headers: {
+            Authorization: accessToken
+          }
+        }
+      );
+      
+     
       // 상태 업데이트: 해당 미션의 isFinish를 true로 변경
       setMissions(prevMissions => 
         prevMissions.map(mission => 
           mission.missionId === missionId ? {...mission, isFinish: true} : mission
         )
       );
+
+       if (successCount.data.result % 10 === 0) {
+        // 미션 성공 메세지 띄워주기  \
+        alert("이야 성공 축하한다 니");
+      }
     } catch (error) {
       console.error("Error updating mission:", error);
     }
@@ -111,7 +124,7 @@ function Mission() {
               {/* 미션 이름 출력 */}
               <span className="text-lg">{mission.name}</span>
               {/* 성공 버튼 */}
-              <Successbtn isFinish={mission.isFinish} missionId={mission.missionId} onClick={() => handleMissionSuccess(mission.missionId)} />
+              <Successbtn isFinish={mission.isFinish} missionId={mission.missionId} onClick={handleMissionSuccess} />
             </div>
           ))}
         </div>

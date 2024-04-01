@@ -1,10 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import Calendar from "react-calendar";
 import "./MyPostit.css";
 import { px } from "framer-motion";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 function MyPostit() {
+  let accessToken = useSelector((state:RootState) => state.accessToken)
+  
   const [selectedDate, setSelectedDate] = useState(moment()); // 선택된 날짜 상태
   const [memos] = useState<{ [date: string]: string }>({
     "2024-03-15": "오늘은 술을 마셔야겠다.",
@@ -13,11 +18,10 @@ function MyPostit() {
     "2024-03-18": "인생이 힘들다.",
     // 임시 메모 데이터
   });
+  const [todayPostit, setTodayPostit] = useState('')
+  const [todayAnswer, setTodayAnswer] = useState('')
   const [showCalendar, setShowCalendar] = useState(false);
-  const calendarStyle = {
-    width: '20px',
-    height: '20px',
-  }; // 달력 표시 여부 상태
+
 
 
   // 달력 토글 함수
@@ -25,39 +29,71 @@ function MyPostit() {
     setShowCalendar(!showCalendar);
   };
 
-  // 선택된 날짜 변경 함수
-  const onChangeDate = (date: Date | Date[]) => {
+  const getTodayTopic = async (date) => {
+     try {
+         const response = await axios.get(`https://mindtrip.site/api/postits/v1/my`,
+           {
+           headers: {
+            Authorization: accessToken
+          }
+           });
+        
+       setTodayPostit(`${response.data.result[0].postitTopicRes.topic}`)
+       setTodayAnswer(`${response.data.result[0].content}`)
+      } catch (e) {
+         console.log(e)
+       setTodayPostit(`${moment(date).format('YYYY-MM-DD')}에\n질문이 없습니다`)
+       setTodayAnswer('')
+         
+      }
+  }
+
+    // 선택된 날짜 변경 함수
+  const onChangeDate = async (date) => {
     if (!Array.isArray(date)) {
       setSelectedDate(moment(date));
       toggleCalendar(); // 날짜를 선택하면 달력 숨기기
+      
+      getTodayTopic(date)
     }
   };
 
+
+  
+  useEffect(() => {
+    getTodayTopic(moment(Date.now()).format('YYYY-MM-DD'))
+  }, [])
+  
   return (
     <div className="my-postit-container">
-      {/* <div style={{ width: '30px', height: '30px' }}> */}
-        <h1 className="postit-date" onClick={toggleCalendar}>
-          {selectedDate.format("YYYY년 MM월 DD일")}
-          {showCalendar&&<Calendar />}
-        </h1>
-      {/* </div>        */}
-      <div className="mt-6">그날의 질문</div>
-      {showCalendar && (
-        <div className="calendar-wrapper">
-        </div>
+      <div style={{ width: '100%', height: '100%' }}>
+     
+        {showCalendar ? (
+          <>
+             <div style={{width: '70vw'}}>
+              {showCalendar&&<Calendar  onChange={(data) => onChangeDate(data)}/>}
+            </div>
+          </>
+        ) : (
+            <>
+              <h1 className="postit-date" onClick={toggleCalendar}>
+                {selectedDate.format("YYYY년 MM월 DD일")}
+              </h1>
+              <div>그날의 질문</div>
+              <div className="relative overflow-hidden w-72 h-80 rounded-3xl cursor-pointer text-2xl font-bold bg-purple-400">
+              
+              <div className="w-full h-full flex flex-col items-center justify-center uppercase text-lg whitespace-pre-line">
+                <div>{todayPostit === '' ? '오늘의 질문이 없습니다' : todayPostit}</div>
+                <div className="text-sm font-normal">{todayAnswer !== '' && todayAnswer}</div>
+              </div>
+                
+              </div>
+            </>
+            
       )}
-      <div className="relative overflow-hidden w-60 h-80 rounded-3xl cursor-pointer text-2xl font-bold bg-purple-400">
-        <div className="z-10 absolute w-full h-full peer"></div>
-        <div className="absolute peer-hover:-top-20 peer-hover:-left-16 peer-hover:w-[140%] peer-hover:h-[140%] -top-32 -left-16 w-32 h-44 rounded-full bg-purple-300 transition-all duration-500"></div>
-        <div className="absolute flex text-xl text-center items-end justify-end peer-hover:right-0 peer-hover:rounded-b-none peer-hover:bottom-0 peer-hover:items-center peer-hover:justify-center peer-hover:w-full peer-hover:h-full -bottom-32 -right-16 w-36 h-44 rounded-full bg-purple-300 transition-all duration-500">
-        <div className="">
-          {memos[selectedDate.format("YYYY-MM-DD")] || ""}
-        </div>
-        </div>
-        <div className="w-full h-full items-center justify-center flex uppercase">
-          
-        </div>
-      </div>
+      
+      </div>       
+     
     </div>
   );
 }

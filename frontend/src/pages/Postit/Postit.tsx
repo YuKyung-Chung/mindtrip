@@ -17,11 +17,10 @@ const PostitPage: React.FC = () => {
   
   const currentDate = new Date();
   const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1; // 월은 0부터 시작해서 1 더해야함
-  const day = currentDate.getDate();
-  
-  
-  const formattedDate = `${year}-0${month}-${day}`;
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // 1월: "01", 11월: "11"
+  const day = currentDate.getDate().toString().padStart(2, '0'); // 1일: "01", 11일: "11"
+
+  const formattedDate = `${year}-${month}-${day}`;
   console.log(formattedDate)
   
   let member = useSelector((state:RootState) => state.member)
@@ -29,7 +28,7 @@ const PostitPage: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`https://mindtrip.site/api/postits/v1?date=${formattedDate}&order=like&village=0&page=0&size=5`, {
+      const response = await axios.get(`https://mindtrip.site/api/postits/v1?date=${formattedDate}&order=like&village=0&page=0&size=10`, {
         headers: {
           Authorization: accessToken
         }
@@ -63,7 +62,6 @@ const PostitPage: React.FC = () => {
           }
         }
       );
-      console.log("새 포스트잇:", response.data);
       setIsModalOpen(false); // 새로운 포스트잇을 추가한 후에 모달을 닫기
       fetchData(); // 모달을 닫은 후에 포스트잇 목록을 다시 불러오기
     } catch (error) {
