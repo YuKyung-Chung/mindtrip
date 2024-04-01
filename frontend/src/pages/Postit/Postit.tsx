@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "../../components/Calendar/Calendar.module.css";
 import { villageBackgroundColor } from "../../atoms/color";
-import { formatDate } from "date-fns/format";
+// import { formatDate } from "date-fns/format";
 
 
 export interface postitType  {

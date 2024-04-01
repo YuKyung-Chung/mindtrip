@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import './PostitLikeBtn.css'
 
 // 좋아요 버튼 컴포넌트
