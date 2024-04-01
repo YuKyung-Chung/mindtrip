@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Avatar } from "@nextui-org/react";
 import { Card } from "@nextui-org/react";
 import { Link, Outlet } from "react-router-dom";
-import Header from '../../components/Header'
+// import Header from '../../components/Header'
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { changeLang } from '../../api/htp';
