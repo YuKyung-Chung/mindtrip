@@ -7,7 +7,6 @@ import axios from 'axios'
 import { useDispatch, useSelector } from "react-redux";
 import { saveTreeAnswer } from "../../store/htpSlice";
 import { RootState } from "../../store/store";
-import Loading from "../../atoms/Loading";
 
 // props의 타입을 지정해주자
 
@@ -109,11 +108,6 @@ function TreeDraw({ goSurvey }: propsType1) {
     }
   };
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const switchLoading = function() {
-    setIsLoading(!isLoading)
-  }
 
   const sendFile = async (data: FormData) => {
     await axios.post('https://mindtrip.site/api/htp/v1/test/tree', data, {
@@ -124,9 +118,7 @@ function TreeDraw({ goSurvey }: propsType1) {
     })
   }
   const handleFile = async (file: FormData) => {
-    setIsLoading(true)
     await (sendFile(file))
-    setIsLoading(false)
     Swal.fire({
       title: '업로드완료',
       icon: "success"
@@ -148,10 +140,9 @@ function TreeDraw({ goSurvey }: propsType1) {
 
   return (
     <div className="flex h-svh w-svh justify-center items-center flex-col relactive">
-      <Loading isLoading={isLoading} />
       <p className="text-center mb-8 font-bold text-3xl">나무을 그려주세요.</p>
       <div className="border-2 rounded h-2/3 lg:w-2/3 w-full bg-white">
-        <Draw now='tree' goSurvey={goSurvey} tempAuthorization={tempAuthorization} switchLoading={switchLoading}/>
+        <Draw now='tree' goSurvey={goSurvey} tempAuthorization={tempAuthorization}/>
       </div>
       <div className="flex items-center text-slate-500 mt-2">
         <p className="mr-3">그리기 힘들다면?</p>
