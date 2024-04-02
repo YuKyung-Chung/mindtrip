@@ -7,12 +7,11 @@ import Swal from 'sweetalert2';
 type propsType = {
   now: string
   goSurvey: () => void,
-  tempAuthorization:string,
-  switchLoading: () => void
+  tempAuthorization:string
 }
 
 
-function Draw({now, goSurvey, tempAuthorization, switchLoading}:propsType) {
+function Draw({now, goSurvey, tempAuthorization}:propsType) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState<boolean>(false)
   const [penColor, setPencolor] = useState<string>('black')
@@ -130,21 +129,19 @@ function Draw({now, goSurvey, tempAuthorization, switchLoading}:propsType) {
 
   // 버튼 눌렀을 때 실행되는 함수
   const handleButton = () => {
-    switchLoading()
     const canvas = canvasRef.current
-    canvas?.toBlob(async function(blob) {
+    canvas?.toBlob(function(blob) {
       if (blob){
         const file = new File([blob], `${now}.png`, {type:'image/png'})
         const formData = new FormData()
         formData.append('file', file)
         console.log(file)
         try {
-          await axios.post(`https://mindtrip.site/api/htp/v1/test/${now}`, formData, {
+          axios.post(`https://mindtrip.site/api/htp/v1/test/${now}`, formData, {
             headers: {
               Authorization: tempAuthorization
             }
           })
-          switchLoading()
           Swal.fire({
             text: '그림 업로드 완료!',
             icon: "success"
@@ -173,19 +170,29 @@ function Draw({now, goSurvey, tempAuthorization, switchLoading}:propsType) {
       <div className='absolute top-3 left-[130px] flex'>
         <div 
           onClick={() => setPencolor('black')}
-          className='w-8 h-8 rounded-full bg-black mx-2 hover:cursor-pointer'/>
+          className='w-8 h-8 rounded-full bg-black mx-2 hover:cursor-pointer'
+          style={{border: penColor === 'black' ? '4px solid white' : ''}}
+        />
         <div 
         onClick={() => setPencolor('red')}
-        className='w-8 h-8 rounded-full bg-red-500 mx-2 hover:cursor-pointer'/>
+        className='w-8 h-8 rounded-full bg-red-500 mx-2 hover:cursor-pointer'
+        style={{border: penColor === 'red' ? '4px solid white' : ''}}
+        />
         <div 
         onClick={() => setPencolor('#3b82f6')}
-        className='w-8 h-8 rounded-full bg-blue-500 mx-2 hover:cursor-pointer'/>
+        className='w-8 h-8 rounded-full bg-blue-500 mx-2 hover:cursor-pointer'
+        style={{border: penColor === '#3b82f6' ? '4px solid white' : ''}}
+        />
         <div 
         onClick={() => setPencolor('rgb(132 204 22)')}
-        className='w-8 h-8 rounded-full bg-lime-400 mx-2 hover:cursor-pointer'/>
+        className='w-8 h-8 rounded-full bg-lime-400 mx-2 hover:cursor-pointer'
+        style={{border: penColor === 'rgb(132 204 22)' ? '4px solid white' : ''}}
+        />
         <div 
         onClick={() => setPencolor('rgb(113 63 18)')}
-        className='w-8 h-8 rounded-full bg-yellow-900 mx-2 hover:cursor-pointer'/>
+        className='w-8 h-8 rounded-full bg-yellow-900 mx-2 hover:cursor-pointer'
+        style={{border: penColor === 'rgb(113 63 18)' ? '4px solid white' : ''}}
+        />
       </div>
       <Button
         className={`absolute bottom-0 right-0 m-3 opacity-50`}
