@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "../../components/Calendar/Calendar.module.css";
 import { villageBackgroundColor } from "../../atoms/color";
+import { Button } from "@nextui-org/react";
 
 export interface postitType {
   content: string;
@@ -36,6 +37,7 @@ const PostitPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("like"); // "like" 또는 "date"
 
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const formatDate = (date: Date | null): string => {
     if (!date) return "";
 
@@ -57,7 +59,7 @@ const PostitPage: React.FC = () => {
       const response = await axios.get(
         `https://mindtrip.site/api/postits/v1?date=${formatDate(
           startDate
-        )}&order=${sortBy}&village=all&page=0&size=10`,// sortBy가 like면 좋아요 순 정렬 아니면 최신순 정렬
+        )}&order=${sortBy}&village=all&page=0&size=10`, // sortBy가 like면 좋아요 순 정렬 아니면 최신순 정렬
         {
           headers: {
             Authorization: accessToken,
@@ -106,6 +108,7 @@ const PostitPage: React.FC = () => {
           },
         }
       );
+      console.log(response.data);
       setIsModalOpen(false);
       fetchData();
     } catch (error: any) {
@@ -155,7 +158,7 @@ const PostitPage: React.FC = () => {
         <div className="flex flex-row">
           <DatePicker
             dateFormat="yyyy.MM.dd"
-            maxDate={startDate}
+            maxDate={currentDate}
             className={styles.datePicker}
             selected={startDate}
             onChange={(date) => date && setStartDate(date)}
@@ -167,11 +170,35 @@ const PostitPage: React.FC = () => {
         <h1 className="text-xl font-bold mt-10 w-4/5">{topic}</h1>
       </div>
       <div>
-        <div className="p-6 w-4/5 mx-auto">
-          <button onClick={() => setSortBy("like")}>좋아요순</button>
-          <button onClick={() => setSortBy("date")}>최신순</button>
+        <div className="p-2 w-4/5 mx-auto flex justify-end">
+          <Button
+            className="mx-4"
+            variant="ghost"
+            onClick={() => setSortBy("like")}
+          >
+            좋아요순
+          </Button>
+          <Button variant="ghost" onClick={() => setSortBy("date")}>
+            최신순
+          </Button>
         </div>
+
         <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-4/5 mx-auto">
+          <div>
+            <select
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+            >
+              <option value="all">All</option>
+              <option value="apple">Apple</option>
+              <option value="pineapple">Pineapple</option>
+              <option value="watermelon">Watermelon</option>
+              <option value="grape">Grape</option>
+              <option value="peach">Peach</option>
+              <option value="blueberry">Blueberry</option>
+              <option value="kakao">Kakao</option>
+            </select>
+          </div>
           <div className="flex justify-center items-center flex-wrap list-none">
             <div className="m-2">
               {formatDate(startDate) === formatDate(currentDate) && (
@@ -186,17 +213,22 @@ const PostitPage: React.FC = () => {
                 </PostIt>
               )}
             </div>
-            {postits.map((postit) => (
-              <div className="m-2" key={postit.id}>
-                <PostIt
-                  accessToken={accessToken}
-                  postItem={postit}
-                  color={villageBackgroundColor[postit.village]}
-                >
-                  {postit.content}
-                </PostIt>
-              </div>
-            ))}
+            {postits
+              .filter(
+                (item) =>
+                  selectedFilter === "all" || item.village === selectedFilter
+              )
+              .map((postit) => (
+                <div className="m-2" key={postit.id}>
+                  <PostIt
+                    accessToken={accessToken}
+                    postItem={postit}
+                    color={villageBackgroundColor[postit.village]}
+                  >
+                    {postit.content}
+                  </PostIt>
+                </div>
+              ))}
           </div>
         </div>
       </div>
