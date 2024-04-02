@@ -6,12 +6,12 @@ import { Link, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { changeLang } from "../../api/htp";
-import profile0 from "../../assets/levelupbadge/씨앗.png";
-import profile1 from "../../assets/levelupbadge/새싹.png";
-import profile2 from "../../assets/levelupbadge/잎새.png";
-import profile3 from "../../assets/levelupbadge/나뭇가지.png";
-import profile4 from "../../assets/levelupbadge/나무.png";
-import profile5 from "../../assets/levelupbadge/열매.png";
+import profile1 from "../../assets/levelupbadge/씨앗.png";
+import profile2 from "../../assets/levelupbadge/새싹.png";
+import profile3 from "../../assets/levelupbadge/잎새.png";
+import profile4 from "../../assets/levelupbadge/나뭇가지.png";
+import profile5 from "../../assets/levelupbadge/나무.png";
+import profile6 from "../../assets/levelupbadge/열매.png";
 
 function Mypage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,9 +21,6 @@ function Mypage() {
   const [ProfileImg, setProfileImg] = useState(profile1);
 
   const changeProfile = () => {
-    if (member.level === 0) {
-      setProfileImg(profile0);
-    }
     if (member.level === 1) {
       setProfileImg(profile1);
     }
@@ -36,8 +33,11 @@ function Mypage() {
     if (member.level === 4) {
       setProfileImg(profile4);
     }
-    if (member.level === 5){
-      setProfileImg(profile5)}
+    if (member.level === 5) {
+      setProfileImg(profile5);
+    }
+    if (member.level === 6){
+      setProfileImg(profile6)}
   };
 
   const toggleMenu = () => {

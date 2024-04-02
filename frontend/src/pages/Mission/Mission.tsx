@@ -8,12 +8,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { countUpdate } from "../../store/memberSlice";
 import Swal from "sweetalert2";
-import profile0 from "../../assets/levelupbadge/씨앗.png";
-import profile1 from "../../assets/levelupbadge/새싹.png";
-import profile2 from "../../assets/levelupbadge/잎새.png";
-import profile3 from "../../assets/levelupbadge/나뭇가지.png";
-import profile4 from "../../assets/levelupbadge/나무.png";
-import profile5 from "../../assets/levelupbadge/열매.png";
+import profile1 from "../../assets/levelupbadge/씨앗.png";
+import profile2 from "../../assets/levelupbadge/새싹.png";
+import profile3 from "../../assets/levelupbadge/잎새.png";
+import profile4 from "../../assets/levelupbadge/나뭇가지.png";
+import profile5 from "../../assets/levelupbadge/나무.png";
+import profile6 from "../../assets/levelupbadge/열매.png";
 
 
 // 미션 타입 정의
@@ -35,9 +35,6 @@ function Mission() {
   const [ProfileImg, setProfileImg] = useState(profile0);
 
   const changeProfile = () => {
-    if (member.level === 0) {
-      setProfileImg(profile0);
-    }
     if (member.level === 1) {
       setProfileImg(profile1);
     }
@@ -50,8 +47,11 @@ function Mission() {
     if (member.level === 4) {
       setProfileImg(profile4);
     }
-    if (member.level === 5){
-      setProfileImg(profile5)}
+    if (member.level === 5) {
+      setProfileImg(profile5);
+    }
+    if (member.level === 6){
+      setProfileImg(profile6)}
   };
 
   // 페이지가 로드될 때 미션 데이터를 가져오는 useEffect 훅
@@ -165,22 +165,22 @@ function Mission() {
         // 미션 성공 메세지 띄워주기  \
         Swal.fire({
           title: "레벨업!",
-          text: "열매로 레벨업 했습니다.",
+          text: "나무로 레벨업 했습니다.",
           imageUrl: ProfileImg,
           imageWidth: 200,
           imageHeight: 200,
-          imageAlt: "열매"
+          imageAlt: "나무"
         });
       }
       if (successCount.data.result === 30) {
         // 미션 성공 메세지 띄워주기  \
         Swal.fire({
           title: "레벨업!",
-          text: "나무로 레벨업 했습니다. 레벨업 최대치에 도착했습니다!",
+          text: "열매로 레벨업 했습니다. 레벨업 최대치에 도착했습니다!",
           imageUrl: ProfileImg,
           imageWidth: 200,
           imageHeight: 200,
-          imageAlt: "나무"
+          imageAlt: "열매"
         });
       }
     } catch (error) {
