@@ -32,7 +32,7 @@ function Mission() {
   let accessToken = useSelector((state: RootState) => state.accessToken.value);
   let member = useSelector((state: RootState) => state.member);
 
-  const [ProfileImg, setProfileImg] = useState(profile0);
+  const [ProfileImg, setProfileImg] = useState(profile1);
 
   const changeProfile = () => {
     if (member.level === 1) {
