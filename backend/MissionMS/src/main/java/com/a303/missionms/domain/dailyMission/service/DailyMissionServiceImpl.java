@@ -101,8 +101,13 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 		if (myTableMissionDTOMap.size() != 0) {
 			List<Integer> missionIdList = new ArrayList<>(myTableMissionDTOMap.keySet());
 			log.error("missionIdList : {}", missionIdList);
-			List<Mission> missions = missionRepository.getMissionsByMissionIdIn(
-				missionIdList);
+			List<Mission> missions = new ArrayList<>();
+			for (int missionId : missionIdList) {
+				Mission mission = missionRepository.findMissionByMissionId(missionId);
+				missions.add(mission);
+			}
+//			List<Mission> missions = missionRepository.getMissionsByMissionIdIn(
+//				missionIdList);
 			Map<Integer, Mission> missionHashMap = new HashMap<>();
 			for (Mission mission : missions) {
 				missionHashMap.put(mission.getMissionId(), mission);
@@ -265,23 +270,23 @@ public class DailyMissionServiceImpl implements DailyMissionService {
 
 		// 알림 전송 kafka(notification에서는 알림테이블에 저장 + 실시간 알림 전송)
 
-//		NotificationEventDto eventDto = NotificationEventDto.builder()
-//			.eventType("DailyMissionSchedule")
-//			.memberId(-1)
-//			.build();
-//
-//		ObjectMapper objectMapper = new ObjectMapper();
-//		String jsonString;
-//		// 객체를 JSON 문자열로 변환
-//		try {
-//			jsonString = objectMapper.writeValueAsString(eventDto);
-//			notificationEventDtoKafkaTemplate.send("notification-topic", jsonString);
-//
-//		} catch (JsonProcessingException e) {
-//			e.printStackTrace();
-//		}
+		NotificationEventDto eventDto = NotificationEventDto.builder()
+			.eventType("DailyMissionSchedule")
+			.memberId(-1)
+			.build();
 
-		BaseResponse<Integer> res = notificationClient.dailyMissionScheduling();
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString;
+		// 객체를 JSON 문자열로 변환
+		try {
+			jsonString = objectMapper.writeValueAsString(eventDto);
+			notificationEventDtoKafkaTemplate.send("notification-topic", jsonString);
+
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+//		BaseResponse<Integer> res = notificationClient.dailyMissionScheduling();
 		log.info("스케쥴링 완료 알림 전송. userId : 전체");
 
 
