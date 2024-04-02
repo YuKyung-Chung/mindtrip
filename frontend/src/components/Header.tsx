@@ -19,12 +19,14 @@ function Header() {
   const [openMessage, setOpenMessage] = useState<Boolean>(false)
   const [alarmCount, setAlarmCount] = useState<number>(0)
   const [notifications, setnotifications] = useState<notificationType[]|null>(null)
+  const [temp, setTemp] = useState<number>(0)
 
   useEffect(() => {
     // 처음엔 메세지창 닫아주고
     setOpenMessage(false)
     // 서버 ON
     fetchSSE()
+    setTemp(0)
   }, [])
 
   let accessToken = useSelector((state:RootState) => state.accessToken.value)
@@ -76,21 +78,30 @@ function Header() {
     })
 
     eventSource.addEventListener('error', (err) => {
+      // 에러가 나면 두번까지만 재요청 보내보자
+      const a = temp + 1
+      setTemp(a)
       console.log(err)
-      fetchSSE()
+      if (temp < 2) {
+        fetchSSE()
+      }
     })
   }
 
+  // 로딩중
+  const [loading, setLoading] = useState<boolean>(false)
 
   // 알림 확인하면 메세지 보여주기
   const handleAlarm = function() {
+    setLoading(true)
+    setOpenMessage(!openMessage)
     axios.post('https://mindtrip.site/api/notifications/v1', null, {
       headers:{
         Authorization: accessToken
       }
     }).then((res) => {
+      setLoading(false)
       setnotifications(res.data.result)
-      setOpenMessage(!openMessage)
       setAlarmCount(0)
     }) .catch((err) => console.log(err))
   }
@@ -125,9 +136,16 @@ function Header() {
       >
         <CardBody>
           {
-            notifications?.map((noti, idx) => {return(
-              <div key={idx} className="py-1">{noti.message}</div>
-            )})
+            loading && (<p>로딩중</p>)
+          }
+          {
+            (notifications?.length == 0) ? (<p>수신된 메세지가 없습니다!</p>) : (<div>
+              {
+                notifications?.map((noti, idx) => {return(
+                  <div key={idx} className="py-1">{noti.message}</div>
+                )})
+              }
+            </div>)
           }
         </CardBody>
         
