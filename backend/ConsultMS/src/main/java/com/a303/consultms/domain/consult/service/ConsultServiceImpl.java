@@ -369,7 +369,7 @@ public class ConsultServiceImpl implements ConsultService {
 
             if (!channel.getMessageList().isEmpty()) {
                 //가장 최근 메세지 한개 가져오기
-                Message latestMessage = channel.getMessageList().get(0);
+                Message latestMessage = channel.getMessageList().get(channel.getMessageList().size() - 1);
 
                 // ConsultChattingRes 객체 생성 및 최근 메시지 설정
                 ConsultChattingRes consultChattingRes = ConsultChattingRes.builder()
@@ -377,6 +377,7 @@ public class ConsultServiceImpl implements ConsultService {
                     .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
                     .title(consult.getTitle()).channelId(consult.getChannelId())
                     .text(latestMessage.getText()) // 최근 메시지의 텍스트 설정
+                    .shared(consult.isShared())
                     .build();
 
                 // ConsultChattingRes 객체를 리스트에 추가
@@ -388,6 +389,7 @@ public class ConsultServiceImpl implements ConsultService {
                     .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
                     .title(consult.getTitle()).channelId(consult.getChannelId())
                     .text(null) // 최근 메시지의 텍스트 설정
+                    .shared(consult.isShared())
                     .build();
 
                 // ConsultChattingRes 객체를 리스트에 추가
@@ -425,7 +427,7 @@ public class ConsultServiceImpl implements ConsultService {
             //가장 최근 메세지 한개 가져오기
             Message latestMessage = null;
             if (!c.getMessageList().isEmpty()) {
-                latestMessage = c.getMessageList().get(0);
+                latestMessage = c.getMessageList().get(c.getMessageList().size() - 1);
             }
 
             String text = null;
@@ -439,6 +441,7 @@ public class ConsultServiceImpl implements ConsultService {
                 .nickname(memberClient.getMember(consult.getMemberId()).getResult().nickname())
                 .title(consult.getTitle()).channelId(consult.getChannelId())
                 .text(text) // 최근 메시지의 텍스트 설정
+                .shared(consult.isShared())
                 .build();
 
             // ConsultChattingRes 객체를 리스트에 추가

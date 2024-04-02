@@ -12,6 +12,7 @@ import { villageBackgroundColor } from '../../../atoms/color'
 // 채팅방
 import { getPersonalChat, send } from '../../../services/chat';
 import ChattingAdditionalInfo from './ChattingAddtionalInfo';
+// import SockJS from "sockjs-client";
 
 
 function Chatting() {
@@ -19,11 +20,17 @@ function Chatting() {
 
   let chat = useSelector((state: RootState) => state.chat);
   const channelId = chat.selectedId;
+  console.log(channelId);
+
+  // 토큰
+  // let memberId = useSelector((state: RootState) => state.member.memberId);
+	let accessToken = useSelector((state: RootState) => state.accessToken.value);
 
   // 추가정보 열고 닫고
   const [show, setShow] = useState<boolean>(false)
 
   const [stompClient, setStompClient] = useState<Client | null>(null);
+  // const stompClient = useRef<Client | null>(null);
   // const [connected, setConnected] = useState<boolean>(false);
   // const [name, setName] = useState<string>('');
   const [newMessage, setNewMessage] = useState("");
@@ -31,13 +38,14 @@ function Chatting() {
   const [isLoading, setIsLoading] = useState(true);
   const [personalChat, setPersonalChat] = useState<any>({
     channelId: null,
+    consultId: null,
     receiver: {
-      memberId: null,
-      nickname: null
+      nickname: null,
+      memberId: null
     },
     sender: {
-      memberId: null,
-      nickname: null
+      nickname: null,
+      memberId: null
     },
     messageList: []
   });
@@ -49,9 +57,15 @@ function Chatting() {
 
   useEffect(() => {
     // 만약 채팅방의 user Id와 내 아이디가 같다면 내꺼임
-    if (member.memberId === personalChat.sender.memberId) {
+    if (member.memberId == personalChat.sender.memberId) {
+      console.log('memberid')
+      console.log(personalChat.sender.memberId)
+      console.log(member.memberId)
       setIsMine(true)
     } else {
+      console.log('memberid')
+      console.log(personalChat.sender.memberId)
+      console.log(member.memberId)
       setIsMine(false)
     }
   }, [personalChat])
@@ -60,21 +74,36 @@ function Chatting() {
   // 스크롤바 조정
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    const chatPrivateConnect = () => {
+  const chatPrivateConnect = () => {
+      // const serverURL = `https://mindtrip.site/api/chat`;
+
+      setIsLoading(true);
+  
       const stomp = new Client({
-        brokerURL: 'ws://localhost:8000/api/chat',
-        // brokerURL: 'https://mindtrip.site/api/chat',
+        // brokerURL: 'ws://localhost:8000/api/chat',
+        // brokerURL: 'wss://mindtrip.site/api/chat',
+        
+        // connectHeaders: {
+        //   Authorization: `${accessToken}`,
+        // },
 
         debug: (str: string) => {
           console.log(str)
         },
-        reconnectDelay: 5000, //자동 재 연결
+        webSocketFactory: () => {
+          // WebSocket을 생성하여 반환합니다.
+          const socket = new WebSocket('wss://mindtrip.site/api/chat');
+          return socket;
+        },
+        // reconnectDelay: 5000, //자동 재 연결
       });
+
+      
       
       setIsLoading(true);
 
-    stomp.onConnect = (frame: Frame) => {
-      //   setConnected(true);
+    stomp.onConnect = (frame: Frame) => { //연결이 성공하면 수행할 작업
+        // setConnected(true);
       console.log('Connected: ' + frame);
       console.log(channelId)
       stomp.subscribe(`/sub/${channelId}`,
@@ -100,11 +129,11 @@ function Chatting() {
 
     setStompClient(stomp);
 
-    //   return () => {
-    //     if (stomp.connected) {
-    //         stomp.deactivate();
-    //     }
-    //   };
+      return () => {
+        if (stomp.connected) {
+            stomp.deactivate();
+        }
+      };
   };
 
   // 연결 끊기
@@ -128,8 +157,9 @@ function Chatting() {
       try {
         console.log("fetch")
         if (channelId != null) {
-          const personalChat = await getPersonalChat(2, channelId);
+          const personalChat = await getPersonalChat(accessToken, channelId);
           setPersonalChat(personalChat);
+          console.log('personalChat에 대한 정보를 출력합니다.')
           console.log(personalChat);
           setRecvList(personalChat.messageList);
         }
@@ -145,7 +175,9 @@ function Chatting() {
   const sendMessage = () => {
     // console.log(newMessage);
     // console.log(channelId);
-    send(stompClient, personalChat.sender, newMessage, personalChat.channelId);
+    if(channelId != null){
+      send(stompClient, personalChat.sender, newMessage, channelId);
+    }
     //   readPersonalChat(accessToken, personalChat.personalChatId);
     setNewMessage("");
   };
@@ -155,7 +187,7 @@ function Chatting() {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
     }
-  }, []);
+  }, [recvList]);
 
   // const formattedDate = (time) =>{
   //     const createDate = new Date(time);
