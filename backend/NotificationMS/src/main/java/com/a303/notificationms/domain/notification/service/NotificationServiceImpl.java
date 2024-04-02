@@ -144,7 +144,7 @@ public class NotificationServiceImpl implements NotificationService {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 			messageRes = objectMapper.readValue(message, NotificationEventDto.class);
-			System.out.println(messageRes);
+			log.error(messageRes.toString());
 		} catch (JsonMappingException e) {
 			// log
 			throw new RuntimeException(e);
