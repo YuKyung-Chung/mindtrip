@@ -117,8 +117,8 @@ function Fixmission() {
 
   return (
     <div className="bg-[#fff7e0] px-2 py-8 min-h-screen">
-      <div className="mt-8 grid gap-8 flex items-center">
-        <div className="mt-8 flex justify-center">
+      <div className="grid gap-8 flex items-center">
+        <div className=" flex justify-center">
         <Link
           to="/mission"
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4"
