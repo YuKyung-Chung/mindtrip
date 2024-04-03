@@ -209,7 +209,7 @@ const PostitPage: React.FC = () => {
                   style={{ transition: "transform 0.3s ease-in-out" }}
                   firstData={true}
                 >
-                  눌러서 대답하기
+                  <h1 className="text center">눌러서 대답하기</h1>
                 </PostIt>
               )}
             </div>
