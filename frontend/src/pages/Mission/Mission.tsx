@@ -7,6 +7,7 @@ import Header from "../../components/Header";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { countUpdate } from "../../store/memberSlice";
+import { villageBackgroundColor } from "../../atoms/color";
 import Swal from "sweetalert2";
 import profile1 from "../../assets/levelupbadge/씨앗.png";
 import profile2 from "../../assets/levelupbadge/새싹.png";
@@ -189,7 +190,7 @@ function Mission() {
   };
 
   return (
-    <div className="bg-[#fff7e0] px-2 h-screen ">
+    <div className={`${villageBackgroundColor[member.villageName]} px-2 h-screen `}>
       <Header />
       <div className="flex flex-col justify-center items-center mb-6">
         <h1 className="text-5xl font-bold mt-20">오늘의 미션</h1>

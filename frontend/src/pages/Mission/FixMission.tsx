@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { villageBackgroundColor} from '../../atoms/color';
 
 
 type Mission = {
@@ -32,6 +33,7 @@ function Fixmission() {
   const [missions, setMissions] = useState<CategoryMission[]>([]);
   const [todayMissions, setTodayMissions] = useState<Mission[]>([]);
   let accessToken = useSelector((state:RootState) => state.accessToken.value)
+  let member = useSelector((state:RootState) => state.member)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,7 +118,7 @@ function Fixmission() {
   };
 
   return (
-    <div className="bg-[#fff7e0] px-2 py-8 min-h-screen">
+    <div className={`${villageBackgroundColor[member.villageName]} px-2 py-8 min-h-screen`}>
       <div className="grid gap-8 flex items-center">
         <div className=" flex justify-center">
         <Link

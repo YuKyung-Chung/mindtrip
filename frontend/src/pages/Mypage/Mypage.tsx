@@ -108,12 +108,6 @@ function Mypage() {
             </Link>
           </div>
           <div>
-            <Link
-              to={"/mypage/fix"}
-              className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1"
-            >
-              내정보수정
-            </Link>
           </div>
         </div>
       </div>
@@ -137,12 +131,6 @@ function Mypage() {
             className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1"
           >
             내기록
-          </Link>
-          <Link
-            to={"/mypage/fix"}
-            className="text-blue-500 hover:bg-gray-200 rounded-md px-3 py-1"
-          >
-            내정보수정
           </Link>
         </div>
       </div>

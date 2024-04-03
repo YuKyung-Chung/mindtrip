@@ -152,7 +152,7 @@ const PostitPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#fff7e0] px-2 min-h-screen">
+    <div className={`${villageBackgroundColor[member.villageName]} px-2 min-h-screen`}>
       <Header />
       <div className="flex flex-col justify-center items-center mb-6">
         <div className="flex flex-row">
