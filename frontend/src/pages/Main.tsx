@@ -77,10 +77,10 @@ function Main() {
       </div>
       <div className={`${display ? '' : 'hidden'}`}>
         <div className={`bg-white absolute top-[12%] left-[10%] w-[80%] p-4 text-center text-lg rounded shadow-lg`}>{changeLang(member.villageName)}마을에 오신걸 환영합니다!<br/><span className="text-sm" style={{fontFamily:'JamsilThin'}}>화면을 드래그하면서 둘러보세요</span></div>
-        <Button className={`${villageBackgroundColor[member.villageName]} absolute top-[35%] left-[30%]`}>고민상담소</Button>
-        <Button className={`${villageBackgroundColor[member.villageName]} absolute bottom-[35%] right-[15%]`}>포스트잇</Button>
-        <Button className={`${villageBackgroundColor[member.villageName]} absolute bottom-[10%] right-[20%]`}>마이페이지</Button>
-        <Button className={`${villageBackgroundColor[member.villageName]} absolute bottom-[12%] left-[18%]`}>데일리 미션</Button>
+        <Button className={`${villageBackgroundColor[member.villageName]} absolute top-[35%] left-[30%]`} onClick={() => navigate('/consult')}>고민상담소</Button>
+        <Button className={`${villageBackgroundColor[member.villageName]} absolute bottom-[35%] right-[15%]`} onClick={() => navigate('/postit')}>포스트잇</Button>
+        <Button className={`${villageBackgroundColor[member.villageName]} absolute bottom-[10%] right-[20%]`} onClick={() => navigate('/mypage/htp')}>마이페이지</Button>
+        <Button className={`${villageBackgroundColor[member.villageName]} absolute bottom-[12%] left-[18%]`} onClick={() => navigate('/mission')}>데일리 미션</Button>
       </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
