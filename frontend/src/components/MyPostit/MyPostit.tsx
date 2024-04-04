@@ -165,7 +165,7 @@ function MyPostit() {
             ><RightIcon/></Button>
             <div ref={box}>
               <Card  className="h-[50vh] mt-[2vh]">
-              <CardBody style={{fontFamily:'JamsilThin'}} className="p-5">
+              <CardBody style={{fontFamily:'JamsilThin'}} className="p-5 text-center flex justify-center items-center">
                 {postitList[selectedIdx].content}
               </CardBody>
             </Card>

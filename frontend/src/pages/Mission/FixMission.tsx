@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import FixMissionBox from "../../components/missonbox/FixMissionBox";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
@@ -32,6 +32,7 @@ type TodayMissionsResponse =  {
 function Fixmission() {
   const [missions, setMissions] = useState<CategoryMission[]>([]);
   const [todayMissions, setTodayMissions] = useState<Mission[]>([]);
+  const navigate = useNavigate();
   let accessToken = useSelector((state:RootState) => state.accessToken.value)
   let member = useSelector((state:RootState) => state.member)
 
@@ -111,6 +112,7 @@ function Fixmission() {
           }
         }
       );
+      navigate("/mission")
       console.log("오늘의 미션 수정이 완료되었습니다.");
     } catch (error) {
       console.log("Error updating today's missions:", error);
@@ -121,13 +123,12 @@ function Fixmission() {
     <div className={`${villageBackgroundColor[member.villageName]} px-2 py-8 min-h-screen`}>
       <div className="grid gap-8 flex items-center">
         <div className=" flex justify-center">
-        <Link
-          to="/mission"
+        <div
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4"
           onClick={handleFixCompleted} // 수정 완료 버튼 클릭 시 호출될 함수 추가
         >
           수정완료버튼
-        </Link>
+        </div>
       </div>
         
         <div className="bg-[#f4f4f4] p-4 rounded-lg mb-4 border-2 border-gray-500 shadow-lg min-h-560">
