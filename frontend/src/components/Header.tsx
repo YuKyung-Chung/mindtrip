@@ -51,16 +51,14 @@ function Header() {
   
   // 알림 서버 연결 및 데이터 가져오기
   const fetchSSE = () => {
-    let lastHeartbeat = Date.now()
-    console.log(lastHeartbeat)
     const eventSource = new EventSource('https://mindtrip.site/api/notifications/v1/subscribe', {
       headers: {
         Authorization: accessToken
       }
     })
 
-    eventSource.addEventListener("open", () => {
-      console.log('알림서버 연결 지속중')
+    eventSource.addEventListener('open', () => {
+      console.log('알림서버 열려있음')
     })
 
     eventSource.addEventListener('message', (e) => {
@@ -79,16 +77,14 @@ function Header() {
             title: parsedData.message
           })
         }
-        // heartbeat를 수신하면 시간 업데이트
-        else if (parsedData.type === 'HEARTBEAT') {
-          lastHeartbeat = Date.now()
-        }
       }
     })
 
     eventSource.addEventListener('error', (err) => {
       console.log(err)
+      console.log('알림 서버 종료')
       eventSource.close()
+      setTimeout(() => fetchSSE(), 5000)
     })
   }
 
@@ -104,6 +100,7 @@ function Header() {
         Authorization: accessToken
       }
     }).then((res) => {
+      console.log(res.data)
       setLoading(false)
       setnotifications(res.data.result)
       setAlarmCount(0)
