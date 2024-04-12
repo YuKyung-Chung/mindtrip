@@ -63,7 +63,7 @@
 
 ### 포스트잇 커뮤니티
 
-<img alt="포스트잇 커뮤니티" src="https://github.com/ss0510s/mindtrip/assets/77006790/c48398e0-de62-4731-8d4d-e6af8a8e0bfe" height="400" >
+<img alt="포스트잇 커뮤니티" src="https://github.com/ss0510s/mindtrip/assets/77006790/530a5d1a-0f8b-4161-a709-6f0df1116f67" height="400" >
 
 ### 마이페이지
 
