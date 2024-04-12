@@ -1,0 +1,17 @@
+.datePicker {
+  display: flex;
+  align-items: center;
+  border: 1px solid #CCCCCC; /* colors.$GRAY6 값을 대체 */
+  border-radius: 4px;
+  background-color: #F5F5F5; /* colors.$BG_COLOR 값을 대체 */
+  box-sizing: border-box;
+  width: 90%;
+  height: 46px;
+  color: #000000; /* colors.$WHITE 값을 대체 */
+  text-align: center;
+  /* padding-right: 14px; */
+}
+
+.datePicker:focus {
+  border: 2px solid #FFA500; /* colors.$ORANGE 값을 대체 */
+}
